@@ -11,7 +11,7 @@ namespace Dokan.Core.Database
     public class DokanContext : IdentityDbContext<User>
     {
         public DokanContext()
-            : base("DefaultConnection", throwIfV1Schema: false)
+            : base("DokanConnection", throwIfV1Schema: false)
         {
         }
 
