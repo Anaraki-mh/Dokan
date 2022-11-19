@@ -253,6 +253,24 @@
     <Content Include="Scripts\jquery-3.4.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.4.1.min.map" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Dokan.Core\Dokan.Core.csproj">
+      <Project>{a961ba28-0a18-459d-9e03-ed813e291032}</Project>
+      <Name>Dokan.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Dokan.Domain\Dokan.Domain.csproj">
+      <Project>{147904f2-940c-4847-8705-ee664ed9ee22}</Project>
+      <Name>Dokan.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Dokan.Services\Dokan.Services.csproj">
+      <Project>{1e0590c4-ecbf-4a16-9845-2eb50fae2577}</Project>
+      <Name>Dokan.Services</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Dokan.WebEssentials\Dokan.WebEssentials.csproj">
+      <Project>{ce13dac2-846f-4ddc-ba87-c484eb0aa356}</Project>
+      <Name>Dokan.WebEssentials</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
