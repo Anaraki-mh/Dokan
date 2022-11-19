@@ -78,6 +78,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataAccess\IRepository.cs" />
+    <Compile Include="DataAccess\Repository.cs" />
     <Compile Include="Database\DokanContext.cs" />
     <Compile Include="Migrations\202211190029554_Initial.cs" />
     <Compile Include="Migrations\202211190029554_Initial.designer.cs">
