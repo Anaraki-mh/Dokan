@@ -6,6 +6,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Dokan.Domain.Website;
 
 namespace Dokan.Domain.UsersAndRoles
 {
@@ -18,5 +19,12 @@ namespace Dokan.Domain.UsersAndRoles
             // Add custom user claims here
             return userIdentity;
         }
+
+        #region Relations
+
+        public virtual List<ProductComment> ProductComments { get; set; }
+        public virtual List<BlogComment> BlogComments { get; set; }
+
+        #endregion
     }
 }
