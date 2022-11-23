@@ -106,6 +106,9 @@
     <Compile Include="Website\BlogCategory.cs" />
     <Compile Include="Website\BlogComment.cs" />
     <Compile Include="Website\BlogPost.cs" />
+    <Compile Include="Website\Product.cs" />
+    <Compile Include="Website\ProductCategory.cs" />
+    <Compile Include="Website\ProductComment.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Dokan.WebEssentials\Dokan.WebEssentials.csproj">
