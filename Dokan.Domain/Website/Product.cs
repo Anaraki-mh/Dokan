@@ -16,6 +16,8 @@ namespace Dokan.Domain.Website
         public Product()
         {
             ProductComments = new List<ProductComment>();
+            Images = new List<File>();
+            OrderItems = new List<OrderItem>();
         }
 
         #endregion
@@ -48,6 +50,7 @@ namespace Dokan.Domain.Website
         public virtual ProductCategory ProductCategory { get; set; }
 
         public virtual List<File> Images { get; set; }
+        public virtual List<OrderItem> OrderItems { get; set; }
 
         #endregion
     }

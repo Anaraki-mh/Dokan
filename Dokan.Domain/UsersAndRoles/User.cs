@@ -12,6 +12,21 @@ namespace Dokan.Domain.UsersAndRoles
 {
     public class User : IdentityUser
     {
+
+        #region Constructor
+
+        public User()
+        {
+            ProductComments = new List<ProductComment>();
+            BlogComments = new List<BlogComment>();
+            Orders = new List<Order>();
+        }
+
+        #endregion
+
+
+        #region Methods
+
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<User> manager)
         {
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
@@ -20,10 +35,14 @@ namespace Dokan.Domain.UsersAndRoles
             return userIdentity;
         }
 
+        #endregion
+
+
         #region Relations
 
         public virtual List<ProductComment> ProductComments { get; set; }
         public virtual List<BlogComment> BlogComments { get; set; }
+        public virtual List<Order> Orders { get; set; }
 
         #endregion
     }
