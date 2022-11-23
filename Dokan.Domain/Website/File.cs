@@ -37,6 +37,8 @@ namespace Dokan.Domain.Website
 
         #region Relations
 
+        public virtual List<Product> Products { get; set; }
+
         #endregion
     }
 }
