@@ -15,6 +15,7 @@ namespace Dokan.Domain.Website
         public File()
         {
             CreateDateTime = DateTime.UtcNow;
+            Products = new List<Product>();
         }
 
         #endregion
