@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dokan.Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -24,10 +25,12 @@ namespace Dokan.Domain.Website
         [Key]
         public int Id { get; set; }
 
-        public DateTime CreateDateTime { get; set; }
-
         [MaxLength(50)]
         public string Title { get; set; }
+
+        public DateTime CreateDateTime { get; set; }
+
+        public FileType FileType { get; set; }
 
         #endregion
 
