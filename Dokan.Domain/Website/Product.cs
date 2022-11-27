@@ -34,8 +34,6 @@ namespace Dokan.Domain.Website
         [MaxLength(3000)]
         public string Description { get; set; }
 
-        [MaxLength(40)]
-        public string MainImage { get; set; }
         public double Price { get; set; }
         public int Stock { get; set; }
 
@@ -50,6 +48,10 @@ namespace Dokan.Domain.Website
         public virtual ProductCategory ProductCategory { get; set; }
 
         public virtual List<File> Images { get; set; }
+
+        public int MainImageId { get; set; }
+        public virtual File MainImage { get; set; }
+
         public virtual List<OrderItem> OrderItems { get; set; }
 
         #endregion

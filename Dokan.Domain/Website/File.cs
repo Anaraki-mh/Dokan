@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,7 +16,8 @@ namespace Dokan.Domain.Website
         public File()
         {
             CreateDateTime = DateTime.UtcNow;
-            Products = new List<Product>();
+            ProductImages = new List<Product>();
+            ProductMainImage = new List<Product>();
         }
 
         #endregion
@@ -38,8 +40,15 @@ namespace Dokan.Domain.Website
 
         #region Relations
 
-        public virtual List<Product> Products { get; set; }
+        public virtual List<Testimonial> Testimonials { get; set; }
 
+        [InverseProperty("Images")]
+        public virtual List<Product> ProductImages { get; set; }
+
+        [InverseProperty("MainImage")]
+        public virtual List<Product> ProductMainImage { get; set; }
+
+        public virtual List<BlogPost> BlogPosts { get; set; }
         #endregion
     }
 }

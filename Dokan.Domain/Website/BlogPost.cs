@@ -26,9 +26,6 @@ namespace Dokan.Domain.Website
         [MaxLength(75)]
         public string Title { get; set; }
 
-        [MaxLength(30)]
-        public string Image { get; set; }
-
         [MaxLength(75)]
         public string ShortDescription { get; set; }
 
@@ -44,6 +41,10 @@ namespace Dokan.Domain.Website
         public virtual BlogCategory BlogCategory { get; set; }
 
         public virtual List<BlogComment> BlogComments { get; set; }
+
+
+        public int ImageId { get; set; }
+        public virtual File Image { get; set; }
 
         #endregion
     }
