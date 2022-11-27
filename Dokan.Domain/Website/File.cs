@@ -18,6 +18,8 @@ namespace Dokan.Domain.Website
             CreateDateTime = DateTime.UtcNow;
             ProductImages = new List<Product>();
             ProductMainImage = new List<Product>();
+            BlogPosts = new List<BlogPost>();
+            Testimonials = new List<Testimonial>();
         }
 
         #endregion
