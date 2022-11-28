@@ -117,7 +117,7 @@
     <Compile Include="Website\OrderItem.cs" />
     <Compile Include="Website\Product.cs" />
     <Compile Include="Website\ProductCategory.cs" />
-    <Compile Include="Website\ProductCategoryPricingRules.cs" />
+    <Compile Include="Website\ProductCategoryPricingRule.cs" />
     <Compile Include="Website\ProductComment.cs" />
     <Compile Include="Website\Testimonial.cs" />
   </ItemGroup>
