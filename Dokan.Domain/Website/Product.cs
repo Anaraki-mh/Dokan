@@ -54,6 +54,9 @@ namespace Dokan.Domain.Website
 
         public virtual List<OrderItem> OrderItems { get; set; }
 
+        public int? PricingRuleId { get; set; }
+        public virtual ProductPricingRule PricingRule { get; set; }
+
         #endregion
     }
 }

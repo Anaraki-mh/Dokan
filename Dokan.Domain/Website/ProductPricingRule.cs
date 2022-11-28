@@ -1,5 +1,4 @@
-﻿using Dokan.Domain.BaseData;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -8,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Dokan.Domain.Website
 {
-    public class ProductCategory : BaseEntity
+    public class ProductPricingRule
     {
         #region Constructor
 
-        public ProductCategory()
+        public ProductPricingRule()
         {
             Products = new List<Product>();
         }
@@ -22,10 +21,14 @@ namespace Dokan.Domain.Website
 
         #region Properties
 
-        [MaxLength(40)]
+        [MaxLength(75)]
         public string Title { get; set; }
+        public bool IsActive { get; set; }
+        public DateTime ExpiryDateTime { get; set; }
 
-        public int Priority { get; set; }
+        public int Tax { get; set; }
+        public int Discount { get; set; }
+        public int MultiplyPriceBy { get; set; }
 
         #endregion
 
@@ -33,12 +36,6 @@ namespace Dokan.Domain.Website
         #region Relations
 
         public virtual List<Product> Products { get; set; }
-
-        public int? ParentId { get; set; }
-        public virtual ProductCategory Parent { get; set; }
-
-        public int? PricingRuleId { get; set; }
-        public virtual ProductCategoryPricingRule PricingRule { get; set; }
 
         #endregion
     }
