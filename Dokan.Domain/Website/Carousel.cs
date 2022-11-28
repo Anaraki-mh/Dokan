@@ -32,6 +32,25 @@ namespace Dokan.Domain.Website
         [MaxLength(40)]
         public string LinkTwo { get; set; }
 
+
+        [MaxLength(8)]
+        public string TitleColor { get; set; }
+
+        [MaxLength(8)]
+        public string DescriptionColor { get; set; }
+
+        [MaxLength(8)]
+        public string ButtonOneBgColor { get; set; }
+
+        [MaxLength(8)]
+        public string ButtonOneFgColor { get; set; }
+
+        [MaxLength(8)]
+        public string ButtonTwoBgColor { get; set; }
+
+        [MaxLength(8)]
+        public string ButtonTwoFgColor { get; set; }
+
         #endregion
 
 
