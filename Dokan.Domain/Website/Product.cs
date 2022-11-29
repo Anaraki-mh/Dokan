@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,6 +29,8 @@ namespace Dokan.Domain.Website
         [MaxLength(40)]
         public string Title { get; set; }
 
+        public int MainImageId { get; set; }
+
         [MaxLength(40)]
         public string ShortDescription { get; set; }
 
@@ -48,9 +51,6 @@ namespace Dokan.Domain.Website
         public virtual ProductCategory ProductCategory { get; set; }
 
         public virtual List<File> Images { get; set; }
-
-        public int MainImageId { get; set; }
-        public virtual File MainImage { get; set; }
 
         public virtual List<OrderItem> OrderItems { get; set; }
 

@@ -16,8 +16,7 @@ namespace Dokan.Domain.Website
         public File()
         {
             CreateDateTime = DateTime.UtcNow;
-            ProductImages = new List<Product>();
-            ProductMainImage = new List<Product>();
+            Products = new List<Product>();
             BlogPosts = new List<BlogPost>();
             Testimonials = new List<Testimonial>();
         }
@@ -44,11 +43,7 @@ namespace Dokan.Domain.Website
 
         public virtual List<Testimonial> Testimonials { get; set; }
 
-        [InverseProperty("Images")]
-        public virtual List<Product> ProductImages { get; set; }
-
-        [InverseProperty("MainImage")]
-        public virtual List<Product> ProductMainImage { get; set; }
+        public virtual List<Product> Products { get; set; }
 
         public virtual List<BlogPost> BlogPosts { get; set; }
         #endregion
