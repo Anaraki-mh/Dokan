@@ -20,6 +20,7 @@ namespace Dokan.Domain.UsersAndRoles
             ProductComments = new List<ProductComment>();
             BlogComments = new List<BlogComment>();
             Orders = new List<Order>();
+            UsedCoupons = new List<Coupon>();
         }
 
         #endregion
@@ -43,6 +44,7 @@ namespace Dokan.Domain.UsersAndRoles
         public virtual List<ProductComment> ProductComments { get; set; }
         public virtual List<BlogComment> BlogComments { get; set; }
         public virtual List<Order> Orders { get; set; }
+        public virtual List<Coupon> UsedCoupons { get; set; }
 
         #endregion
     }

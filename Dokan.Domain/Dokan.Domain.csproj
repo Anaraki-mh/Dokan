@@ -110,6 +110,7 @@
     <Compile Include="Website\BlogComment.cs" />
     <Compile Include="Website\BlogPost.cs" />
     <Compile Include="Website\Carousel.cs" />
+    <Compile Include="Website\Coupon.cs" />
     <Compile Include="Website\File.cs" />
     <Compile Include="Website\KeyValueContent.cs" />
     <Compile Include="Website\Menu.cs" />
@@ -119,6 +120,7 @@
     <Compile Include="Website\ProductCategory.cs" />
     <Compile Include="Website\ProductCategoryPricingRule.cs" />
     <Compile Include="Website\ProductComment.cs" />
+    <Compile Include="Website\ProductPricingRule.cs" />
     <Compile Include="Website\Testimonial.cs" />
   </ItemGroup>
   <ItemGroup>
