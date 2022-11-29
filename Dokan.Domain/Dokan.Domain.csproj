@@ -103,7 +103,9 @@
     <Compile Include="BaseData\BaseEntity.cs" />
     <Compile Include="Enums\FileType.cs" />
     <Compile Include="Enums\KeyValueContentType.cs" />
+    <Compile Include="Enums\LogType.cs" />
     <Compile Include="Enums\OrderState.cs" />
+    <Compile Include="Enums\PaymentState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UsersAndRoles\User.cs" />
     <Compile Include="Website\BlogCategory.cs" />
@@ -113,6 +115,7 @@
     <Compile Include="Website\Coupon.cs" />
     <Compile Include="Website\File.cs" />
     <Compile Include="Website\KeyValueContent.cs" />
+    <Compile Include="Website\Log.cs" />
     <Compile Include="Website\Menu.cs" />
     <Compile Include="Website\Order.cs" />
     <Compile Include="Website\OrderItem.cs" />

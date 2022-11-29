@@ -15,7 +15,8 @@ namespace Dokan.Domain.Website
 
         public Order()
         {
-            OrderState = OrderState.Incomplete;
+            OrderState = OrderState.Pending;
+            PaymentState = PaymentState.Pending;
             OrderItems = new List<OrderItem>();
             CreateDateTime = DateTime.UtcNow;
         }
