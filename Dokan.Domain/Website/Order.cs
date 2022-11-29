@@ -34,6 +34,7 @@ namespace Dokan.Domain.Website
         public string TrackingCode { get; set; }
 
         public OrderState OrderState { get; set; }
+        public PaymentState PaymentState { get; set; }
 
         #endregion
 

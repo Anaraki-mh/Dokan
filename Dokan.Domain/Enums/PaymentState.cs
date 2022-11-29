@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 
 namespace Dokan.Domain.Enums
 {
-    public enum OrderState
+    public enum PaymentState
     {
-        Completed = 0,
+        Paid = 0,
         Pending = 1,
-        Placed = 2,
-        Processing = 3,
-        Canceled = -1,
+        Canceled = 2,
+        Failed = -1,
     }
 }
