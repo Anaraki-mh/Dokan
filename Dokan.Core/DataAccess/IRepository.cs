@@ -8,9 +8,9 @@ namespace Dokan.Core.DataAccess
 {
     public interface IRepository<T> where T : class
     {
-        T Create(T entity);
-        void Delete(T entity);
-        void Update(T entity);
-        List<T> List();
+        Task<T> CreateAsync(T entity);
+        Task DeleteAsync(T entity);
+        Task UpdateAsync(T entity);
+        Task<List<T>> ListAsync();
     }
 }
