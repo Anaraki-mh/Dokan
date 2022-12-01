@@ -108,6 +108,7 @@
     <Compile Include="Enums\PaymentState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UsersAndRoles\User.cs" />
+    <Compile Include="UsersAndRoles\UserInformation.cs" />
     <Compile Include="Website\BlogCategory.cs" />
     <Compile Include="Website\BlogComment.cs" />
     <Compile Include="Website\BlogPost.cs" />

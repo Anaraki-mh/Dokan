@@ -34,6 +34,33 @@ namespace Dokan.Domain.Website
         [MaxLength(50)]
         public string TrackingCode { get; set; }
 
+        [MaxLength(50)]
+        public string ProfilePicture { get; set; }
+
+        [MaxLength(50)]
+        public string FirstName { get; set; }
+
+        [MaxLength(50)]
+        public string LastName { get; set; }
+
+        [MaxLength(50)]
+        public string Country { get; set; }
+
+        [MaxLength(50)]
+        public string State { get; set; }
+
+        [MaxLength(50)]
+        public string City { get; set; }
+
+        [MaxLength(120)]
+        public string Address { get; set; }
+
+        [MaxLength(12)]
+        public string ZipCode { get; set; }
+
+        [MaxLength(15)]
+        public string PhoneNumber { get; set; }
+
         public OrderState OrderState { get; set; }
         public PaymentState PaymentState { get; set; }
 
