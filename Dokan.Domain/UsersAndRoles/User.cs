@@ -46,6 +46,9 @@ namespace Dokan.Domain.UsersAndRoles
         public virtual List<Order> Orders { get; set; }
         public virtual List<Coupon> UsedCoupons { get; set; }
 
+        public int UserInformationId { get; set; }
+        public virtual UserInformation UserInformation { get; set; }
+
         #endregion
     }
 }
