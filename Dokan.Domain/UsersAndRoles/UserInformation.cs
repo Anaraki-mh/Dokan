@@ -57,7 +57,9 @@ namespace Dokan.Domain.UsersAndRoles
 
         #region Relations
 
-        public int UserId { get; set; }
+        public string UserId { get; set; }
+
+        [Required]
         public virtual User User { get; set; }
 
         #endregion
