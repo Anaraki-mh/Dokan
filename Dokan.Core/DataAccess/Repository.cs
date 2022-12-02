@@ -45,13 +45,37 @@ namespace Dokan.Core.DataAccess
         /// <summary>
         /// Deletes the entity from the correspinding table in the database
         /// </summary>
-        /// <param name="entity">The task of the entity that gets removed from the entity</param>
+        /// <param name="entity">The entity that gets removed from the entity</param>
         public async Task DeleteAsync(T entity)
         {
-            _context.Set<T>().Remove(entity);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.Set<T>().Remove(entity);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
 
+        /// <summary>
+        /// Deletes a list of entities from a table
+        /// </summary>
+        /// <param name="entities">The list of the entities that get removed form their table</param>
+        /// <returns>The task of removing a list of entities</returns>
+        public async Task DeleteRangeAsync(List<T> entities)
+        {
+            try
+            {
+                _context.Set<T>().RemoveRange(entities);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
 
         /// <summary>
         /// Gets a list of all the entities in a table in the database

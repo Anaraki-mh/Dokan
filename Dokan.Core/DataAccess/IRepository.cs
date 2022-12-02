@@ -10,6 +10,7 @@ namespace Dokan.Core.DataAccess
     {
         Task<T> CreateAsync(T entity);
         Task DeleteAsync(T entity);
+        Task DeleteRangeAsync(List<T> entities);
         Task UpdateAsync(T entity);
         Task<List<T>> ListAsync();
     }
