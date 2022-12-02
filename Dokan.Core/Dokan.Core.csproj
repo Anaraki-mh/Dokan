@@ -89,6 +89,10 @@
     <Compile Include="Migrations\202211291806039_AddedBasicTables.designer.cs">
       <DependentUpon>202211291806039_AddedBasicTables.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202212011526058_AddedUserInformationTable.cs" />
+    <Compile Include="Migrations\202212011526058_AddedUserInformationTable.designer.cs">
+      <DependentUpon>202212011526058_AddedUserInformationTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -112,6 +116,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202211291806039_AddedBasicTables.resx">
       <DependentUpon>202211291806039_AddedBasicTables.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202212011526058_AddedUserInformationTable.resx">
+      <DependentUpon>202212011526058_AddedUserInformationTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
