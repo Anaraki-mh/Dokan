@@ -41,7 +41,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\ICouponService.cs" />
+    <Compile Include="Interfaces\IProductCategoryService.cs" />
+    <Compile Include="Interfaces\IProductCommentService.cs" />
+    <Compile Include="Interfaces\IProductService.cs" />
+    <Compile Include="Interfaces\IProductCategoryPricingRuleService.cs" />
+    <Compile Include="Interfaces\IProductPricingRuleService.cs" />
+    <Compile Include="CouponService.cs" />
+    <Compile Include="ProductPricingRuleService.cs" />
+    <Compile Include="ProductCategoryPricingRuleService.cs" />
+    <Compile Include="ProductService.cs" />
+    <Compile Include="ProductCommentService.cs" />
+    <Compile Include="ProductCategoryService.cs" />
+    <Compile Include="BlogCommentService.cs" />
+    <Compile Include="BlogCategoryService.cs" />
     <Compile Include="BlogPostService.cs" />
+    <Compile Include="Interfaces\IBlogCategoryService.cs" />
+    <Compile Include="Interfaces\IBlogCommentService.cs" />
+    <Compile Include="Interfaces\IBlogPostService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
