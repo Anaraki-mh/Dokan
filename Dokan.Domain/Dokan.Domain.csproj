@@ -101,6 +101,7 @@
   <ItemGroup>
     <Compile Include="BaseData\BaseComment.cs" />
     <Compile Include="BaseData\BaseEntity.cs" />
+    <Compile Include="Enums\DeliveryMethod.cs" />
     <Compile Include="Enums\FileType.cs" />
     <Compile Include="Enums\KeyValueContentType.cs" />
     <Compile Include="Enums\LogType.cs" />

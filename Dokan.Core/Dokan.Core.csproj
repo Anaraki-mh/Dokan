@@ -93,6 +93,10 @@
     <Compile Include="Migrations\202212011526058_AddedUserInformationTable.designer.cs">
       <DependentUpon>202212011526058_AddedUserInformationTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202212031554459_AddedShippingCostAndDeliveryMethodToOrder.cs" />
+    <Compile Include="Migrations\202212031554459_AddedShippingCostAndDeliveryMethodToOrder.designer.cs">
+      <DependentUpon>202212031554459_AddedShippingCostAndDeliveryMethodToOrder.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -119,6 +123,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202212011526058_AddedUserInformationTable.resx">
       <DependentUpon>202212011526058_AddedUserInformationTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202212031554459_AddedShippingCostAndDeliveryMethodToOrder.resx">
+      <DependentUpon>202212031554459_AddedShippingCostAndDeliveryMethodToOrder.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -61,9 +61,7 @@ namespace Dokan.Domain.Website
         [MaxLength(15)]
         public string PhoneNumber { get; set; }
 
-        public double ShippingPrice { get; set; }
-
-        public double Total { get; set; }
+        public double ShippingCost { get; set; }
 
         public DeliveryMethod DeliveryMethod { get; set; }
 
