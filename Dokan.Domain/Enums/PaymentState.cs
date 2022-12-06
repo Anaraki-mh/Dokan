@@ -11,6 +11,7 @@ namespace Dokan.Domain.Enums
         Paid = 0,
         Pending = 1,
         Canceled = 2,
+        Refunded = 3,
         Failed = -1,
     }
 }
