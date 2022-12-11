@@ -54,6 +54,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\IMessageService.cs" />
+    <Compile Include="MessageService.cs" />
     <Compile Include="Interfaces\IUserInformationService.cs" />
     <Compile Include="Interfaces\IUserService.cs" />
     <Compile Include="UserInformationService.cs" />
