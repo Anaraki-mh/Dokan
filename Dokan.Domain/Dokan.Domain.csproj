@@ -119,6 +119,7 @@
     <Compile Include="Website\KeyValueContent.cs" />
     <Compile Include="Website\Log.cs" />
     <Compile Include="Website\Menu.cs" />
+    <Compile Include="Website\Message.cs" />
     <Compile Include="Website\Order.cs" />
     <Compile Include="Website\OrderItem.cs" />
     <Compile Include="Website\Product.cs" />
