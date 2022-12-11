@@ -1,0 +1,262 @@
+﻿@*@Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")*@
+
+
+
+
+@*@Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)*@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Purple Admin</title>
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="~/Areas/Management/Assets/vendors/iconfonts/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="~/Areas/Management/Assets/vendors/css/vendor.bundle.base.css">
+    <!-- endinject -->
+    <!-- inject:css -->
+    <link rel="stylesheet" href="~/Areas/Management/Assets/css/style.css">
+    <!-- endinject -->
+    <link rel="shortcut icon" href="~/Areas/Management/Assets/images/favicon.png" />
+</head>
+<body>
+    <div class="container-scroller">
+        <!-- partial:partials/_navbar.html -->
+        <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+            <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
+                <a class="navbar-brand brand-logo" href="~/Areas/Management/Assets/index.html"><img src="~/Areas/Management/Assets/images/logo.svg" alt="logo" /></a>
+                <a class="navbar-brand brand-logo-mini" href="~/Areas/Management/Assets/index.html"><img src="~/Areas/Management/Assets/images/logo-mini.svg" alt="logo" /></a>
+            </div>
+            <div class="navbar-menu-wrapper d-flex align-items-stretch">
+                <div class="search-field d-none d-md-block">
+                    <form class="d-flex align-items-center h-100" action="#">
+                        <div class="input-group">
+                            <div class="input-group-prepend bg-transparent">
+                                <i class="input-group-text border-0 mdi mdi-magnify"></i>
+                            </div>
+                            <input type="text" class="form-control bg-transparent border-0" placeholder="Search projects">
+                        </div>
+                    </form>
+                </div>
+                <ul class="navbar-nav navbar-nav-right">
+
+                    <li class="nav-item d-none d-lg-block full-screen-link">
+                        <a class="nav-link cursor-pointer">
+                            <i class="mdi mdi-fullscreen" id="fullscreen-button"></i>
+                        </a>
+                    </li>
+
+                    <li class="nav-item nav-logout d-none d-lg-block">
+                        <a class="nav-link" href="#">
+                            <i class="mdi mdi-power"></i>
+                        </a>
+                    </li>
+
+                </ul>
+                <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
+                    <span class="mdi mdi-menu"></span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- partial -->
+        <div class="container-fluid page-body-wrapper">
+            <!-- partial:partials/_sidebar.html -->
+            <section id="top"></section>
+            <button type="button" class="btn btn-gradient-primary btn-rounded btn-icon btn-scroll-to-top" onclick="document.documentElement.scrollTop = 0;document.body.scrollTop = 0;">
+                <i class="mdi mdi-arrow-up"></i>
+            </button>
+            <nav class="sidebar sidebar-offcanvas sticky-top" id="sidebar">
+                <ul class="nav sticky-top">
+
+                    <li class="nav-item nav-profile">
+                        <a href="#" class="nav-link">
+                            <div class="nav-profile-image">
+                                <img src="~/Areas/Management/Assets/images/faces/face1.jpg" alt="profile">
+                                <span class="login-status online"></span> <!--change to offline or busy as needed-->
+                            </div>
+                            <div class="nav-profile-text d-flex flex-column">
+                                <span class="font-weight-bold mb-2">Admin</span>
+                                <span class="text-secondary text-small">Website Admin</span>
+                            </div>
+                            <i class="mdi mdi-bookmark-check text-success nav-profile-badge"></i>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="">
+                            <span class="menu-title">Dashboard</span>
+                            <i class="mdi mdi-home menu-icon"></i>
+                        </a>
+                    </li>
+
+                    @*<li class="nav-item">
+                            <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
+                                <span class="menu-title">UI Elements</span>
+                                <i class="menu-arrow"></i>
+                                <i class="mdi mdi-crosshairs-gps menu-icon"></i>
+                            </a>
+
+                            <div class="collapse" id="ui-basic">
+                                <ul class="nav flex-column sub-menu">
+                                    <li class="nav-item"> <a class="nav-link" href="~/Areas/Management/Assets/pages/ui-features/buttons.html">Buttons</a></li>
+                                    <li class="nav-item"> <a class="nav-link" href="~/Areas/Management/Assets/pages/ui-features/typography.html">Typography</a></li>
+                                </ul>
+                            </div>
+                        </li>*@
+
+                    <li class="nav-item">
+                        <div class="nav-link cursor-pointer" href="#Orders">
+                            <span class="menu-title">Orders</span>
+                            <i class="mdi mdi-file-document-box menu-icon"></i>
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
+                        <div class="nav-link cursor-pointer" data-toggle="collapse" href="#product-catalog" aria-expanded="false" aria-controls="product-catalog">
+                            <span class="menu-title">Product Catelog</span>
+                            <i class="menu-arrow"></i>
+                            <i class="mdi mdi-shopping menu-icon"></i>
+                        </div>
+
+                        <div class="collapse" id="product-catalog">
+                            <ul class="nav flex-column sub-menu">
+                                <li class="nav-item"><button class="btn btn-block btn-md btn-gradient-primary mt-1">Products</button></li>
+                                <li class="nav-item"><button class="btn btn-block btn-md btn-gradient-primary mt-1">Product Comments</button></li>
+                                <li class="nav-item"><button class="btn btn-block btn-md btn-gradient-primary mt-1">Product Category</button></li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
+                        <div class="nav-link cursor-pointer" data-toggle="collapse" href="#tax-and-discounts" aria-expanded="false" aria-controls="tax-and-discounts">
+                            <span class="menu-title">Tax and Discounts</span>
+                            <i class="menu-arrow"></i>
+                            <i class="mdi mdi-ticket-percent menu-icon"></i>
+                        </div>
+
+                        <div class="collapse" id="tax-and-discounts">
+                            <ul class="nav flex-column sub-menu">
+                                <li class="nav-item"><button class="btn btn-block btn-md btn-gradient-primary mt-1">Tax Groups</button></li>
+                                <li class="nav-item"><button class="btn btn-block btn-md btn-gradient-primary mt-1">Discount Groups</button></li>
+                                <li class="nav-item"><button class="btn btn-block btn-md btn-gradient-primary mt-1">Coupons</button></li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
+                        <div class="nav-link cursor-pointer" data-toggle="collapse" href="#blog-catalog" aria-expanded="false" aria-controls="blog-catalog">
+                            <span class="menu-title">Blog Catelog</span>
+                            <i class="menu-arrow"></i>
+                            <i class="mdi mdi-newspaper menu-icon"></i>
+                        </div>
+
+                        <div class="collapse" id="blog-catalog">
+                            <ul class="nav flex-column sub-menu">
+                                <li class="nav-item"><button class="btn btn-block btn-md btn-gradient-primary mt-1">Blog Posts</button></li>
+                                <li class="nav-item"><button class="btn btn-block btn-md btn-gradient-primary mt-1">Blog Comments</button></li>
+                                <li class="nav-item"><button class="btn btn-block btn-md btn-gradient-primary mt-1">Blog Category</button></li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
+                        <div class="nav-link cursor-pointer" data-toggle="collapse" href="#content-management" aria-expanded="false" aria-controls="content-management">
+                            <span class="menu-title">Content Management</span>
+                            <i class="menu-arrow"></i>
+                            <i class="mdi mdi-lead-pencil menu-icon"></i>
+                            @*<i class="mdi mdi-clipboard-outline menu-icon"></i>*@
+                        </div>
+
+                        <div class="collapse" id="content-management">
+                            <ul class="nav flex-column sub-menu">
+                                <li class="nav-item"><button class="btn btn-block btn-md btn-gradient-primary mt-1">Menus</button></li>
+                                <li class="nav-item"><button class="btn btn-block btn-md btn-gradient-primary mt-1">Carousel</button></li>
+                                <li class="nav-item"><button class="btn btn-block btn-md btn-gradient-primary mt-1">Testimonials</button></li>
+                                <li class="nav-item"><button class="btn btn-block btn-md btn-gradient-primary mt-1">Static Content</button></li>
+                                <li class="nav-item"><button class="btn btn-block btn-md btn-gradient-primary mt-1">Files</button></li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
+                        <div class="nav-link cursor-pointer" data-toggle="collapse" href="#users" aria-expanded="false" aria-controls="messages">
+                            <span class="menu-title">Messages</span>
+                            <i class="menu-arrow"></i>
+                            <i class="mdi mdi-message-text menu-icon"></i>
+                        </div>
+
+                        <div class="collapse" id="users">
+                            <ul class="nav flex-column sub-menu">
+                                <li class="nav-item"><button class="btn btn-block btn-md btn-gradient-primary mt-1">Contact Us</button></li>
+                                @*<li class="nav-item"><button class="btn btn-block btn-md btn-gradient-primary mt-1">Live Chat</button></li>*@
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
+                        <div class="nav-link cursor-pointer" data-toggle="collapse" href="#users" aria-expanded="false" aria-controls="users">
+                            <span class="menu-title">Users</span>
+                            <i class="menu-arrow"></i>
+                            <i class="mdi mdi-account menu-icon"></i>
+                        </div>
+
+                        <div class="collapse" id="users">
+                            <ul class="nav flex-column sub-menu">
+                                <li class="nav-item"><button class="btn btn-block btn-md btn-gradient-primary mt-1">Customers</button></li>
+                                <li class="nav-item"><button class="btn btn-block btn-md btn-gradient-primary mt-1">Online Users</button></li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
+                        <div class="nav-link cursor-pointer" href="">
+                            <span class="menu-title">System Logs and Info</span>
+                            <i class="mdi mdi-settings menu-icon"></i>
+                        </div>
+                    </li>
+
+                </ul>
+            </nav>
+            <!-- partial -->
+            <div class="main-panel">
+                <div class="content-wrapper">
+                    @RenderBody()
+                </div>
+                <!-- content-wrapper ends -->
+                <!-- partial:partials/_footer.html -->
+                <footer class="footer">
+                    <div class="d-sm-flex justify-content-center justify-content-sm-between">
+                        <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © 2017 <a href="https://www.bootstrapdash.com/" target="_blank">Bootstrap Dash</a>. All rights reserved.</span>
+                        <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Hand-crafted & made with <i class="mdi mdi-heart text-danger"></i></span>
+                    </div>
+                </footer>
+                <!-- partial -->
+            </div>
+            <!-- main-panel ends -->
+        </div>
+        <!-- page-body-wrapper ends -->
+    </div>
+    <!-- container-scroller -->
+    <!-- plugins:js -->
+    <script src="~/Areas/Management/Assets/vendors/js/vendor.bundle.base.js"></script>
+    <script src="~/Areas/Management/Assets/vendors/js/vendor.bundle.addons.js"></script>
+    <!-- endinject -->
+    <!-- Plugin js for this page-->
+    <!-- End plugin js for this page-->
+    <!-- inject:js -->
+    <script src="~/Areas/Management/Assets/js/off-canvas.js"></script>
+    <script src="~/Areas/Management/Assets/js/misc.js"></script>
+    <!-- endinject -->
+    <!-- Custom js for this page-->
+    <script src="~/Areas/Management/Assets/js/dashboard.js"></script>
+    <!-- End custom js for this page-->
+</body>
+
+</html>
