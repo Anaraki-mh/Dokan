@@ -70,6 +70,8 @@ namespace Dokan.Web.App_Start
             kernel.Bind<IUserService>().To<UserService>();
             kernel.Bind<IUserInformationService>().To<UserInformationService>();
 
+            kernel.Bind<IMessageService>().To<MessageService>();
+
             kernel.Bind<IBlogPostService>().To<BlogPostService>();
             kernel.Bind<IBlogCategoryService>().To<BlogCategoryService>();
             kernel.Bind<IBlogCommentService>().To<BlogCommentService>();
@@ -78,8 +80,8 @@ namespace Dokan.Web.App_Start
             kernel.Bind<IProductCategoryService>().To<ProductCategoryService>();
             kernel.Bind<IProductCommentService>().To<ProductCommentService>();
 
-            kernel.Bind<IProductPricingRuleService>().To<ProductPricingRuleService>();
-            kernel.Bind<IProductCategoryPricingRuleService>().To<ProductCategoryPricingRuleService>();
+            kernel.Bind<IDiscountCategoryService>().To<DiscountCategoryService>();
+            kernel.Bind<ITaxCategoryService>().To<TaxCategoryService>();
 
             kernel.Bind<ICouponService>().To<CouponService>();
 
