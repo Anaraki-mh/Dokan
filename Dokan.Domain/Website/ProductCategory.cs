@@ -37,8 +37,8 @@ namespace Dokan.Domain.Website
         public int? ParentId { get; set; }
         public virtual ProductCategory Parent { get; set; }
 
-        public int? PricingRuleId { get; set; }
-        public virtual ProductCategoryPricingRule PricingRule { get; set; }
+        public int? TaxCategoryId { get; set; }
+        public virtual TaxCategory TaxCategory { get; set; }
 
         #endregion
     }

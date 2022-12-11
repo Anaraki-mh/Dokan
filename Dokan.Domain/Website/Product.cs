@@ -54,8 +54,8 @@ namespace Dokan.Domain.Website
 
         public virtual List<OrderItem> OrderItems { get; set; }
 
-        public int? PricingRuleId { get; set; }
-        public virtual ProductPricingRule PricingRule { get; set; }
+        public int? DiscountCategoryId { get; set; }
+        public virtual DiscountCategory DiscountCategory { get; set; }
 
         #endregion
     }
