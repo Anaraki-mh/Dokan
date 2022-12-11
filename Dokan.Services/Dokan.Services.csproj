@@ -77,12 +77,12 @@
     <Compile Include="Interfaces\IProductCategoryService.cs" />
     <Compile Include="Interfaces\IProductCommentService.cs" />
     <Compile Include="Interfaces\IProductService.cs" />
-    <Compile Include="Interfaces\IProductCategoryPricingRuleService.cs" />
-    <Compile Include="Interfaces\IProductPricingRuleService.cs" />
+    <Compile Include="Interfaces\ITaxCategoryService.cs" />
+    <Compile Include="Interfaces\IDiscountCategoryService.cs" />
     <Compile Include="CouponService.cs" />
     <Compile Include="CarouselService.cs" />
-    <Compile Include="ProductPricingRuleService.cs" />
-    <Compile Include="ProductCategoryPricingRuleService.cs" />
+    <Compile Include="DiscountCategoryService.cs" />
+    <Compile Include="TaxCategoryService.cs" />
     <Compile Include="ProductService.cs" />
     <Compile Include="ProductCommentService.cs" />
     <Compile Include="ProductCategoryService.cs" />

@@ -123,9 +123,9 @@
     <Compile Include="Website\OrderItem.cs" />
     <Compile Include="Website\Product.cs" />
     <Compile Include="Website\ProductCategory.cs" />
-    <Compile Include="Website\ProductCategoryPricingRule.cs" />
+    <Compile Include="Website\TaxCategory.cs" />
     <Compile Include="Website\ProductComment.cs" />
-    <Compile Include="Website\ProductPricingRule.cs" />
+    <Compile Include="Website\DiscountCategory.cs" />
     <Compile Include="Website\Testimonial.cs" />
   </ItemGroup>
   <ItemGroup>
