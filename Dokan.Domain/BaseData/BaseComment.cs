@@ -16,5 +16,7 @@ namespace Dokan.Domain.BaseData
         public string Body { get; set; }
 
         public bool IsApproved { get; set; }
+
+        public int Rating { get; set; }
     }
 }
