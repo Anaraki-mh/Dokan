@@ -97,6 +97,10 @@
     <Compile Include="Migrations\202212031554459_AddedShippingCostAndDeliveryMethodToOrder.designer.cs">
       <DependentUpon>202212031554459_AddedShippingCostAndDeliveryMethodToOrder.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202212131911352_AddedMessagesTableAndModifiedPricingRulesTables.cs" />
+    <Compile Include="Migrations\202212131911352_AddedMessagesTableAndModifiedPricingRulesTables.designer.cs">
+      <DependentUpon>202212131911352_AddedMessagesTableAndModifiedPricingRulesTables.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -126,6 +130,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202212031554459_AddedShippingCostAndDeliveryMethodToOrder.resx">
       <DependentUpon>202212031554459_AddedShippingCostAndDeliveryMethodToOrder.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202212131911352_AddedMessagesTableAndModifiedPricingRulesTables.resx">
+      <DependentUpon>202212131911352_AddedMessagesTableAndModifiedPricingRulesTables.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

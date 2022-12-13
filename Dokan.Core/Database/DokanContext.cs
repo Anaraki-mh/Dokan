@@ -36,6 +36,8 @@ namespace Dokan.Core.Database
 
         public DbSet<UserInformation> UserInformation { get; set; }
 
+        public DbSet<Message> Messages { get; set; }
+
         public DbSet<BlogCategory> BlogCategories { get; set; }
         public DbSet<BlogComment> BlogComments { get; set; }
         public DbSet<BlogPost> BlogPosts { get; set; }
@@ -53,8 +55,8 @@ namespace Dokan.Core.Database
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductCategory> ProductCategories { get; set; }
         public DbSet<ProductComment> ProductComments { get; set; }
-        public DbSet<ProductCategoryPricingRule> ProductCategoryPricingRules { get; set; }
-        public DbSet<ProductPricingRule> ProductPricingRule { get; set; }
+        public DbSet<TaxCategory> TaxCategories { get; set; }
+        public DbSet<DiscountCategory> DiscountCategories { get; set; }
         public DbSet<Coupon> Coupons { get; set; }
 
 
