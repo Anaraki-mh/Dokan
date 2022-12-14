@@ -126,7 +126,7 @@ namespace Dokan.Services
         /// </summary>
         /// <param name="id">The id of the TaxCategory which gets its IsRemoved property updated</param>
         /// <returns>A task</returns>
-        public async Task AddBackAsync(int id)
+        public async Task RestoreAsync(int id)
         {
             var entity = await FindByIdAsync(id) ?? new TaxCategory(); ;
             entity.IsRemoved = false;

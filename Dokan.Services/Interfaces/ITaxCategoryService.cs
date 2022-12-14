@@ -6,7 +6,7 @@ namespace Dokan.Services
 {
     public interface ITaxCategoryService
     {
-        Task AddBackAsync(int id);
+        Task RestoreAsync(int id);
         Task<TaxCategory> CreateAsync(TaxCategory entity);
         Task DeleteAsync(int id);
         Task DeleteRangeAsync(List<TaxCategory> entities);

@@ -6,7 +6,7 @@ namespace Dokan.Services
 {
     public interface IProductService
     {
-        Task AddBackAsync(int id);
+        Task RestoreAsync(int id);
         Task<Product> CreateAsync(Product entity);
         Task DeleteAsync(int id);
         Task DeleteRangeAsync(List<Product> entities);

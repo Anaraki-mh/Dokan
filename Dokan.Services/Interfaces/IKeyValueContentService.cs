@@ -6,7 +6,7 @@ namespace Dokan.Services
 {
     public interface IKeyValueContentService
     {
-        Task AddBackAsync(int id);
+        Task RestoreAsync(int id);
         Task<KeyValueContent> CreateAsync(KeyValueContent entity);
         Task DeleteAsync(int id);
         Task DeleteRangeAsync(List<KeyValueContent> entities);

@@ -6,7 +6,7 @@ namespace Dokan.Services
 {
     public interface IBlogCategoryService
     {
-        Task AddBackAsync(int id);
+        Task RestoreAsync(int id);
         Task<BlogCategory> CreateAsync(BlogCategory entity);
         Task DeleteAsync(int id);
         Task DeleteRangeAsync(List<BlogCategory> entities);

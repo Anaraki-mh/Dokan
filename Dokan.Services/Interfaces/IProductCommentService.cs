@@ -6,7 +6,7 @@ namespace Dokan.Services
 {
     public interface IProductCommentService
     {
-        Task AddBackAsync(int id);
+        Task RestoreAsync(int id);
         Task ApproveAsync(int id);
         Task<ProductComment> CreateAsync(ProductComment entity);
         Task DeleteAsync(int id);

@@ -6,7 +6,7 @@ namespace Dokan.Services
 {
     public interface ITestimonialService
     {
-        Task AddBackAsync(int id);
+        Task RestoreAsync(int id);
         Task<Testimonial> CreateAsync(Testimonial entity);
         Task DeleteAsync(int id);
         Task DeleteRangeAsync(List<Testimonial> entities);

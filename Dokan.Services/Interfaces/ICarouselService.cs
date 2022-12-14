@@ -6,7 +6,7 @@ namespace Dokan.Services
 {
     public interface ICarouselService
     {
-        Task AddBackAsync(int id);
+        Task RestoreAsync(int id);
         Task<Carousel> CreateAsync(Carousel entity);
         Task DeleteAsync(int id);
         Task DeleteRangeAsync(List<Carousel> entities);

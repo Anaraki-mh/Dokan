@@ -6,7 +6,7 @@ namespace Dokan.Services
 {
     public interface IBlogCommentService
     {
-        Task AddBackAsync(int id);
+        Task RestoreAsync(int id);
         Task ApproveAsync(int id);
         Task<BlogComment> CreateAsync(BlogComment entity);
         Task DeleteAsync(int id);

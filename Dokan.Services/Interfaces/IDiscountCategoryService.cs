@@ -6,7 +6,7 @@ namespace Dokan.Services
 {
     public interface IDiscountCategoryService
     {
-        Task AddBackAsync(int id);
+        Task RestoreAsync(int id);
         Task<DiscountCategory> CreateAsync(DiscountCategory entity);
         Task DeleteAsync(int id);
         Task DeleteRangeAsync(List<DiscountCategory> entities);

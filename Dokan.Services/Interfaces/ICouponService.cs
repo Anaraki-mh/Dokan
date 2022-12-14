@@ -6,7 +6,7 @@ namespace Dokan.Services
 {
     public interface ICouponService
     {
-        Task AddBackAsync(int id);
+        Task RestoreAsync(int id);
         Task<Coupon> CreateAsync(Coupon entity);
         Task DeleteAsync(int id);
         Task DeleteRangeAsync(List<Coupon> entities);

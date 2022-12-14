@@ -6,7 +6,7 @@ namespace Dokan.Services
 {
     public interface IBlogPostService
     {
-        Task AddBackAsync(int id);
+        Task RestoreAsync(int id);
         Task<BlogPost> CreateAsync(BlogPost entity);
         Task DeleteAsync(int id);
         Task DeleteRangeAsync(List<BlogPost> entities);
