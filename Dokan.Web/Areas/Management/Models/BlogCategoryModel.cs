@@ -7,7 +7,7 @@ using System.Web.Mvc;
 using System.Web.WebPages.Html;
 using SelectListItem = System.Web.WebPages.Html.SelectListItem;
 
-namespace Dokan.Web.Models
+namespace Dokan.Web.Areas.Management.Models
 {
     public class BlogCategoryModel
     {
