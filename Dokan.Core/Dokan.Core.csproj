@@ -101,6 +101,10 @@
     <Compile Include="Migrations\202212131911352_AddedMessagesTableAndModifiedPricingRulesTables.designer.cs">
       <DependentUpon>202212131911352_AddedMessagesTableAndModifiedPricingRulesTables.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202212160124260_RemovedRelationsOfFileTable.cs" />
+    <Compile Include="Migrations\202212160124260_RemovedRelationsOfFileTable.designer.cs">
+      <DependentUpon>202212160124260_RemovedRelationsOfFileTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -133,6 +137,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202212131911352_AddedMessagesTableAndModifiedPricingRulesTables.resx">
       <DependentUpon>202212131911352_AddedMessagesTableAndModifiedPricingRulesTables.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202212160124260_RemovedRelationsOfFileTable.resx">
+      <DependentUpon>202212160124260_RemovedRelationsOfFileTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
