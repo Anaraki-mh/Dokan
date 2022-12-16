@@ -37,15 +37,5 @@ namespace Dokan.Domain.Website
         public FileType FileType { get; set; }
 
         #endregion
-
-
-        #region Relations
-
-        public virtual List<Testimonial> Testimonials { get; set; }
-
-        public virtual List<Product> Products { get; set; }
-
-        public virtual List<BlogPost> BlogPosts { get; set; }
-        #endregion
     }
 }

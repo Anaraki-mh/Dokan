@@ -40,6 +40,22 @@ namespace Dokan.Domain.Website
         public double Price { get; set; }
         public int Stock { get; set; }
 
+        [MaxLength(30)]
+        public string Image1 { get; set; }
+
+        [MaxLength(30)]
+        public string Image2 { get; set; }
+
+        [MaxLength(30)]
+        public string Image3 { get; set; }
+
+        [MaxLength(30)]
+        public string Image4 { get; set; }
+
+        [MaxLength(30)]
+        public string Image5 { get; set; }
+
+
         #endregion
 
 
@@ -49,8 +65,6 @@ namespace Dokan.Domain.Website
 
         public int ProductCategoryId { get; set; }
         public virtual ProductCategory ProductCategory { get; set; }
-
-        public virtual List<File> Images { get; set; }
 
         public virtual List<OrderItem> OrderItems { get; set; }
 

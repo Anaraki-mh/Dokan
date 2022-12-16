@@ -21,13 +21,8 @@ namespace Dokan.Domain.Website
         [MaxLength(300)]
         public string Content { get; set; }
 
-        #endregion
-
-
-        #region 
-
-        public int ImageId { get; set; }
-        public virtual File Image { get; set; }
+        [MaxLength(30)]
+        public string Image { get; set; }
 
         #endregion
     }
