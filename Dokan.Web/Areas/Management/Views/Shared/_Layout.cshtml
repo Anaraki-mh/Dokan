@@ -15,7 +15,7 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Purple Admin</title>
+    <title>Dokan - Management Dashboard</title>
     <!-- plugins:css -->
     <link rel="stylesheet" href="~/Areas/Management/Assets/vendors/iconfonts/mdi/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="~/Areas/Management/Assets/vendors/css/vendor.bundle.base.css">
@@ -34,16 +34,7 @@
                 <a class="navbar-brand brand-logo-mini" href="~/Areas/Management/Assets/index.html"><img src="~/Areas/Management/Assets/images/logo-mini.svg" alt="logo" /></a>
             </div>
             <div class="navbar-menu-wrapper d-flex align-items-stretch">
-                <div class="search-field d-none d-md-block">
-                    <form class="d-flex align-items-center h-100" action="#">
-                        <div class="input-group">
-                            <div class="input-group-prepend bg-transparent">
-                                <i class="input-group-text border-0 mdi mdi-magnify"></i>
-                            </div>
-                            <input type="text" class="form-control bg-transparent border-0" placeholder="Search projects">
-                        </div>
-                    </form>
-                </div>
+
                 <ul class="navbar-nav navbar-nav-right">
 
                     <li class="nav-item d-none d-lg-block full-screen-link">
@@ -58,6 +49,12 @@
                         </a>
                     </li>
 
+                    <li class="nav-item nav-settings d-none d-lg-block">
+                        <a class="nav-link" href="#">
+                            <i class="mdi mdi-format-line-spacing"></i>
+                        </a>
+                    </li>
+
                 </ul>
                 <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
                     <span class="mdi mdi-menu"></span>
@@ -68,10 +65,6 @@
         <!-- partial -->
         <div class="container-fluid page-body-wrapper">
             <!-- partial:partials/_sidebar.html -->
-            <section id="top"></section>
-            <button type="button" class="btn btn-gradient-primary btn-rounded btn-icon btn-scroll-to-top" onclick="document.documentElement.scrollTop = 0;document.body.scrollTop = 0;">
-                <i class="mdi mdi-arrow-up"></i>
-            </button>
             <nav class="sidebar sidebar-offcanvas sticky-top" id="sidebar">
                 <ul class="nav sticky-top">
 
@@ -89,27 +82,13 @@
                         </a>
                     </li>
 
+                    @*change the url to the home index when completed*@
                     <li class="nav-item">
                         <a class="nav-link" href="">
                             <span class="menu-title">Dashboard</span>
                             <i class="mdi mdi-home menu-icon"></i>
                         </a>
                     </li>
-
-                    @*<li class="nav-item">
-                            <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
-                                <span class="menu-title">UI Elements</span>
-                                <i class="menu-arrow"></i>
-                                <i class="mdi mdi-crosshairs-gps menu-icon"></i>
-                            </a>
-
-                            <div class="collapse" id="ui-basic">
-                                <ul class="nav flex-column sub-menu">
-                                    <li class="nav-item"> <a class="nav-link" href="~/Areas/Management/Assets/pages/ui-features/buttons.html">Buttons</a></li>
-                                    <li class="nav-item"> <a class="nav-link" href="~/Areas/Management/Assets/pages/ui-features/typography.html">Typography</a></li>
-                                </ul>
-                            </div>
-                        </li>*@
 
                     <li class="nav-item">
                         <div class="nav-link cursor-pointer" href="#Orders">
@@ -159,9 +138,9 @@
 
                         <div class="collapse" id="blog-catalog">
                             <ul class="nav flex-column sub-menu">
-                                <li class="nav-item"><button class="btn btn-block btn-md btn-gradient-primary mt-1">Blog Posts</button></li>
-                                <li class="nav-item"><button class="btn btn-block btn-md btn-gradient-primary mt-1">Blog Comments</button></li>
-                                <li class="nav-item"><button class="btn btn-block btn-md btn-gradient-primary mt-1">Blog Category</button></li>
+                                <li class="nav-item"><button onclick="" class="btn btn-block btn-md btn-gradient-primary mt-1">Blog Posts</button></li>
+                                <li class="nav-item"><button onclick="" class="btn btn-block btn-md btn-gradient-primary mt-1">Blog Comments</button></li>
+                                <li class="nav-item"><button onclick="location.href='@Url.Action("Index", "BlogCategory", new { area = "Management"})'" class="btn btn-block btn-md btn-gradient-primary mt-1">Blog Category</button></li>
                             </ul>
                         </div>
                     </li>
@@ -171,7 +150,6 @@
                             <span class="menu-title">Content Management</span>
                             <i class="menu-arrow"></i>
                             <i class="mdi mdi-lead-pencil menu-icon"></i>
-                            @*<i class="mdi mdi-clipboard-outline menu-icon"></i>*@
                         </div>
 
                         <div class="collapse" id="content-management">
@@ -186,13 +164,13 @@
                     </li>
 
                     <li class="nav-item">
-                        <div class="nav-link cursor-pointer" data-toggle="collapse" href="#users" aria-expanded="false" aria-controls="messages">
+                        <div class="nav-link cursor-pointer" data-toggle="collapse" href="#messages" aria-expanded="false" aria-controls="messages">
                             <span class="menu-title">Messages</span>
                             <i class="menu-arrow"></i>
                             <i class="mdi mdi-message-text menu-icon"></i>
                         </div>
 
-                        <div class="collapse" id="users">
+                        <div class="collapse" id="messages">
                             <ul class="nav flex-column sub-menu">
                                 <li class="nav-item"><button class="btn btn-block btn-md btn-gradient-primary mt-1">Contact Us</button></li>
                                 @*<li class="nav-item"><button class="btn btn-block btn-md btn-gradient-primary mt-1">Live Chat</button></li>*@
@@ -233,8 +211,8 @@
                 <!-- partial:partials/_footer.html -->
                 <footer class="footer">
                     <div class="d-sm-flex justify-content-center justify-content-sm-between">
-                        <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © 2017 <a href="https://www.bootstrapdash.com/" target="_blank">Bootstrap Dash</a>. All rights reserved.</span>
-                        <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Hand-crafted & made with <i class="mdi mdi-heart text-danger"></i></span>
+                        <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">© @DateTime.UtcNow.Year <a href="https://www.bootstrapdash.com/" target="_blank">Bootstrap Dash</a></span>
+                        <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Developed with <i class="mdi mdi-heart text-danger"></i> by Anaraki-mh</span>
                     </div>
                 </footer>
                 <!-- partial -->
@@ -257,6 +235,12 @@
     <!-- Custom js for this page-->
     <script src="~/Areas/Management/Assets/js/dashboard.js"></script>
     <!-- End custom js for this page-->
+    <script src="~/Scripts/bootbox.all.min.js"></script>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+
+
 </body>
 
 </html>
