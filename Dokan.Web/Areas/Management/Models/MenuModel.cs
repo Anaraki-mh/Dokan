@@ -31,7 +31,7 @@ namespace Dokan.Web.Areas.Management.Models
 
 
         [Required(ErrorMessage = "{0} can not be empty")]
-        [MaxLength(40, ErrorMessage = "{0} can not be longer than {1} characters")]
+        [MaxLength(45, ErrorMessage = "{0} can not be longer than {1} characters")]
         public string Title { get; set; }
 
         [Required(ErrorMessage = "{0} can not be empty")]
