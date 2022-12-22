@@ -90,6 +90,8 @@ namespace Dokan.Services
 
             return entityList
                 .Where(x => !x.IsRemoved)
+                .OrderBy(x => x.Priority)
+                .ThenByDescending(x => x.UpdateDateTime)
                 .ToList();
         }
 
@@ -106,6 +108,8 @@ namespace Dokan.Services
 
             return entityList
                 .Where(x => x.IsRemoved)
+                .OrderBy(x => x.Priority)
+                .ThenByDescending(x => x.UpdateDateTime)
                 .ToList();
         }
 

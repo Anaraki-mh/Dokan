@@ -88,8 +88,9 @@ namespace Dokan.Services
             if (entityList.Count < 1)
                 entityList = new List<ProductCategory>();
 
-            return entityList
-                .Where(x => !x.IsRemoved)
+            return entityList.Where(x => !x.IsRemoved)
+                .OrderBy(x => x.Priority)
+                .ThenByDescending(x => x.UpdateDateTime)
                 .ToList();
         }
 
@@ -104,8 +105,9 @@ namespace Dokan.Services
             if (entityList.Count < 1)
                 entityList = new List<ProductCategory>();
 
-            return entityList
-                .Where(x => x.IsRemoved)
+            return entityList.Where(x => x.IsRemoved)
+                .OrderBy(x => x.Priority)
+                .ThenByDescending(x => x.UpdateDateTime)
                 .ToList();
         }
 
