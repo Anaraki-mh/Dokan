@@ -4,6 +4,7 @@ using Dokan.Services;
 using Dokan.Web.Areas.Management.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Reflection;
@@ -108,7 +109,7 @@ namespace Dokan.Web.Areas.Management.Controllers
                 ModelToEntity(model, ref _entity);
                 await _blogCategoryService.CreateAsync(_entity);
 
-                await Log(LogType.ContentAdd, MethodBase.GetCurrentMethod().Name, $"{_entity.Id}_ {_entity.Title}");
+                await Log(LogType.ContentAdd, "Create", $"{_entity.Id}_ {_entity.Title}");
             }
             catch (Exception ex)
             {
@@ -155,7 +156,7 @@ namespace Dokan.Web.Areas.Management.Controllers
                 ModelToEntity(model, ref _entity);
                 await _blogCategoryService.UpdateAsync(_entity);
 
-                await Log(LogType.ContentUpdate, MethodBase.GetCurrentMethod().Name, $"{_entity.Id}_ {_entity.Title}");
+                await Log(LogType.ContentUpdate, "Update", $"{_entity.Id}_ {_entity.Title}");
             }
             catch (Exception ex)
             {
@@ -202,7 +203,7 @@ namespace Dokan.Web.Areas.Management.Controllers
             {
                 await _blogCategoryService.DeleteAsync(id);
 
-                await Log(LogType.ContentDelete, MethodBase.GetCurrentMethod().Name, $"{_entity.Id}_ {_entity.Title}");
+                await Log(LogType.ContentDelete, "Delete", $"{_entity.Id}_ {_entity.Title}");
             }
             catch (Exception ex)
             {
@@ -254,7 +255,7 @@ namespace Dokan.Web.Areas.Management.Controllers
             try
             {
                 await _blogCategoryService.DeleteRangeAsync(await _blogCategoryService.ListOfRemovedAsync());
-                await Log(LogType.ContentAdd, MethodBase.GetCurrentMethod().Name, $"Deleted all items in the trash");
+                await Log(LogType.ContentAdd, "DeleteAllTrash", $"Deleted all items in the trash");
             }
             catch (Exception ex)
             {
@@ -350,7 +351,7 @@ namespace Dokan.Web.Areas.Management.Controllers
                 LogType = logType,
                 Controller = this.GetType().Name,
                 Method = method,
-                Description = description,
+                Description = $"{logType} _ {description}",
             });
         }
 
@@ -376,7 +377,7 @@ namespace Dokan.Web.Areas.Management.Controllers
                 });
             }
         }
-
+        
         #endregion
     }
 }
