@@ -184,10 +184,16 @@
     <Compile Include="App_Start\NinjectWebCommon.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="Areas\Management\Controllers\CarouselController.cs" />
+    <Compile Include="Areas\Management\Controllers\KeyValueContentController.cs" />
+    <Compile Include="Areas\Management\Controllers\TestimonialController.cs" />
     <Compile Include="Areas\Management\Controllers\MenuController.cs" />
     <Compile Include="Areas\Management\Controllers\ProductCategoryController.cs" />
     <Compile Include="Areas\Management\Controllers\BlogCategoryController.cs" />
     <Compile Include="Areas\Management\ManagementAreaRegistration.cs" />
+    <Compile Include="Areas\Management\Models\CarouselModel.cs" />
+    <Compile Include="Areas\Management\Models\KeyValueContentModel.cs" />
+    <Compile Include="Areas\Management\Models\TestimonialModel.cs" />
     <Compile Include="Areas\Management\Models\MenuModel.cs" />
     <Compile Include="Areas\Management\Models\ProductCategoryModel.cs" />
     <Compile Include="Controllers\AccountController.cs" />
