@@ -12,7 +12,10 @@ namespace Dokan.Domain.Website
     {
         #region Properties
 
-        public bool Display { get; set; }
+        public bool IsDisplayed { get; set; }
+
+        [MaxLength(30)]
+        public string Image { get; set; }
 
         [MaxLength(75)]
         public string Title { get; set; }
@@ -53,12 +56,5 @@ namespace Dokan.Domain.Website
 
         #endregion
 
-
-        #region Relations
-
-        public int ImageId { get; set; }
-        public virtual File Image { get; set; }
-
-        #endregion
     }
 }
