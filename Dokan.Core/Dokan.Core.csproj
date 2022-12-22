@@ -105,6 +105,10 @@
     <Compile Include="Migrations\202212160124260_RemovedRelationsOfFileTable.designer.cs">
       <DependentUpon>202212160124260_RemovedRelationsOfFileTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202212220956430_AddedPriorityPropertyToMenu.cs" />
+    <Compile Include="Migrations\202212220956430_AddedPriorityPropertyToMenu.designer.cs">
+      <DependentUpon>202212220956430_AddedPriorityPropertyToMenu.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -140,6 +144,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202212160124260_RemovedRelationsOfFileTable.resx">
       <DependentUpon>202212160124260_RemovedRelationsOfFileTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202212220956430_AddedPriorityPropertyToMenu.resx">
+      <DependentUpon>202212220956430_AddedPriorityPropertyToMenu.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
