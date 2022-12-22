@@ -19,6 +19,8 @@ namespace Dokan.Domain.Website
         [MaxLength(75)]
         public string Link { get; set; }
 
+        public int Priority { get; set; }
+
         #endregion
 
 
