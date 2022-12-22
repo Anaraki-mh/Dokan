@@ -5,7 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.WebPages.Html;
-using SelectListItem = System.Web.WebPages.Html.SelectListItem;
+using SelectListItem = System.Web.Mvc.SelectListItem;
 
 namespace Dokan.Web.Areas.Management.Models
 {
