@@ -193,7 +193,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
-    <Compile Include="Models\BlogCategoryModel.cs" />
+    <Compile Include="Areas\Management\Models\BlogCategoryModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -220,6 +220,8 @@
     <Content Include="Areas\Management\Assets\vendors\iconfonts\mdi\preview.html" />
     <Content Include="Areas\Management\Assets\vendors\js\vendor.bundle.addons.js" />
     <Content Include="Areas\Management\Assets\vendors\js\vendor.bundle.base.js" />
+    <Content Include="Areas\Management\Views\BlogCategory\Index.cshtml" />
+    <Content Include="Areas\Management\Views\BlogCategory\_List.cshtml" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
@@ -228,6 +230,12 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Scripts\bootbox.all.js" />
+    <Content Include="Scripts\bootbox.all.min.js" />
+    <Content Include="Scripts\bootbox.js" />
+    <Content Include="Scripts\bootbox.locales.js" />
+    <Content Include="Scripts\bootbox.locales.min.js" />
+    <Content Include="Scripts\bootbox.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Areas\Management\Views\web.config" />
@@ -305,12 +313,19 @@
     <Content Include="Areas\Management\Assets\vendors\iconfonts\mdi\scss\_icons.scss" />
     <Content Include="Areas\Management\Assets\vendors\iconfonts\mdi\scss\_path.scss" />
     <Content Include="Areas\Management\Assets\vendors\iconfonts\mdi\scss\_variables.scss" />
+    <Content Include="Areas\Management\Views\BlogCategory\Create.cshtml" />
+    <Content Include="Areas\Management\Views\BlogCategory\Update.cshtml" />
+    <Content Include="Areas\Management\Views\BlogCategory\Trash.cshtml" />
+    <Content Include="Areas\Management\Views\BlogCategory\_TrashList.cshtml" />
+    <Content Include="Areas\Management\Views\BlogCategory\_Details.cshtml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
     <Content Include="Scripts\jquery-3.4.1.slim.js" />
     <Content Include="Scripts\jquery-3.4.1.slim.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
@@ -356,8 +371,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Areas\Management\Data\" />
-    <Folder Include="Areas\Management\Views\BlogCategory\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
