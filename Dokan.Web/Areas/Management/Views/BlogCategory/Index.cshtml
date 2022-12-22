@@ -1,0 +1,128 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Management/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="page-header">
+    <h3 class="page-title">
+        Blog Category
+    </h3>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">Blog Catalog</li>
+            <li class="breadcrumb-item active" aria-current="page">Blog Category</li>
+        </ol>
+    </nav>
+</div>
+
+<div class="d-flex justify-content-between">
+    <a href="@Url.Action("Create", "BlogCategory")" class="btn btn-gradient-success">Create new</a>
+
+    <a href="@Url.Action("Trash", "BlogCategory")" class="btn btn-gradient-warning btn-icon-text">Trash <i class="mdi mdi-delete"></i></a>
+</div>
+
+<br />
+
+<div class="form-group d-flex flex-row justify-content-center">
+    <div class="input-group col-12 col-md-4">
+        <div class="input-group-prepend">
+            <button  class="input-group-text btn btn-gradient-primary text-white" disabled>Results per page</button>
+        </div>
+        <input onchange="RefreshList($('#activePage'))" type="number" class="form-control text-center" id="numberOfResults" placeholder="e.g. 20" value="5">
+
+    </div>
+</div>
+
+@*<div class="form-group row justify-content-center">
+    <label for="numberOfResults" class="col-md-3 col-sm-12 col-form-label">Results per page</label>
+    <div class="col-md-3 col-sm-12 p-0">
+        <input onchange="RefreshList($('#activePage'))" type="number" class="form-control" id="numberOfResults" placeholder="e.g. 20" value="5">
+    </div>
+</div>*@
+
+<hr />
+
+<div id="list" class="h-auto">
+    <div class="d-flex justify-content-center mt-5">
+        <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+    </div>
+
+</div>
+
+
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script type="text/javascript" defer>
+
+    $(document).ready(function () {
+        RefreshList();
+    });
+
+    function RefreshList(page) {
+        if (page == null)
+            page = 1;
+        numberOfResults = document.getElementById("numberOfResults").value;
+        $.ajax({
+            type: "GET",
+            url: "/Management/BlogCategory/List",
+            dataType: "html",
+            data: "page=" + page + "&numberOfResults=" + numberOfResults,
+            success: function (data) {
+                document.getElementById("list").innerHTML = data;
+            }
+        });
+    }
+
+    function ConfirmDelete(id) {
+        bootbox.confirm({
+            message: '<br />Do you confirm moving this entity to trash?',
+            backdrop: true,
+            centerVertical: true,
+            buttons: {
+                confirm: {
+                    label: 'Confirm',
+                    className: 'btn-gradient-danger'
+                },
+                cancel: {
+                    label: 'Cancel',
+                    className: 'btn-light'
+                }
+            },
+            callback: function (result) {
+                if (result == true) {
+
+                    $.ajax({
+                        type: "GET",
+                        url: "/Management/BlogCategory/Remove",
+                        dataType: "application/json",
+                        data: "id=" + id,
+                        success: function (data) {
+                        }
+                    });
+                    setTimeout(function () {
+                        RefreshList($('#activePage'));
+                    }, 1000);
+                }
+            }
+        });
+    }
+
+    function Details(id) {
+        $.ajax({
+            type: "GET",
+            url: "/Management/BlogCategory/Details",
+            dataType: "html",
+            data: "id=" + id,
+            success: function (data) {
+                bootbox.alert({
+                    message: data,
+                    backdrop: true,
+                    scrollable: true,
+                    size: 'large',
+                    centerVertical: true,
+                });
+            }
+        });
+    }
+</script>

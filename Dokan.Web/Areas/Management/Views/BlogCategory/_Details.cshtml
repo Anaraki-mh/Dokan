@@ -1,0 +1,31 @@
+﻿@model Dokan.Web.Areas.Management.Models.BlogCategoryModel
+
+@{
+    ViewBag.Title = "_Details";
+}
+
+<div class="">
+    <div class="card-body">
+        <h4 class="card-title">Details</h4>
+        <p class="card-description">
+            
+        </p>
+        <form class="forms-sample">
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Title)
+                @Html.TextBoxFor(x => x.Title, new { @class = "form-control", @readonly =  true })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.Priority)
+                @Html.TextBoxFor(x => x.Priority, new { type = "number", @class = "form-control", @readonly = true })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.ParentId)
+                @Html.TextBoxFor(x => x.ParentTitle, new { @class = "form-control", @readonly = true })
+            </div>
+            @*<button type="button" onclick="location.href='/Management/BlogCategory/Update?id=@Model.Id'" class="btn btn-gradient-primary mr-2">Edit</button>
+            <button type="button" onclick="" class="btn btn-gradient-danger mr-2">Delete</button>*@
+        </form>
+    </div>
+</div>
