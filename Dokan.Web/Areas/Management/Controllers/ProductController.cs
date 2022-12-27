@@ -21,6 +21,7 @@ namespace Dokan.Web.Areas.Management.Controllers
         #region Properties and fields
 
         private IProductService _productService { get; }
+        private IProductCategoryService _productCategoryService { get; }
         private ILogService _logService { get; }
 
         private List<Product> _allEntities { get; set; }
@@ -32,10 +33,11 @@ namespace Dokan.Web.Areas.Management.Controllers
 
         #region Constructor
 
-        public ProductController(IProductService productService, ILogService logService)
+        public ProductController(IProductService productService, ILogService logService, IProductCategoryService productCategoryService)
         {
             _productService = productService;
             _logService = logService;
+            _productCategoryService = productCategoryService;
 
             _allEntities = new List<Product>();
             _model = new ProductModel();
@@ -94,7 +96,7 @@ namespace Dokan.Web.Areas.Management.Controllers
         public async Task<ActionResult> Create()
         {
             EmptyModel(ref _model);
-            PrepareDropdown(ref _model, await _productService.ListAsync());
+            PrepareDropdown(ref _model, await _productCategoryService.ListAsync());
 
             return View(_model);
         }
@@ -138,7 +140,7 @@ namespace Dokan.Web.Areas.Management.Controllers
 
             EntityToModel(_entity, ref _model);
 
-            PrepareDropdown(ref _model, await _productService.ListAsync());
+            PrepareDropdown(ref _model, await _productCategoryService.ListAsync());
 
             return View(_model);
         }
@@ -148,7 +150,7 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             if (!ModelState.IsValid)
             {
-                PrepareDropdown(ref model, await _productService.ListAsync());
+                PrepareDropdown(ref model, await _productCategoryService.ListAsync());
                 return View(model);
             }
 
@@ -399,7 +401,7 @@ namespace Dokan.Web.Areas.Management.Controllers
             });
         }
 
-        private void PrepareDropdown(ref ProductModel model, List<Product> dropdownItemsList)
+        private void PrepareDropdown(ref ProductModel model, List<ProductCategory> dropdownItemsList)
         {
             model.CategoryDropdown.Clear();
 

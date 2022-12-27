@@ -21,6 +21,7 @@ namespace Dokan.Web.Areas.Management.Controllers
         #region Properties and fields
 
         private IBlogPostService _blogPostService { get; }
+        private IBlogCategoryService _blogCategoryService { get; }
         private ILogService _logService { get; }
 
         private List<BlogPost> _allEntities { get; set; }
@@ -32,10 +33,11 @@ namespace Dokan.Web.Areas.Management.Controllers
 
         #region Constructor
 
-        public BlogPostController(IBlogPostService blogPostService, ILogService logService)
+        public BlogPostController(IBlogPostService blogPostService, ILogService logService, IBlogCategoryService blogCategoryService)
         {
             _blogPostService = blogPostService;
             _logService = logService;
+            _blogCategoryService = blogCategoryService;
 
             _allEntities = new List<BlogPost>();
             _model = new BlogPostModel();
@@ -94,7 +96,7 @@ namespace Dokan.Web.Areas.Management.Controllers
         public async Task<ActionResult> Create()
         {
             EmptyModel(ref _model);
-            PrepareDropdown(ref _model, await _blogPostService.ListAsync());
+            PrepareDropdown(ref _model, await _blogCategoryService.ListAsync());
 
             return View(_model);
         }
@@ -138,7 +140,7 @@ namespace Dokan.Web.Areas.Management.Controllers
 
             EntityToModel(_entity, ref _model);
 
-            PrepareDropdown(ref _model, await _blogPostService.ListAsync());
+            PrepareDropdown(ref _model, await _blogCategoryService.ListAsync());
 
             return View(_model);
         }
@@ -148,7 +150,7 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             if (!ModelState.IsValid)
             {
-                PrepareDropdown(ref model, await _blogPostService.ListAsync());
+                PrepareDropdown(ref model, await _blogCategoryService.ListAsync());
                 return View(model);
             }
 
@@ -369,7 +371,7 @@ namespace Dokan.Web.Areas.Management.Controllers
             });
         }
 
-        private void PrepareDropdown(ref BlogPostModel model, List<BlogPost> dropdownItemsList)
+        private void PrepareDropdown(ref BlogPostModel model, List<BlogCategory> dropdownItemsList)
         {
             model.CategoryDropdown.Clear();
 
