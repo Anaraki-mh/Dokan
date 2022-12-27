@@ -113,6 +113,10 @@
     <Compile Include="Migrations\202212221221481_RemovedTheFilePropertyOfCarouselAndAddedAStringPropertyForImage.designer.cs">
       <DependentUpon>202212221221481_RemovedTheFilePropertyOfCarouselAndAddedAStringPropertyForImage.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202212271746312_RemovedMainImageIdPropertyFromProduct.cs" />
+    <Compile Include="Migrations\202212271746312_RemovedMainImageIdPropertyFromProduct.designer.cs">
+      <DependentUpon>202212271746312_RemovedMainImageIdPropertyFromProduct.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -154,6 +158,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202212221221481_RemovedTheFilePropertyOfCarouselAndAddedAStringPropertyForImage.resx">
       <DependentUpon>202212221221481_RemovedTheFilePropertyOfCarouselAndAddedAStringPropertyForImage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202212271746312_RemovedMainImageIdPropertyFromProduct.resx">
+      <DependentUpon>202212271746312_RemovedMainImageIdPropertyFromProduct.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
