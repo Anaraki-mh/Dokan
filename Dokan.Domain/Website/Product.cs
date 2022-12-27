@@ -28,8 +28,6 @@ namespace Dokan.Domain.Website
         [MaxLength(40)]
         public string Title { get; set; }
 
-        public int MainImageId { get; set; }
-
         [MaxLength(40)]
         public string ShortDescription { get; set; }
 
