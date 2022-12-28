@@ -42,7 +42,7 @@ namespace Dokan.Services
             switch (entity.FileType)
             {
                 case Domain.Enums.FileType.Media:
-                    prefix = "MEDIA";
+                    prefix = "MED";
                     break;
                 case Domain.Enums.FileType.Document:
                     prefix = "DOC";
