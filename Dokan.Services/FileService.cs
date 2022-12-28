@@ -37,7 +37,7 @@ namespace Dokan.Services
         public async Task<File> CreateAsync(File entity)
         {
             string prefix;
-            DateTime date = new DateTime();
+            DateTime date = entity.CreateDateTime;
 
             switch (entity.FileType)
             {
