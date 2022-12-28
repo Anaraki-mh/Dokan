@@ -41,20 +41,11 @@ namespace Dokan.Services
 
             switch (entity.FileType)
             {
-                case Domain.Enums.FileType.Image:
-                    prefix = "IMG";
+                case Domain.Enums.FileType.Media:
+                    prefix = "MEDIA";
                     break;
-                case Domain.Enums.FileType.Video:
-                    prefix = "VID";
-                    break;
-                case Domain.Enums.FileType.Audio:
-                    prefix = "AUD";
-                    break;
-                case Domain.Enums.FileType.PDF:
-                    prefix = "PDF";
-                    break;
-                case Domain.Enums.FileType.TextFile:
-                    prefix = "TXT";
+                case Domain.Enums.FileType.Document:
+                    prefix = "DOC";
                     break;
                 default:
                     prefix = "FILE";

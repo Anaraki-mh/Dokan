@@ -8,11 +8,8 @@ namespace Dokan.Domain.Enums
 {
     public enum FileType
     {
-        Image,
-        Video,
-        Audio,
-        PDF,
-        TextFile,
+        Media,
+        Document,
         Other,
     }
 }
