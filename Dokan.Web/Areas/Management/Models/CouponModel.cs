@@ -16,7 +16,6 @@ namespace Dokan.Web.Areas.Management.Models
         public CouponModel()
         {
             CategoryIds = new List<int>();
-            CategoryTitles = new List<string>();
             CategoryDropdown = new List<SelectListItem>();
         }
 
