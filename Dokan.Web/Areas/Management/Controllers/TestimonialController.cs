@@ -198,7 +198,7 @@ namespace Dokan.Web.Areas.Management.Controllers
             {
                 await _testimonialService.DeleteAsync(id);
 
-                await Log(LogType.ContentDelete, "Delete", $"{_entity.Id}_ {_entity.FullName}");
+                await Log(LogType.ContentDelete, "Delete", $"{id}");
             }
             catch (Exception ex)
             {

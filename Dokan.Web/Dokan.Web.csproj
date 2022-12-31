@@ -184,6 +184,7 @@
     <Compile Include="App_Start\NinjectWebCommon.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="Areas\Management\Controllers\FileController.cs" />
     <Compile Include="Areas\Management\Controllers\TaxCategoryController.cs" />
     <Compile Include="Areas\Management\Controllers\CouponController.cs" />
     <Compile Include="Areas\Management\Controllers\ProductController.cs" />
@@ -195,6 +196,7 @@
     <Compile Include="Areas\Management\Controllers\ProductCategoryController.cs" />
     <Compile Include="Areas\Management\Controllers\BlogCategoryController.cs" />
     <Compile Include="Areas\Management\ManagementAreaRegistration.cs" />
+    <Compile Include="Areas\Management\Models\FileModel.cs" />
     <Compile Include="Areas\Management\Models\TaxCategoryModel.cs" />
     <Compile Include="Areas\Management\Models\CouponModel.cs" />
     <Compile Include="Areas\Management\Models\ProductModel.cs" />
@@ -389,6 +391,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Files\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

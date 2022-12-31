@@ -199,7 +199,7 @@ namespace Dokan.Web.Areas.Management.Controllers
             {
                 await _keyValueContentService.DeleteAsync(id);
 
-                await Log(LogType.ContentDelete, "Delete", $"{_entity.Id}_ {_entity.ContentKey}");
+                await Log(LogType.ContentDelete, "Delete", $"{id}");
             }
             catch (Exception ex)
             {
