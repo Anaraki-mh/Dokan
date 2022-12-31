@@ -22,7 +22,7 @@ namespace Dokan.Web.Areas.Management.Models
 
 
         #region Properties
-        public int index { get; set; }
+        public int Index { get; set; }
 
         public int Id { get; set; }
 
@@ -38,8 +38,12 @@ namespace Dokan.Web.Areas.Management.Models
         [MaxLength(75, ErrorMessage = "{0} can not be longer than {1} characters")]
         public string Link { get; set; }
 
+        [Display(Name = "Display")]
+        public bool IsDisplayed { get; set; }
+
         [Display(Name = "Display priority")]
         public int? Priority { get; set; }
+        
 
         [Display(Name = "Parent")]
         public int? ParentId { get; set; }

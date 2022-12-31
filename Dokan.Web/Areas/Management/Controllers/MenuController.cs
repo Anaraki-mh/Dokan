@@ -278,6 +278,7 @@ namespace Dokan.Web.Areas.Management.Controllers
 
             model.Id = entity.Id;
             model.Title = entity.Title;
+            model.IsDisplayed= entity.IsDisplayed;
             model.Link = entity.Link;
             model.Priority = entity.Priority;
             model.ParentId = entity.ParentId;
@@ -290,8 +291,9 @@ namespace Dokan.Web.Areas.Management.Controllers
             EmptyModel(ref model);
 
             model.Id = entity.Id;
-            model.index = index;
+            model.Index = index;
             model.Title = entity.Title;
+            model.IsDisplayed = entity.IsDisplayed;
             model.Link = entity.Link;
             model.Priority = entity.Priority;
             model.ParentId = entity.ParentId;
@@ -305,6 +307,7 @@ namespace Dokan.Web.Areas.Management.Controllers
 
             entity.Id = model.Id;
             entity.Title = model.Title;
+            entity.IsDisplayed = model.IsDisplayed;
             entity.Link = model.Link;
             entity.Priority = model.Priority ?? 0;
             entity.ParentId = model.ParentId;
@@ -314,6 +317,7 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             entity.Id = 0;
             entity.Title = "";
+            entity.IsDisplayed = false;
             entity.Link = "";
             entity.Priority = 0;
             entity.ParentId = 0;
@@ -322,8 +326,9 @@ namespace Dokan.Web.Areas.Management.Controllers
         private void EmptyModel(ref MenuModel model)
         {
             model.Id = 0;
-            model.index = 0;
+            model.Index = 0;
             model.Title = "";
+            model.IsDisplayed = false;
             model.Link = "";
             model.Priority = 0;
             model.ParentId = 0;

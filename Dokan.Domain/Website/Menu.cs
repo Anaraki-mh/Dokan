@@ -21,6 +21,8 @@ namespace Dokan.Domain.Website
 
         public int Priority { get; set; }
 
+        public bool IsDisplayed { get; set; }
+
         #endregion
 
 

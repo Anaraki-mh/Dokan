@@ -117,6 +117,10 @@
     <Compile Include="Migrations\202212271746312_RemovedMainImageIdPropertyFromProduct.designer.cs">
       <DependentUpon>202212271746312_RemovedMainImageIdPropertyFromProduct.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202212312321339_AddedIsDisplayedPropertyToMenuTable.cs" />
+    <Compile Include="Migrations\202212312321339_AddedIsDisplayedPropertyToMenuTable.designer.cs">
+      <DependentUpon>202212312321339_AddedIsDisplayedPropertyToMenuTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -161,6 +165,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202212271746312_RemovedMainImageIdPropertyFromProduct.resx">
       <DependentUpon>202212271746312_RemovedMainImageIdPropertyFromProduct.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202212312321339_AddedIsDisplayedPropertyToMenuTable.resx">
+      <DependentUpon>202212312321339_AddedIsDisplayedPropertyToMenuTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
