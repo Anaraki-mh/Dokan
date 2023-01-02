@@ -191,12 +191,14 @@
     <Compile Include="Areas\Management\Controllers\BlogPostController.cs" />
     <Compile Include="Areas\Management\Controllers\CarouselController.cs" />
     <Compile Include="Areas\Management\Controllers\KeyValueContentController.cs" />
+    <Compile Include="Areas\Management\Controllers\MessageController.cs" />
     <Compile Include="Areas\Management\Controllers\TestimonialController.cs" />
     <Compile Include="Areas\Management\Controllers\MenuController.cs" />
     <Compile Include="Areas\Management\Controllers\ProductCategoryController.cs" />
     <Compile Include="Areas\Management\Controllers\BlogCategoryController.cs" />
     <Compile Include="Areas\Management\ManagementAreaRegistration.cs" />
     <Compile Include="Areas\Management\Models\FileModel.cs" />
+    <Compile Include="Areas\Management\Models\BlogCommentModel.cs" />
     <Compile Include="Areas\Management\Models\TaxCategoryModel.cs" />
     <Compile Include="Areas\Management\Models\CouponModel.cs" />
     <Compile Include="Areas\Management\Models\ProductModel.cs" />
