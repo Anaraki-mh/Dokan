@@ -50,7 +50,7 @@
 
         <li class="page-item active"><button onclick="" class="page-link">@ViewBag.ActivePage</button></li>
 
-        @if (ViewBag.ActivePage != ViewBag.NumberOfPages)
+        @if (ViewBag.ActivePage < ViewBag.NumberOfPages)
         {
 
             <li class="page-item disabled"><button class="page-link">...</button></li>
