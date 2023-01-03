@@ -48,9 +48,12 @@ namespace Dokan.Web.Areas.Management.Models
 
         [Display(Name = "Price")]
         [Required(ErrorMessage = "{0} can not be empty")]
+        [Range(0, Double.PositiveInfinity, ErrorMessage = "{0} can not be less than {1}")]
         public double Price { get; set; }
 
         [Display(Name = "Stock")]
+        [Required(ErrorMessage = "{0} can not be empty")]
+        [Range(-1, int.MaxValue, ErrorMessage = "{0} can not be less than {1}")]
         public int Stock { get; set; }
 
         [Display(Name = "Image 1")]
