@@ -21,7 +21,5 @@ namespace Dokan.Domain.Website
 
         [MaxLength(75)]
         public string Description { get; set; }
-
-        public KeyValueContentType ContentType { get; set; }
     }
 }

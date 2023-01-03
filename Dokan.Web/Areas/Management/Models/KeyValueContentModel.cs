@@ -23,7 +23,7 @@ namespace Dokan.Web.Areas.Management.Models
 
 
         #region Properties
-        public int index { get; set; }
+        public int Index { get; set; }
 
         public int Id { get; set; }
 
@@ -46,10 +46,6 @@ namespace Dokan.Web.Areas.Management.Models
         [Display(Name = "Description")]
         [MaxLength(75, ErrorMessage = "{0} can not be longer than {1} characters")]
         public string Description { get; set; }
-
-        [Display(Name = "Content Type")]
-        [Required(ErrorMessage = "{0} can not be empty")]
-        public KeyValueContentType ContentType { get; set; }
 
         #endregion
     }

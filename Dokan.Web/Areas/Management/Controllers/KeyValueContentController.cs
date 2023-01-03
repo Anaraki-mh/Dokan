@@ -283,7 +283,6 @@ namespace Dokan.Web.Areas.Management.Controllers
             model.ContentKey= entity.ContentKey;
             model.ContentValue= entity.ContentValue;
             model.Description= entity.Description;
-            model.ContentType = entity.ContentType;
 
             model.UpdateDateTime = entity.UpdateDateTime;
         }
@@ -293,11 +292,10 @@ namespace Dokan.Web.Areas.Management.Controllers
             EmptyModel(ref model);
 
             model.Id = entity.Id;
-            model.index = index;
+            model.Index = index;
             model.ContentKey = entity.ContentKey;
             model.ContentValue = entity.ContentValue;
             model.Description = entity.Description;
-            model.ContentType = entity.ContentType;
 
             model.UpdateDateTime = entity.UpdateDateTime;
         }
@@ -310,7 +308,6 @@ namespace Dokan.Web.Areas.Management.Controllers
             entity.ContentKey = model.ContentKey;
             entity.ContentValue = model.ContentValue;
             entity.Description = model.Description;
-            entity.ContentType = model.ContentType;
         }
 
         private void EmptyEntity(ref KeyValueContent entity)
@@ -319,18 +316,16 @@ namespace Dokan.Web.Areas.Management.Controllers
             entity.ContentKey = "";
             entity.ContentValue = "";
             entity.Description = "";
-            entity.ContentType = KeyValueContentType.Text;
             entity.UpdateDateTime = DateTime.UtcNow;
         }
 
         private void EmptyModel(ref KeyValueContentModel model)
         {
             model.Id = 0;
-            model.index = 0;
+            model.Index = 0;
             model.ContentKey = "";
             model.ContentValue = "";
             model.Description = "";
-            model.ContentType = KeyValueContentType.Text;
             model.UpdateDateTime = DateTime.UtcNow;
         }
 
