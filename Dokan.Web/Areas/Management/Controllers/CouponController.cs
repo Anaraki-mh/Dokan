@@ -113,6 +113,10 @@ namespace Dokan.Web.Areas.Management.Controllers
             try
             {
                 ModelToEntity(model, ref _entity);
+
+                _entity.CreateDateTime = DateTime.UtcNow;
+                _entity.UpdateDateTime = DateTime.UtcNow;
+
                 await _couponService.CreateAsync(_entity);
 
                 await Log(LogType.ContentAdd, "Create", $"{_entity.Id}_ {_entity.Title}");
@@ -160,6 +164,9 @@ namespace Dokan.Web.Areas.Management.Controllers
             try
             {
                 ModelToEntity(model, ref _entity);
+
+                _entity.UpdateDateTime = DateTime.UtcNow;
+
                 await _couponService.UpdateAsync(_entity);
 
                 await Log(LogType.ContentUpdate, "Update", $"{_entity.Id}_ {_entity.Title}");

@@ -111,6 +111,9 @@ namespace Dokan.Web.Areas.Management.Controllers
             {
                 ModelToEntity(model, ref _entity);
                 model.Title = Path.GetFileName(file.FileName);
+
+                _entity.CreateDateTime = DateTime.UtcNow;
+
                 await _fileService.CreateAsync(_entity);
 
                 string path = Path.Combine(Server.MapPath("~/Files"), model.Title);
