@@ -105,7 +105,10 @@ namespace Dokan.Web.Areas.Management.Controllers
         public async Task<ActionResult> Create(BlogPostModel model)
         {
             if (!ModelState.IsValid)
+            {
+                PrepareDropdown(ref model, await _blogCategoryService.ListAsync());
                 return View(model);
+            }
 
             try
             {

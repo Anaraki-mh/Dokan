@@ -18,7 +18,7 @@ namespace Dokan.Web.Areas.Management.Controllers
     {
         #region Properties and fields
 
-        private IProductCategoryService _ProductCategoryService { get; }
+        private IProductCategoryService _productCategoryService { get; }
         private ILogService _logService { get; }
 
         private List<ProductCategory> _allEntities { get; set; }
@@ -32,7 +32,7 @@ namespace Dokan.Web.Areas.Management.Controllers
 
         public ProductCategoryController(IProductCategoryService ProductCategoryService, ILogService logService)
         {
-            _ProductCategoryService = ProductCategoryService;
+            _productCategoryService = ProductCategoryService;
             _logService = logService;
 
             _allEntities = new List<ProductCategory>();
@@ -56,7 +56,7 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             List<ProductCategoryModel> convertedEntityList = new List<ProductCategoryModel>();
 
-            _allEntities = await _ProductCategoryService.ListAsync();
+            _allEntities = await _productCategoryService.ListAsync();
 
             List<ProductCategory> filteredList = _allEntities.Skip((page - 1) * numberOfResults).Take(numberOfResults).ToList();
 
@@ -81,7 +81,7 @@ namespace Dokan.Web.Areas.Management.Controllers
         [HttpGet]
         public async Task<ActionResult> Details(int id)
         {
-            _entity = await _ProductCategoryService.FindByIdAsync(id);
+            _entity = await _productCategoryService.FindByIdAsync(id);
 
             EntityToModel(_entity, ref _model);
 
@@ -92,7 +92,7 @@ namespace Dokan.Web.Areas.Management.Controllers
         public async Task<ActionResult> Create()
         {
             EmptyModel(ref _model);
-            PrepareDropdown(ref _model, await _ProductCategoryService.ListAsync());
+            PrepareDropdown(ref _model, await _productCategoryService.ListAsync());
 
             return View(_model);
         }
@@ -101,12 +101,15 @@ namespace Dokan.Web.Areas.Management.Controllers
         public async Task<ActionResult> Create(ProductCategoryModel model)
         {
             if (!ModelState.IsValid)
+            {
+                PrepareDropdown(ref model, await _productCategoryService.ListAsync());
                 return View(model);
+            }
 
             try
             {
                 ModelToEntity(model, ref _entity);
-                await _ProductCategoryService.CreateAsync(_entity);
+                await _productCategoryService.CreateAsync(_entity);
 
                 await Log(LogType.ContentAdd, "Create", $"{_entity.Id}_ {_entity.Title}");
             }
@@ -125,7 +128,7 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             try
             {
-                _entity = await _ProductCategoryService.FindByIdAsync(id);
+                _entity = await _productCategoryService.FindByIdAsync(id);
             }
             catch (Exception ex)
             {
@@ -136,7 +139,7 @@ namespace Dokan.Web.Areas.Management.Controllers
 
             EntityToModel(_entity, ref _model);
 
-            PrepareDropdown(ref _model, await _ProductCategoryService.ListAsync());
+            PrepareDropdown(ref _model, await _productCategoryService.ListAsync());
 
             return View(_model);
         }
@@ -146,14 +149,14 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             if (!ModelState.IsValid)
             {
-                PrepareDropdown(ref model, await _ProductCategoryService.ListAsync());
+                PrepareDropdown(ref model, await _productCategoryService.ListAsync());
                 return View(model);
             }
 
             try
             {
                 ModelToEntity(model, ref _entity);
-                await _ProductCategoryService.UpdateAsync(_entity);
+                await _productCategoryService.UpdateAsync(_entity);
 
                 await Log(LogType.ContentUpdate, "Update", $"{_entity.Id}_ {_entity.Title}");
             }
@@ -177,7 +180,7 @@ namespace Dokan.Web.Areas.Management.Controllers
         public async Task<ActionResult> TrashList()
         {
             List<ProductCategoryModel> convertedEntityList = new List<ProductCategoryModel>();
-            List<ProductCategory> removedEntityList = await _ProductCategoryService.ListOfRemovedAsync();
+            List<ProductCategory> removedEntityList = await _productCategoryService.ListOfRemovedAsync();
 
             int index = 1;
 
@@ -200,7 +203,7 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             try
             {
-                await _ProductCategoryService.DeleteAsync(id);
+                await _productCategoryService.DeleteAsync(id);
 
                 await Log(LogType.ContentDelete, "Delete", $"{id}");
             }
@@ -219,7 +222,7 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             try
             {
-                await _ProductCategoryService.RemoveAsync(id);
+                await _productCategoryService.RemoveAsync(id);
             }
             catch (Exception ex)
             {
@@ -236,7 +239,7 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             try
             {
-                await _ProductCategoryService.RestoreAsync(id);
+                await _productCategoryService.RestoreAsync(id);
             }
             catch (Exception ex)
             {
@@ -253,7 +256,7 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             try
             {
-                await _ProductCategoryService.DeleteRangeAsync(await _ProductCategoryService.ListOfRemovedAsync());
+                await _productCategoryService.DeleteRangeAsync(await _productCategoryService.ListOfRemovedAsync());
                 await Log(LogType.ContentAdd, "DeleteAllTrash", $"Deleted all items in the trash");
             }
             catch (Exception ex)

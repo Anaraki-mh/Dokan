@@ -102,7 +102,10 @@ namespace Dokan.Web.Areas.Management.Controllers
         public async Task<ActionResult> Create(MenuModel model)
         {
             if (!ModelState.IsValid)
+            {
+                PrepareDropdown(ref model, await _menuService.ListAsync());
                 return View(model);
+            }
 
             try
             {

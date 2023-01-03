@@ -105,7 +105,10 @@ namespace Dokan.Web.Areas.Management.Controllers
         public async Task<ActionResult> Create(TaxCategoryModel model)
         {
             if (!ModelState.IsValid)
+            {
+                PrepareDropdown(ref model, await _productCategoryService.ListAsync());
                 return View(model);
+            }
 
             try
             {

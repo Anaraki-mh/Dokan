@@ -100,7 +100,10 @@ namespace Dokan.Web.Areas.Management.Controllers
         public async Task<ActionResult> Create(DiscountCategoryModel model)
         {
             if (!ModelState.IsValid)
+            {
+                PrepareDropdown(ref model, await _productService.ListAsync());
                 return View(model);
+            }
 
             try
             {
