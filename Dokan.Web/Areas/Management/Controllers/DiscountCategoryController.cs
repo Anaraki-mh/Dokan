@@ -381,9 +381,6 @@ namespace Dokan.Web.Areas.Management.Controllers
                 Value = "",
             });
 
-            int  modelId = model.Id;
-            dropdownItemsList.Remove(dropdownItemsList.FirstOrDefault(x => x.Id == modelId));
-
             foreach (var entity in dropdownItemsList)
             {
                 model.ProductDropdown.Add(new SelectListItem()
