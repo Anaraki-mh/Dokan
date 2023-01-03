@@ -299,7 +299,7 @@ namespace Dokan.Web.Areas.Management.Controllers
             EmptyModel(ref model);
 
             model.Id = entity.Id;
-            model.index = index;
+            model.Index = index;
             model.Title = entity.Title;
             model.Priority = entity.Priority;
             model.ParentId = entity.ParentId;
@@ -328,7 +328,7 @@ namespace Dokan.Web.Areas.Management.Controllers
         private void EmptyModel(ref ProductCategoryModel model)
         {
             model.Id = 0;
-            model.index = 0;
+            model.Index = 0;
             model.Title = "";
             model.Priority = 0;
             model.ParentId = 0;

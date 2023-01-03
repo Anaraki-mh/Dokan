@@ -292,7 +292,7 @@ namespace Dokan.Web.Areas.Management.Controllers
             EmptyModel(ref model);
 
             model.Id = entity.Id;
-            model.index = index;
+            model.Index = index;
             model.FullName = entity.FullName;
             model.Position = entity.Position;
             model.Content = entity.Content;
@@ -325,7 +325,7 @@ namespace Dokan.Web.Areas.Management.Controllers
         private void EmptyModel(ref TestimonialModel model)
         {
             model.Id = 0;
-            model.index = 0;
+            model.Index = 0;
             model.FullName = "";
             model.Position = "";
             model.Content = "";

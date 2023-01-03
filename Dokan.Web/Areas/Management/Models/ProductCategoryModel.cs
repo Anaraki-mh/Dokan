@@ -36,7 +36,7 @@ namespace Dokan.Web.Areas.Management.Models
         [Display(Name = "Create/Update date")]
         public DateTime UpdateDateTime { get; set; }
 
-        public int index { get; set; }
+        public int Index { get; set; }
 
         [Required(ErrorMessage = "{0} can not be empty")]
         [MaxLength(40, ErrorMessage = "{0} can not be longer than {1} characters")]

@@ -20,9 +20,9 @@ namespace Dokan.Web.Areas.Management.Models
 
         #endregion
 
-
+        
         #region Properties
-        public int index { get; set; }
+        public int Index { get; set; }
 
         public int Id { get; set; }
 
