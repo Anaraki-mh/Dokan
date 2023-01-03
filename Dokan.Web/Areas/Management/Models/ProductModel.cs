@@ -74,7 +74,7 @@ namespace Dokan.Web.Areas.Management.Models
         public string Image5 { get; set; }
 
 
-        [Display(Name = "Category Category")]
+        [Display(Name = "Category")]
         [Required(ErrorMessage = "{0} can not be empty")]
         public int CategoryId { get; set; }
 

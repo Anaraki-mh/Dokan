@@ -48,7 +48,7 @@ namespace Dokan.Web.Areas.Management.Models
         [MaxLength(30, ErrorMessage = "{0} can not be longer than {1} characters")]
         public string Image { get; set; }
 
-        [Display(Name = "Category Category")]
+        [Display(Name = "Category")]
         [Required(ErrorMessage = "{0} can not be empty")]
         public int CategoryId { get; set; }
 
