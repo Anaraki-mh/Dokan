@@ -28,7 +28,7 @@ namespace Dokan.Web.Areas.Management.Models
 
         #region Properties
 
-        public int index { get; set; }
+        public int Index { get; set; }
 
         public int Id { get; set; }
 
@@ -38,6 +38,9 @@ namespace Dokan.Web.Areas.Management.Models
 
         [MaxLength(75, ErrorMessage = "{0} can not be longer than {1} characters")]
         public string Title { get; set; }
+
+        [Display(Name = "Display Priority")]
+        public int Priority { get; set; }
 
         [Required(ErrorMessage = "{0} can not be empty")]
         [MaxLength(30, ErrorMessage = "{0} can not be longer than {1} characters")]

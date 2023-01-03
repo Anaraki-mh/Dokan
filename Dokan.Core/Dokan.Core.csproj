@@ -121,6 +121,10 @@
     <Compile Include="Migrations\202212312321339_AddedIsDisplayedPropertyToMenuTable.designer.cs">
       <DependentUpon>202212312321339_AddedIsDisplayedPropertyToMenuTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202301031943591_AddedPriotityPropertyToCarousel.cs" />
+    <Compile Include="Migrations\202301031943591_AddedPriotityPropertyToCarousel.designer.cs">
+      <DependentUpon>202301031943591_AddedPriotityPropertyToCarousel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -168,6 +172,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202212312321339_AddedIsDisplayedPropertyToMenuTable.resx">
       <DependentUpon>202212312321339_AddedIsDisplayedPropertyToMenuTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202301031943591_AddedPriotityPropertyToCarousel.resx">
+      <DependentUpon>202301031943591_AddedPriotityPropertyToCarousel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

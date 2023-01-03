@@ -14,6 +14,8 @@ namespace Dokan.Domain.Website
 
         public bool IsDisplayed { get; set; }
 
+        public int Priority { get; set; }
+
         [MaxLength(30)]
         public string Image { get; set; }
 

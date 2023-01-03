@@ -281,6 +281,7 @@ namespace Dokan.Web.Areas.Management.Controllers
             model.Id = entity.Id;
             model.Title = entity.Title;
             model.Description = entity.Description;
+            model.Priority= entity.Priority;
             model.IsDisplayed = entity.IsDisplayed;
             model.Image= entity.Image;
             model.ButtonOne= entity.ButtonOne;
@@ -303,10 +304,11 @@ namespace Dokan.Web.Areas.Management.Controllers
             EmptyModel(ref model);
 
             model.Id = entity.Id;
-            model.index = index;
+            model.Index = index;
             model.Title = entity.Title;
             model.Description = entity.Description;
             model.IsDisplayed = entity.IsDisplayed;
+            model.Priority = entity.Priority;
             model.Image = entity.Image;
             model.ButtonOne = entity.ButtonOne;
             model.ButtonTwo = entity.ButtonTwo;
@@ -330,6 +332,7 @@ namespace Dokan.Web.Areas.Management.Controllers
             entity.Title = model.Title;
             entity.Description = model.Description;
             entity.IsDisplayed = model.IsDisplayed;
+            entity.Priority= model.Priority;
             entity.Image = model.Image;
             entity.ButtonOne = model.ButtonOne;
             entity.ButtonTwo = model.ButtonTwo;
@@ -352,6 +355,7 @@ namespace Dokan.Web.Areas.Management.Controllers
             entity.Title = "";
             entity.Description = "";
             entity.IsDisplayed = false;
+            entity.Priority = 0;
             entity.Image = "";
             entity.ButtonOne = "";
             entity.ButtonTwo = "";
@@ -370,10 +374,11 @@ namespace Dokan.Web.Areas.Management.Controllers
         private void EmptyModel(ref CarouselModel model)
         {
             model.Id = 0;
-            model.index = 0;
+            model.Index = 0;
             model.Title = "";
             model.Description = "";
             model.IsDisplayed = false;
+            model.Priority = 0;
             model.Image = "";
             model.ButtonOne = "";
             model.ButtonTwo = "";
