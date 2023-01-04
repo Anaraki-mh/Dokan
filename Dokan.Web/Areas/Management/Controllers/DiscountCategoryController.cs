@@ -385,12 +385,6 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             model.ProductDropdown.Clear();
 
-            model.ProductDropdown.Add(new SelectListItem()
-            {
-                Text = "Select an item...",
-                Value = "",
-            });
-
             foreach (var entity in dropdownItemsList)
             {
                 model.ProductDropdown.Add(new SelectListItem()
