@@ -32,7 +32,6 @@ namespace Dokan.Web.Areas.Management.Models
         public int Index { get; set; }
 
         [Display(Name = "Title")]
-        [Required(ErrorMessage = "{0} can not be empty")]
         [MaxLength(75, ErrorMessage = "{0} can not be longer than {1} characters")]
         public string Title { get; set; }
 
