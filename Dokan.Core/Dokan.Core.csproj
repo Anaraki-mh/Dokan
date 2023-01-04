@@ -129,6 +129,10 @@
     <Compile Include="Migrations\202301032210063_RemovedContentTypePropertyFromKeyValueContent.designer.cs">
       <DependentUpon>202301032210063_RemovedContentTypePropertyFromKeyValueContent.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202301042213371_FixedCouponProductCategoryRelation.cs" />
+    <Compile Include="Migrations\202301042213371_FixedCouponProductCategoryRelation.designer.cs">
+      <DependentUpon>202301042213371_FixedCouponProductCategoryRelation.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -182,6 +186,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202301032210063_RemovedContentTypePropertyFromKeyValueContent.resx">
       <DependentUpon>202301032210063_RemovedContentTypePropertyFromKeyValueContent.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202301042213371_FixedCouponProductCategoryRelation.resx">
+      <DependentUpon>202301042213371_FixedCouponProductCategoryRelation.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

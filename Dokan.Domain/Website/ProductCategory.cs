@@ -40,6 +40,9 @@ namespace Dokan.Domain.Website
         public int? TaxCategoryId { get; set; }
         public virtual TaxCategory TaxCategory { get; set; }
 
+        public virtual List<Coupon> Coupon { get; set; }
+
+
         #endregion
     }
 }
