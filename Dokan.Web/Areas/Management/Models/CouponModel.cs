@@ -52,6 +52,8 @@ namespace Dokan.Web.Areas.Management.Models
         [Range(0,100, ErrorMessage = "{0} can not be less than {1} and greater {2}")]
         public int Discount { get; set; }
 
+        [Required(ErrorMessage = "{0} can not be empty")]
+        [Range(0, Double.PositiveInfinity, ErrorMessage = "{0} can not be less than {1}")]
         [Display(Name = "Usage Limit")]
         public int UsageLimit { get; set; }
 
