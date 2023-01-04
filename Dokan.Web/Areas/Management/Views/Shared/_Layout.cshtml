@@ -1,11 +1,9 @@
-﻿@*@Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")*@
+﻿@*    @Scripts.Render("~/bundles/modernizr")*@
 
 
 
 
-@*@Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
+@*@Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)*@
 
 <!DOCTYPE html>
@@ -24,6 +22,7 @@
     <link rel="stylesheet" href="~/Areas/Management/Assets/css/style.css">
     <!-- endinject -->
     <link rel="shortcut icon" href="~/Areas/Management/Assets/images/favicon.png" />
+    <link href="~/Content/chosen.css" rel="stylesheet" />
 </head>
 <body>
     <div class="container-scroller">
@@ -202,7 +201,10 @@
 
                 </ul>
             </nav>
+            <script src="~/Scripts/jquery-3.4.1.min.js"></script>
             <script src="~/Areas/Management/Assets/js/ckeditor.js"></script>
+            <script src="~/Scripts/chosen.jquery.min.js"></script>
+
             <!-- partial -->
             <div class="main-panel">
                 <div class="content-wrapper">
