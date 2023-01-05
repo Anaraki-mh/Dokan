@@ -292,6 +292,8 @@ namespace Dokan.Web.Areas.Management.Controllers
             model.Id = entity.Id;
             model.Title = entity.Title;
             model.Tax = entity.Tax;
+            model.CategoryIds = entity.ProductCategories?.Select(c => c.Id).ToList();
+            model.CategoryTitles = String.Join(", ", entity.ProductCategories?.Select(c => c.Title).ToList());
             model.UpdateDateTime = entity.UpdateDateTime;
         }
 
@@ -304,6 +306,7 @@ namespace Dokan.Web.Areas.Management.Controllers
             model.Title = entity.Title;
             model.Tax = entity.Tax;
             model.CategoryIds = entity.ProductCategories?.Select(c => c.Id).ToList();
+            model.CategoryTitles = String.Join(", ", entity.ProductCategories?.Select(c => c.Title).ToList());
             model.UpdateDateTime = entity.UpdateDateTime;
         }
 
@@ -339,6 +342,7 @@ namespace Dokan.Web.Areas.Management.Controllers
             model.Index = 0;
             model.Title = "";
             model.Tax = 0;
+            model.CategoryTitles = "";
             model.CategoryIds.Clear();
             model.CategoryDropdown.Clear();
             model.UpdateDateTime = DateTime.UtcNow;

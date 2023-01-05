@@ -110,12 +110,22 @@ namespace Dokan.Web.Areas.Management.Controllers
                 return View(model);
             }
 
+            var coupon = await _couponService.SearchAsync(model.Code);
+            if (coupon.Code != null)
+            {
+                ViewBag.CodeError = "This code already exists";
+                return View(model);
+            }
+
             try
             {
                 ModelToEntity(model, ref _entity);
 
                 _entity.CreateDateTime = DateTime.UtcNow;
                 _entity.UpdateDateTime = DateTime.UtcNow;
+
+                if(_entity.ExpiryDateTime < _entity.UpdateDateTime)
+                    _entity.IsActive= false;
 
                 await _couponService.CreateAsync(_entity);
 
@@ -167,6 +177,9 @@ namespace Dokan.Web.Areas.Management.Controllers
 
                 _entity.UpdateDateTime = DateTime.UtcNow;
 
+                if (_entity.ExpiryDateTime < _entity.UpdateDateTime)
+                    _entity.IsActive = false;
+
                 await _couponService.UpdateAsync(_entity);
 
                 await Log(LogType.ContentUpdate, "Update", $"{_entity.Id}_ {_entity.Title}");
@@ -206,7 +219,7 @@ namespace Dokan.Web.Areas.Management.Controllers
             }
 
 
-            return PartialView("_TrashList" ,convertedEntityList);
+            return PartialView("_TrashList", convertedEntityList);
         }
 
         [HttpGet]
@@ -297,6 +310,7 @@ namespace Dokan.Web.Areas.Management.Controllers
             model.UsageLimit = entity.UsageLimit;
             model.UsageCount = entity.UsageCount;
             model.CategoryIds = entity.ProductCategories?.Select(c => c.Id).ToList();
+            model.CategoryTitles = String.Join(", ", entity.ProductCategories?.Select(c => c.Title).ToList());
             model.ExpiryDateTime = entity.ExpiryDateTime;
             model.UpdateDateTime = entity.UpdateDateTime;
         }
@@ -314,6 +328,8 @@ namespace Dokan.Web.Areas.Management.Controllers
             model.UsageLimit = entity.UsageLimit;
             model.UsageCount = entity.UsageCount;
             model.CategoryIds = entity.ProductCategories?.Select(c => c.Id).ToList();
+            model.CategoryTitles = String.Join(", ", entity.ProductCategories?.Select(c => c.Title).ToList());
+
             model.ExpiryDateTime = entity.ExpiryDateTime;
             model.UpdateDateTime = entity.UpdateDateTime;
         }
@@ -333,10 +349,10 @@ namespace Dokan.Web.Areas.Management.Controllers
             entity.UpdateDateTime = model.UpdateDateTime;
             foreach (var id in model.CategoryIds)
             {
-                var category = _productCategoryService.FindByIdAsync(id);
-                category.Wait();
+                ProductCategory category = Task.Run(() => _productCategoryService.FindByIdAsync(id)).Result;
+                //category.Wait();
 
-                entity.ProductCategories.Add(category.Result);
+                entity.ProductCategories.Add(category);
             }
         }
 
@@ -364,6 +380,7 @@ namespace Dokan.Web.Areas.Management.Controllers
             model.Discount = 0;
             model.UsageLimit = 0;
             model.UsageCount = 0;
+            model.CategoryTitles = "";
             model.CategoryIds.Clear();
             model.CategoryDropdown.Clear();
             model.ExpiryDateTime = DateTime.UtcNow;
@@ -412,7 +429,7 @@ namespace Dokan.Web.Areas.Management.Controllers
                 });
             }
         }
-        
+
         #endregion
     }
 }

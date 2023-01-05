@@ -44,6 +44,7 @@ namespace Dokan.Web.Areas.Management.Models
         [Display(Name = "Category")]
         [Required(ErrorMessage = "{0} can not be empty")]
         public List<int> CategoryIds { get; set; }
+        public string CategoryTitles { get; set; }
 
         public List<SelectListItem> CategoryDropdown { get; set; }
 
