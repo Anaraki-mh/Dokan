@@ -15,6 +15,7 @@ namespace Dokan.Domain.Website
         public ProductCategory()
         {
             Products = new List<Product>();
+            Coupon = new List<Coupon>();
         }
 
         #endregion
