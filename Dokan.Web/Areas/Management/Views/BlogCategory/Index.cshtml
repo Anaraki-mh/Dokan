@@ -17,30 +17,19 @@
     </nav>
 </div>
 
-<div class="d-flex justify-content-between">
-    <a href="@Url.Action("Create", "BlogCategory")" class="btn btn-gradient-success">Create new</a>
-
-    <a href="@Url.Action("Trash", "BlogCategory")" class="btn btn-gradient-warning btn-icon-text">Trash <i class="mdi mdi-delete"></i></a>
-</div>
-
-<br />
-
-<div class="form-group d-flex flex-row justify-content-center">
-    <div class="input-group col-12 col-md-4">
+<div class="d-flex justify-content-lg-between justify-content-center row">
+    <a href="@Url.Action("Create", "BlogCategory")" class="btn btn-gradient-success col-6 col-md-2 m-2">Create new</a>
+    <div class="input-group col-10 col-md-4">
         <div class="input-group-prepend">
-            <button  class="input-group-text btn btn-gradient-primary text-white" disabled>Results per page</button>
+            <button class="input-group-text btn btn-gradient-primary text-white" disabled>Results per page</button>
         </div>
         <input onchange="RefreshList($('#activePage'))" type="number" class="form-control text-center" id="numberOfResults" placeholder="e.g. 20" value="5">
 
     </div>
+    <a href="@Url.Action("Trash", "BlogCategory")" class="btn btn-gradient-warning btn-icon-text col-6 col-md-2 m-2">Trash <i class="mdi mdi-delete"></i></a>
 </div>
 
-@*<div class="form-group row justify-content-center">
-    <label for="numberOfResults" class="col-md-3 col-sm-12 col-form-label">Results per page</label>
-    <div class="col-md-3 col-sm-12 p-0">
-        <input onchange="RefreshList($('#activePage'))" type="number" class="form-control" id="numberOfResults" placeholder="e.g. 20" value="5">
-    </div>
-</div>*@
+<br />
 
 <hr />
 
