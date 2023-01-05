@@ -47,7 +47,7 @@ namespace Dokan.Web.Areas.Management.Models
         [Display(Name = "Active")]
         public bool IsActive { get; set; }
 
-        [Display(Name = "Category")]
+        [Display(Name = "Products")]
         [Required(ErrorMessage = "{0} can not be empty")]
         public List<int> ProductIds { get; set; }
 

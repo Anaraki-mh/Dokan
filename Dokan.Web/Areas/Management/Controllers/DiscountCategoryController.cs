@@ -17,6 +17,7 @@ namespace Dokan.Web.Areas.Management.Controllers
 
         private IDiscountCategoryService _discountCategoryService { get; }
         private IProductService _productService { get; }
+        private IProductCategoryService _productCategoryService { get; }
         private ILogService _logService { get; }
 
         private List<DiscountCategory> _allEntities { get; set; }
@@ -28,11 +29,12 @@ namespace Dokan.Web.Areas.Management.Controllers
 
         #region Constructor
 
-        public DiscountCategoryController(IDiscountCategoryService discountCategoryService, ILogService logService, IProductService productService)
+        public DiscountCategoryController(IDiscountCategoryService discountCategoryService, ILogService logService, IProductService productService, IProductCategoryService productCategoryService)
         {
             _discountCategoryService = discountCategoryService;
             _logService = logService;
             _productService = productService;
+            _productCategoryService = productCategoryService;
 
             _allEntities = new List<DiscountCategory>();
             _model = new DiscountCategoryModel();
@@ -201,7 +203,7 @@ namespace Dokan.Web.Areas.Management.Controllers
             }
 
 
-            return PartialView("_TrashList" ,convertedEntityList);
+            return PartialView("_TrashList", convertedEntityList);
         }
 
         [HttpGet]
@@ -391,10 +393,14 @@ namespace Dokan.Web.Areas.Management.Controllers
                 {
                     Text = entity.Title,
                     Value = entity.Id.ToString(),
+                    Group = new SelectListGroup()
+                    {
+                        Name = entity.ProductCategory.Title
+                    }
                 });
             }
         }
-        
+
         #endregion
     }
 }
