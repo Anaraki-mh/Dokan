@@ -92,10 +92,13 @@ namespace Dokan.Web.Areas.Management.Controllers
         }
 
         [HttpGet]
-        public ActionResult Reply(int id)
+        public async Task<ActionResult> Reply(int id)
         {
+            _entity = await _blogCommentService.FindByIdAsync(id);
+
             EmptyModel(ref _model);
-            _model.BlogPostId = id;
+            _model.BlogPostId = _entity.Id;
+            _model.ParentId = _entity.Id;
             _model.UserId = User.Identity.GetUserId();
 
 
@@ -108,9 +111,14 @@ namespace Dokan.Web.Areas.Management.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
+            if(model.ParentId == 0)
+                return View("Error400");
+
             try
             {
                 ModelToEntity(model, ref _entity);
+
+                _entity.IsApproved = true;
 
                 await _blogCommentService.CreateAsync(_entity);
 

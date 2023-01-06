@@ -93,8 +93,6 @@ namespace Dokan.Web.Areas.Management.Controllers
         [HttpGet]
         public async Task<ActionResult> Reply(int id)
         {
-            // display the contact us message thats gonna be replied to and a form for the replay 
-            // with autofilled subject and no email and name because theyre not needed
             try
             {
                 _entity = await _messageService.FindByIdAsync(id);
@@ -106,7 +104,11 @@ namespace Dokan.Web.Areas.Management.Controllers
                 return View("Error400");
             }
 
-            EntityToModel(_entity, ref _model);
+            EmptyModel(ref _model);
+
+            _model.Id = _entity.Id;
+            _model.Email = _entity.Email;
+            _model.Subject = "WEBSITENAME - In reply to the message you left us!";
 
             return View(_model);
         }
@@ -117,12 +119,15 @@ namespace Dokan.Web.Areas.Management.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
+            if (model.Id == 0)
+                return View("Error400");
+
             try
             {
-                
+
                 // use email service (to be made...) to send an email back as the reply
 
-                await Log(LogType.ContentUpdate, "Reply", $"{_entity.Id}_ {_entity.Subject}");
+                await Log(LogType.ContentUpdate, "Reply", $"{model.Id}_ {model.Subject}");
             }
             catch (Exception ex)
             {
@@ -159,7 +164,7 @@ namespace Dokan.Web.Areas.Management.Controllers
             }
 
 
-            return PartialView("_TrashList" ,convertedEntityList);
+            return PartialView("_TrashList", convertedEntityList);
         }
 
         [HttpGet]
@@ -244,7 +249,7 @@ namespace Dokan.Web.Areas.Management.Controllers
 
             model.Id = entity.Id;
             model.Name = entity.Name;
-            model.Email= entity.Email;
+            model.Email = entity.Email;
             model.Subject = entity.Subject;
             model.MessageBody = entity.MessageBody;
             model.CreateDateTime = entity.CreateDateTime;
@@ -324,7 +329,7 @@ namespace Dokan.Web.Areas.Management.Controllers
                 Description = $"{logType} _ {description}",
             });
         }
-        
+
         #endregion
     }
 }

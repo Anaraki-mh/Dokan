@@ -34,6 +34,7 @@ namespace Dokan.Web.Areas.Management.Models
         public string ProductTitle { get; set; }
 
         public int ProductId { get; set; }
+        public int ParentId { get; set; }
 
         [Display(Name = "Title")]
         [MaxLength(40, ErrorMessage = "{0} can not be longer than {1} characters")]
