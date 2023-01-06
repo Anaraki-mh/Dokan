@@ -1,0 +1,184 @@
+﻿
+@{
+    ViewBag.Title = "Trash";
+    Layout = "~/Areas/Management/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="page-header">
+    <h3 class="page-title">
+        BlogPost
+    </h3>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">Blog Catalog</li>
+            <li class="breadcrumb-item active" aria-current="page">Blog Post</li>
+            <li class="breadcrumb-item" aria-current="page">Trash</li>
+        </ol>
+    </nav>
+</div>
+
+<div class="d-flex justify-content-between">
+    <a href="@Url.Action("Index", "BlogPost")" class="btn btn-gradient-primary">Back to Index</a>
+    <button onclick="DeleteAll()" class="btn btn-gradient-danger btn-icon-text">Delete All <i class="mdi mdi-delete"></i></button>
+</div>
+
+<hr />
+
+<div id="list" class="h-auto">
+    <div class="d-flex justify-content-center mt-5">
+        <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+    </div>
+
+</div>
+
+
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script type="text/javascript" defer>
+
+    $(document).ready(function () {
+        RefreshList();
+    });
+
+    function RefreshList() {
+        $.ajax({
+            type: "GET",
+            url: "/Management/BlogPost/TrashList",
+            dataType: "html",
+            data: "",
+            success: function (data) {
+                document.getElementById("list").innerHTML = data;
+            }
+        });
+    }
+
+
+    function ConfirmDelete(id) {
+        bootbox.confirm({
+            message: '<br />Do you confirm permanantly deleting this entity?',
+            backdrop: true,
+            centerVertical: true,
+            buttons: {
+                confirm: {
+                    label: 'Confirm',
+                    className: 'btn-gradient-danger'
+                },
+                cancel: {
+                    label: 'Cancel',
+                    className: 'btn-light'
+                }
+            },
+            callback: function (result) {
+                if (result == true) {
+
+                    $.ajax({
+                        type: "GET",
+                        url: "/Management/BlogPost/Delete",
+                        dataType: "application/json",
+                        data: "id=" + id,
+                        success: function () {
+                        }
+                    });
+                    setTimeout(function () {
+                        RefreshList();
+                    }, 1000);
+                }
+            }
+        });
+    }
+
+    function DeleteAll() {
+        bootbox.confirm({
+            message: '<br />Do you confirm permanantly deleting all items in trash?',
+            backdrop: true,
+            centerVertical: true,
+            buttons: {
+                confirm: {
+                    label: 'Confirm',
+                    className: 'btn-gradient-danger'
+                },
+                cancel: {
+                    label: 'Cancel',
+                    className: 'btn-light'
+                }
+            },
+            callback: function (result) {
+                if (result == true) {
+
+                    $.ajax({
+                        type: "GET",
+                        url: "/Management/BlogPost/DeleteAllTrash",
+                        dataType: "application/json",
+                        data: "",
+
+                    });
+                    setTimeout(function () {
+                        RefreshList();
+                    }, 1000);
+                }
+            }
+        });
+    }
+
+    function Details(id) {
+        $.ajax({
+            type: "GET",
+            url: "/Management/BlogPost/Details",
+            dataType: "html",
+            data: "id=" + id,
+            success: function (data) {
+                bootbox.alert({
+                    message: data,
+                    backdrop: true,
+                    scrollable: true,
+                    size: 'large',
+                    centerVertical: true,
+                });
+            }
+        });
+    }
+
+    function Restore(id) {
+        bootbox.confirm({
+            message: '<br />Do you confirm restoring this entity?',
+            backdrop: true,
+            centerVertical: true,
+            buttons: {
+                confirm: {
+                    label: 'Confirm',
+                    className: 'btn-gradient-success'
+                },
+                cancel: {
+                    label: 'Cancel',
+                    className: 'btn-light'
+                }
+            },
+            callback: function (result) {
+                if (result == true) {
+
+                    $.ajax({
+                        type: "GET",
+                        url: "/Management/BlogPost/Restore",
+                        dataType: "application/json",
+                        data: "id=" + id,
+                        success: function (data) {
+                        }
+                    });
+                    setTimeout(function () {
+                        RefreshList();
+                    }, 1000);
+                }
+            }
+        });
+    }
+</script>
+
+@*
+    complete the delete function
+    - display a modal "Are you sure you want to delete this forever" or something
+    - call delete method if hit yes
+*@
+
+@*
+    create a function for delete that closes the current modal and opens up the delete confirmation modal
+*@

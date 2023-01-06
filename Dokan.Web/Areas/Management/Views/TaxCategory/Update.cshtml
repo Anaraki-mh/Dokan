@@ -1,0 +1,51 @@
+﻿@model Dokan.Web.Areas.Management.Models.TaxCategoryModel
+
+@{
+    ViewBag.Title = "Update";
+    Layout = "~/Areas/Management/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Edit</h4>
+        <p class="card-description">
+            Edit a Tax Category/Group
+        </p>
+        <form class="forms-sample" method="post" action="~/Management/TaxCategory/update" enctype="application/x-www-form-urlencoded">
+
+            @Html.HiddenFor(x => x.Id)
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Title)
+                @Html.TextBoxFor(x => x.Title, new { @class = "form-control", @placeholder = "Title" })
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.Title, "", new { @class = "text-danger" })
+                </label>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Tax)
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text bg-gradient-primary text-white">%</span>
+                    </div>
+                    @Html.TextBoxFor(x => x.Tax, new { @class = "form-control", type = "number", @placeholder = "e.g. 10" })
+                </div>
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.Tax, "", new { @class = "text-danger" })
+                </label>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.CategoryIds)
+                @Html.ListBoxFor(x => x.CategoryIds, new MultiSelectList(Model.CategoryDropdown, "Value", "Text"), new { @class = "form-control", multiple = "multiple", id = "dropdown" })
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.CategoryIds, "", new { @class = "text-danger" })
+                </label>
+            </div>
+
+            <button type="submit" class="btn btn-gradient-primary mr-2">Save Changes</button>
+            <a href="~/Management/TaxCategory/Index" class="btn btn-light">Cancel</a>
+        </form>
+    </div>
+</div>

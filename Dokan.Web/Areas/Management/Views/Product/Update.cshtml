@@ -1,0 +1,111 @@
+﻿@model Dokan.Web.Areas.Management.Models.ProductModel
+
+@{
+    ViewBag.Title = "Update";
+    Layout = "~/Areas/Management/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Edit</h4>
+        <p class="card-description">
+            Edit a Product
+        </p>
+        <form class="forms-sample" method="post" action="~/Management/Product/update" enctype="application/x-www-form-urlencoded">
+
+            @Html.HiddenFor(x => x.Id)
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Title)
+                @Html.TextBoxFor(x => x.Title, new { @class = "form-control", @placeholder = "Title" })
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.Title, "", new { @class = "text-danger" })
+                </label>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.ShortDescription)
+                @Html.TextBoxFor(x => x.ShortDescription, new { @class = "form-control", @placeholder = "A short summary..." })
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.ShortDescription, "", new { @class = "text-danger" })
+                </label>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.Description)
+                @Html.TextAreaFor(x => x.Description, new { @class = "form-control textarea-resize-vertical" })
+
+                <script>
+                    ClassicEditor
+                        .create(document.querySelector('#Description'));
+                </script>
+
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.Description, "", new { @class = "text-danger" })
+                </label>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.Price)
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text bg-gradient-primary text-white">$</span>
+                    </div>
+                    @Html.TextBoxFor(x => x.Price, new { @class = "form-control", type = "number", @placeholder = "e.g. 10" })
+                </div>
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.Price, "", new { @class = "text-danger" })
+                </label>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.Stock)
+                @Html.TextBoxFor(x => x.Stock, new { @class = "form-control", type = "number", @placeholder = "e.g. 10 (set to -1 for unlimited stock)" })
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.Stock, "", new { @class = "text-danger" })
+                </label>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.CategoryId)
+                @Html.DropDownListFor(x => x.CategoryId, Model.CategoryDropdown, null, new { @class = "form-control" })
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.CategoryId, "", new { @class = "text-danger" })
+                </label>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.Image1)
+                @Html.TextBoxFor(x => x.Image1, new { @class = "form-control", placeholder = "Copy the name of an image from Files" })
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.Image1, "", new { @class = "text-danger" })
+                </label>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.Image2)
+                @Html.TextBoxFor(x => x.Image2, new { @class = "form-control", placeholder = "Copy the name of an image from Files" })
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.Image2, "", new { @class = "text-danger" })
+                </label>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.Image3)
+                @Html.TextBoxFor(x => x.Image3, new { @class = "form-control", placeholder = "Copy the name of an image from Files" })
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.Image3, "", new { @class = "text-danger" })
+                </label>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.Image4)
+                @Html.TextBoxFor(x => x.Image4, new { @class = "form-control", placeholder = "Copy the name of an image from Files" })
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.Image4, "", new { @class = "text-danger" })
+                </label>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.Image5)
+                @Html.TextBoxFor(x => x.Image5, new { @class = "form-control", placeholder = "Copy the name of an image from Files" })
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.Image5, "", new { @class = "text-danger" })
+                </label>
+            </div>
+
+            <button type="submit" class="btn btn-gradient-primary mr-2">Save Changes</button>
+            <a href="~/Management/Product/Index" class="btn btn-light">Cancel</a>
+        </form>
+    </div>
+</div>

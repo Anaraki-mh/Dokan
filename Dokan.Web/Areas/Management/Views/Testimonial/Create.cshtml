@@ -1,0 +1,49 @@
+﻿@model Dokan.Web.Areas.Management.Models.TestimonialModel
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Areas/Management/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Create</h4>
+        <p class="card-description">
+            Create a new Testimonial
+        </p>
+        <form class="forms-sample" method="post" action="~/Management/Testimonial/Create" enctype="application/x-www-form-urlencoded">
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.FullName)
+                @Html.TextBoxFor(x => x.FullName, new { @class = "form-control" })
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.FullName, "", new { @class = "text-danger", @placeholder = "Full Name" })
+                </label>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.Position)
+                @Html.TextBoxFor(x => x.Position, new { @class = "form-control", @placeholder = "Career or position in a comapny" })
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.Position, "", new { @class = "text-danger" })
+                </label>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.Content)
+                @Html.TextAreaFor(x => x.Content, new { @class = "form-control", @placeholder = "Main body of the testimonial" })
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.Content, "", new { @class = "text-danger" })
+                </label>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.Image)
+                @Html.TextBoxFor(x => x.Image, new { @class = "form-control", @placeholder = "Copy the name of an image from Files" })
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.Image, "", new { @class = "text-danger" })
+                </label>
+            </div>
+
+            <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
+            <a href="~/Management/Testimonial/Index" class="btn btn-light">Cancel</a>
+        </form>
+    </div>
+</div>

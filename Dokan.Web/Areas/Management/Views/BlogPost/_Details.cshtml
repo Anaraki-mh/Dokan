@@ -1,0 +1,39 @@
+﻿@model Dokan.Web.Areas.Management.Models.BlogPostModel
+
+@{
+    ViewBag.Title = "_Details";
+}
+
+<div class="">
+    <div class="card-body">
+        <h4 class="card-title">Details</h4>
+        <p class="card-description">
+
+        </p>
+        <form class="forms-sample">
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Image)
+                @Html.TextBoxFor(x => x.Image, new { @class = "form-control", @readonly = true })
+                <img src="~/Files/@Model.Image" class="w-75" />
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.Title)
+                @Html.TextBoxFor(x => x.Title, new { @class = "form-control", @readonly = true })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.ShortDescription)
+                @Html.TextBoxFor(x => x.ShortDescription, new { @class = "form-control", @readonly = true })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.CategoryId)
+                @Html.TextBoxFor(x => x.CategoryTitle, new { @class = "form-control", @readonly = true })
+            </div>
+            <div class="form-control">
+                @Html.LabelFor(x => x.Content)
+                @Html.Raw(Model.Content)
+            </div>
+
+        </form>
+    </div>
+</div>

@@ -1,0 +1,74 @@
+﻿@model Dokan.Web.Areas.Management.Models.ProductModel
+
+@{
+    ViewBag.Title = "_Details";
+}
+
+<div class="">
+    <div class="card-body">
+        <h4 class="card-title">Details</h4>
+        <p class="card-description">
+
+        </p>
+        <form class="forms-sample">
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Title)
+                @Html.TextBoxFor(x => x.Title, new { @class = "form-control", @readonly = true })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.ShortDescription)
+                @Html.TextBoxFor(x => x.ShortDescription, new { @class = "form-control", @placeholder = "A short summary...", @readonly = true })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.Price)
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text bg-gradient-primary text-white">$</span>
+                    </div>
+                    @Html.TextBoxFor(x => x.Price, new { @class = "form-control", type = "number", @readonly = true })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.Stock)
+                @Html.TextBoxFor(x => x.Stock, new { @class = "form-control", type = "number", @readonly = true })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.CategoryId)
+                @Html.TextBoxFor(x => x.CategoryTitle, new { @class = "form-control", @readonly = true })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Description)
+                @Html.Raw(Model.Description)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Image1)
+                @Html.TextBoxFor(x => x.Image1, new { @class = "form-control", @readonly = true })
+                <img src="~/Files/@Model.Image1" class="w-50" />
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.Image2)
+                @Html.TextBoxFor(x => x.Image2, new { @class = "form-control", @readonly = true })
+                <img src="~/Files/@Model.Image2" class="w-50" />
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.Image3)
+                @Html.TextBoxFor(x => x.Image3, new { @class = "form-control", @readonly = true })
+                <img src="~/Files/@Model.Image3" class="w-50" />
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.Image4)
+                @Html.TextBoxFor(x => x.Image4, new { @class = "form-control", @readonly = true })
+                <img src="~/Files/@Model.Image4" class="w-50" />
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.Image5)
+                @Html.TextBoxFor(x => x.Image5, new { @class = "form-control", @readonly = true })
+                <img src="~/Files/@Model.Image5" class="w-50" />
+            </div>
+
+        </form>
+    </div>
+</div>

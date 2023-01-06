@@ -1,0 +1,136 @@
+﻿@model Dokan.Web.Areas.Management.Models.CarouselModel
+
+@{
+    ViewBag.Title = "Update";
+    Layout = "~/Areas/Management/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Edit</h4>
+        <p class="card-description">
+            Edit a Carousel
+        </p>
+        <form class="forms-sample" method="post" action="~/Management/Carousel/update" enctype="application/x-www-form-urlencoded">
+
+            @Html.HiddenFor(x => x.Id)
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Title)
+                <div class="input-group">
+                    @Html.TextBoxFor(x => x.Title, new { @class = "form-control", @placeholder = "Title" })
+                    <div class="input-group-append">
+                        @Html.TextBoxFor(x => x.TitleColor, new { @class = "h-100 border-0 p-0 m-0 bg-white", type = "color", title = "Text color" })
+                    </div>
+                </div>
+
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.Title, "", new { @class = "text-danger" })
+                </label>
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.TitleColor, "", new { @class = "text-danger" })
+                </label>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.Priority)
+                @Html.TextBoxFor(x => x.Priority, new { @class = "form-control", type = "number" })
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.Priority, "", new { @class = "text-danger" })
+                </label>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.Image)
+                @Html.TextBoxFor(x => x.Image, new { @class = "form-control", placeholder = "Copy the name of an image from Files" })
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.Image, "", new { @class = "text-danger" })
+                </label>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Description)
+                <div class="input-group">
+                    @Html.TextBoxFor(x => x.Description, new { @class = "form-control", @placeholder = "Description" })
+                    <div class="input-group-append">
+                        @Html.TextBoxFor(x => x.DescriptionColor, new { @class = "h-100 border-0 p-0 m-0 bg-white", type = "color", title = "Text color" })
+                    </div>
+                </div>
+
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.Description, "", new { @class = "text-danger" })
+                </label>
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.DescriptionColor, "", new { @class = "text-danger" })
+                </label>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.ButtonOne)
+                <div class="input-group">
+                    @Html.TextBoxFor(x => x.ButtonOne, new { @class = "form-control", @placeholder = "Text | Text color | Background color" })
+                    <div class="input-group-append">
+                        @Html.TextBoxFor(x => x.ButtonOneFgColor, new { @class = "h-100 border-0 p-0 m-0 bg-white", type = "color", title = "Text color" })
+                    </div>
+                    <div class="input-group-append">
+                        @Html.TextBoxFor(x => x.ButtonOneBgColor, new { @class = "h-100 border-0 p-0 m-0 bg-white", type = "color", title = "Background color" })
+                    </div>
+                </div>
+
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.ButtonOne, "", new { @class = "text-danger" })
+                </label>
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.ButtonOneFgColor, "", new { @class = "text-danger" })
+                </label>
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.ButtonOneBgColor, "", new { @class = "text-danger" })
+                </label>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.LinkOne)
+                @Html.TextBoxFor(x => x.LinkOne, new { @class = "form-control", @placeholder = "Link" })
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.LinkOne, "", new { @class = "text-danger" })
+                </label>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.ButtonTwo)
+                <div class="input-group">
+                    @Html.TextBoxFor(x => x.ButtonTwo, new { @class = "form-control", @placeholder = "Text | Text color | Background color" })
+                    <div class="input-group-append">
+                        @Html.TextBoxFor(x => x.ButtonTwoFgColor, new { @class = "h-100 border-0 p-0 m-0 bg-white", type = "color", title = "Text color" })
+                    </div>
+                    <div class="input-group-append">
+                        @Html.TextBoxFor(x => x.ButtonTwoBgColor, new { @class = "h-100 border-0 p-0 m-0 bg-white", type = "color", title = "Background color" })
+                    </div>
+                </div>
+
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.ButtonTwo, "", new { @class = "text-danger" })
+                </label>
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.ButtonTwoFgColor, "", new { @class = "text-danger" })
+                </label>
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.ButtonTwoBgColor, "", new { @class = "text-danger" })
+                </label>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.LinkTwo)
+                @Html.TextBoxFor(x => x.LinkTwo, new { @class = "form-control", @placeholder = "Link" })
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.LinkTwo, "", new { @class = "text-danger" })
+                </label>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.IsDisplayed)
+                @Html.CheckBoxFor(x => x.IsDisplayed, new { @class = "ml-3" })
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.IsDisplayed, "", new { @class = "text-danger" })
+                </label>
+            </div>
+            <button type="submit" class="btn btn-gradient-primary mr-2">Save Changes</button>
+            <a href="~/Management/Carousel/Index" class="btn btn-light">Cancel</a>
+        </form>
+    </div>
+</div>

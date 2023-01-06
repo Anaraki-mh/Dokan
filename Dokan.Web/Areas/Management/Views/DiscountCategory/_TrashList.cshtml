@@ -1,0 +1,38 @@
+﻿@model List<Dokan.Web.Areas.Management.Models.CouponModel>
+
+@{
+    ViewBag.Title = "_TrashList";
+}
+
+<table class="table table-responsive-sm table-hover text-center">
+    <thead>
+        <tr>
+            <th>Index</th>
+            <th>Title</th>
+            <th>Discount</th>
+            <th>Expiry Date</th>
+            <th>Create/Update Date (UTC)</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Index</td>
+                <td>@item.Title</td>
+                <td>@item.Discount</td>
+                <td>@item.ExpiryDateTime</td>
+                <td>@item.UpdateDateTime</td>
+                <td>
+                    <button onclick="Restore(@item.Id)" title="Restore" class="btn btn-icon btn-gradient-success"><i class="mdi mdi-restore"></i></button>
+                    <button onclick="Details(@item.Id)" title="Details" class="btn btn-icon btn-gradient-info"><i class="mdi mdi-eye"></i></button>
+                    <button onclick="ConfirmDelete(@item.Id)" title="Delete" class="btn btn-icon btn-gradient-danger"><i class="mdi mdi-delete"></i></button>
+                </td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+

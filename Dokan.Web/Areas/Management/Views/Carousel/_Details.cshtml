@@ -1,0 +1,83 @@
+﻿@model Dokan.Web.Areas.Management.Models.CarouselModel
+
+@{
+    ViewBag.Title = "_Details";
+}
+
+<div class="">
+    <div class="card-body">
+        <h4 class="card-title">Details</h4>
+        <p class="card-description">
+            
+        </p>
+        <form class="forms-sample">
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Title)
+                <div class="input-group">
+                    @Html.TextBoxFor(x => x.Title, new { @class = "form-control", @placeholder = "Title", @readonly = true })
+                    <div class="input-group-append">
+                        @Html.TextBoxFor(x => x.TitleColor, new { @class = "h-100 border-0 p-0 m-0 bg-white", type = "color", title = "Text color", @readonly = true })
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Priority)
+                @Html.TextBoxFor(x => x.Priority, new { type = "number", @class = "form-control", @readonly = true })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Image)
+                @Html.TextBoxFor(x => x.Image, new { @class = "form-control", @readonly = true })
+                <img src="~/Files/@Model.Image" class="w-75" />
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Description)
+                <div class="input-group">
+                    @Html.TextBoxFor(x => x.Description, new { @class = "form-control", @readonly = true })
+                    <div class="input-group-append">
+                        @Html.TextBoxFor(x => x.DescriptionColor, new { @class = "h-100 border-0 p-0 m-0 bg-white", type = "color", title = "Text color", @readonly = true })
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.ButtonOne)
+                <div class="input-group">
+                    @Html.TextBoxFor(x => x.ButtonOne, new { @class = "form-control", @readonly = true })
+                    <div class="input-group-append">
+                        @Html.TextBoxFor(x => x.ButtonOneFgColor, new { @class = "h-100 border-0 p-0 m-0 bg-white", type = "color", title = "Text color", @readonly = true })
+                    </div>
+                    <div class="input-group-append">
+                        @Html.TextBoxFor(x => x.ButtonOneBgColor, new { @class = "h-100 border-0 p-0 m-0 bg-white", type = "color", title = "Background color", @readonly = true })
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.LinkOne)
+                @Html.TextBoxFor(x => x.LinkOne, new { @class = "form-control", @readonly = true })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.ButtonTwo)
+                <div class="input-group">
+                    @Html.TextBoxFor(x => x.ButtonTwo, new { @class = "form-control", @readonly = true })
+                    <div class="input-group-append">
+                        @Html.TextBoxFor(x => x.ButtonTwoFgColor, new { @class = "h-100 border-0 p-0 m-0 bg-white", type = "color", title = "Text color", @readonly = true })
+                    </div>
+                    <div class="input-group-append">
+                        @Html.TextBoxFor(x => x.ButtonTwoBgColor, new { @class = "h-100 border-0 p-0 m-0 bg-white", type = "color", title = "Background color", @readonly = true })
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.LinkTwo)
+                @Html.TextBoxFor(x => x.LinkTwo, new { @class = "form-control", @readonly = true })
+            </div>
+        </form>
+    </div>
+</div>

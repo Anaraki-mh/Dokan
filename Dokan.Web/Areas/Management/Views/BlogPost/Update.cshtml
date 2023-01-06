@@ -1,0 +1,64 @@
+﻿@model Dokan.Web.Areas.Management.Models.BlogPostModel
+
+@{
+    ViewBag.Title = "Update";
+    Layout = "~/Areas/Management/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Edit</h4>
+        <p class="card-description">
+            Edit a Blog Post
+        </p>
+        <form class="forms-sample" method="post" action="~/Management/BlogPost/update" enctype="application/x-www-form-urlencoded">
+
+            @Html.HiddenFor(x => x.Id)
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Title)
+                @Html.TextBoxFor(x => x.Title, new { @class = "form-control", @placeholder = "Title" })
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.Title, "", new { @class = "text-danger" })
+                </label>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.ShortDescription)
+                @Html.TextBoxFor(x => x.ShortDescription, new { @class = "form-control", @placeholder = "A short summary..." })
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.ShortDescription, "", new { @class = "text-danger" })
+                </label>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.Content)
+                @Html.TextAreaFor(x => x.Content, new { @class = "form-control textarea-resize-vertical" })
+
+                <script>
+                    ClassicEditor
+                        .create(document.querySelector('#Content'));
+                </script>
+
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.Content, "", new { @class = "text-danger" })
+                </label>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Image)
+                @Html.TextBoxFor(x => x.Image, new { @class = "form-control", placeholder = "Copy the name of an image from Files" })
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.Image, "", new { @class = "text-danger" })
+                </label>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.CategoryId)
+                @Html.DropDownListFor(x => x.CategoryId, Model.CategoryDropdown, null, new { @class = "form-control" })
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.CategoryId, "", new { @class = "text-danger" })
+                </label>
+            </div>
+            <button type="submit" class="btn btn-gradient-primary mr-2">Save Changes</button>
+            <a href="~/Management/BlogPost/Index" class="btn btn-light">Cancel</a>
+        </form>
+    </div>
+</div>

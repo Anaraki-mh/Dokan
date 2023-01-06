@@ -1,0 +1,54 @@
+﻿@model Dokan.Web.Areas.Management.Models.FileModel
+
+@{
+    ViewBag.Title = "_Details";
+}
+
+<div class="">
+    <div class="card-body">
+        <h4 class="card-title">Details</h4>
+        <p class="card-description">
+
+        </p>
+        <form class="forms-sample">
+
+            <div class="form-group d-flex justify-content-center">
+                @if (Model.FileType == Dokan.Domain.Enums.FileType.Media)
+                {
+                    if (Model.Title.ToLower().EndsWith(".jpg") ||
+                        Model.Title.ToLower().EndsWith(".jpeg") ||
+                        Model.Title.ToLower().EndsWith(".png") ||
+                        Model.Title.ToLower().EndsWith(".gif"))
+                    {
+                        <img src="~/Files/@Model.Title" class="w-75" />
+                    }
+                    else
+                    {
+                        <video src="~/Files/@Model.Title" class="w-75" controls />
+                    }
+                }
+            </div>
+
+            <div class="form-group">
+                <a class="btn btn-gradient-info w-100" href="~/Files/@Model.Title" download>Download</a>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Title)
+                @Html.TextBoxFor(x => x.Title, new { @class = "form-control", @readonly = true })
+            </div>
+
+            <div class="form-group">
+                @Html.Label("Link")
+                @Html.TextBox("link", HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Authority)+ "/Files/" + Model.Title, new { @class = "form-control", @readonly = true })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.FileType)
+                @Html.TextBoxFor(x => x.FileType, new { @class = "form-control", @readonly = true })
+            </div>
+
+
+        </form>
+    </div>
+</div>

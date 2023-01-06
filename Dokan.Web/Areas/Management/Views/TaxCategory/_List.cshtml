@@ -1,0 +1,75 @@
+﻿@model List<Dokan.Web.Areas.Management.Models.TaxCategoryModel>
+
+<table class="table table-responsive-sm table-hover text-center">
+    <thead>
+        <tr>
+            <th>Index</th>
+            <th>Title</th>
+            <th>Tax</th>
+            <th>Category</th>
+            <th>Create/Update Date (UTC)</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Index</td>
+                <td>@item.Title</td>
+                <td>@item.Tax</td>
+                <td>@Dokan.WebEssentials.Typography.TrimString(item.CategoryTitles, 75)</td>
+                <td>@item.UpdateDateTime</td>
+                <td class="">
+                    <button class="btn btn-icon btn-gradient-primary" title="Edit" onclick="location.href='/Management/TaxCategory/Update?id=@item.Id'"><i class="mdi mdi-pencil"></i></button>
+                    <button class="btn btn-icon btn-gradient-info" title="Details" onclick="Details(@item.Id)"><i class="mdi mdi-eye"></i></button>
+                    <button class="btn btn-icon btn-gradient-danger" title="Delete" onclick="ConfirmDelete(@item.Id)"><i class="mdi mdi-delete"></i></button>
+                </td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+
+
+
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+
+
+        @if (ViewBag.ActivePage != 1)
+        {
+            <li id="leftArrow" class="page-item">
+                <button onclick="RefreshList(@(ViewBag.ActivePage - 1))" class="page-link"><i class="mdi mdi-arrow-left"></i></button>
+            </li>
+
+            <li class="page-item"><button onclick="RefreshList(1)" class="page-link">1</button></li>
+            <li class="page-item disabled"><button class="page-link">...</button></li>
+        }
+
+        <li class="page-item active"><button onclick="" class="page-link">@ViewBag.ActivePage</button></li>
+
+        @if (ViewBag.ActivePage < ViewBag.NumberOfPages)
+        {
+
+            <li class="page-item disabled"><button class="page-link">...</button></li>
+            <li class="page-item"><button onclick="RefreshList(@ViewBag.NumberOfPages)" class="page-link">@(ViewBag.NumberOfPages)</button></li>
+
+            <li id="rightArrow" class="page-item">
+                <button onclick="RefreshList(@(ViewBag.ActivePage + 1))" class="page-link"><i class="mdi mdi-arrow-right"></i></button>
+            </li>
+        }
+
+
+    </ul>
+</nav>
+
+<input id="activePage" type="text" hidden value="@ViewBag.ActivePage" />
+<input id="numberOfPages" type="hidden" value="@ViewBag.NumberOfPages" />
+
+
+<script>
+
+    
+</script>

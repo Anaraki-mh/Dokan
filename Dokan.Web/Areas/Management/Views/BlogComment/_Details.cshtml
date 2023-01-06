@@ -1,0 +1,42 @@
+﻿@model Dokan.Web.Areas.Management.Models.BlogCommentModel
+
+@{
+    ViewBag.Title = "_Details";
+}
+
+<div class="">
+    <div class="card-body">
+        <h4 class="card-title">Details</h4>
+        <p class="card-description">
+
+        </p>
+        <form class="forms-sample">
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.BlogTitle)
+                @Html.TextBoxFor(x => x.BlogTitle, new { @class = "form-control", @readonly = true })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Username)
+                @Html.TextBoxFor(x => x.Username, new { @class = "form-control", @readonly = true })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Title)
+                @Html.TextBoxFor(x => x.Title, new { @class = "form-control", @readonly = true })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Rating)
+                @Html.TextBoxFor(x => x.Rating, new { @class = "form-control", @readonly = true })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Body)
+                @Html.TextBoxFor(x => x.Body, new { @class = "form-control", @readonly = true })
+            </div>
+
+        </form>
+    </div>
+</div>

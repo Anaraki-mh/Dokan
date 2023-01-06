@@ -1,0 +1,41 @@
+﻿@model Dokan.Web.Areas.Management.Models.ProductCategoryModel
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Areas/Management/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Create</h4>
+        <p class="card-description">
+            Create a new Product Category
+        </p>
+        <form class="forms-sample" method="post" action="~/Management/ProductCategory/Create" enctype="application/x-www-form-urlencoded">
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Title)
+                @Html.TextBoxFor(x => x.Title, new { @class = "form-control", @placeholder = "Title" })
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.Title, "", new { @class = "text-danger" })
+                </label>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.Priority)
+                @Html.TextBoxFor(x => x.Priority, new { type = "number", @class = "form-control" })
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.Priority, "", new { @class = "text-danger" })
+                </label>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.ParentId)
+                @Html.DropDownListFor(x => x.ParentId, Model.ParentDropdown, null, new { @class = "form-control" })
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.ParentId, "", new { @class = "text-danger" })
+                </label>
+            </div>
+            <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
+            <a href="~/Management/ProductCategory/Index" class="btn btn-light">Cancel</a>
+        </form>
+    </div>
+</div>

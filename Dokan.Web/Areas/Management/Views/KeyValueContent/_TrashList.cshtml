@@ -1,0 +1,40 @@
+﻿@model List<Dokan.Web.Areas.Management.Models.KeyValueContentModel>
+
+@{
+    ViewBag.Title = "_TrashList";
+}
+
+<table class="table table-responsive-sm table-hover text-center">
+    <thead>
+        <tr>
+            <th>Index</th>
+            <th>Content Key</th>
+            <th>Content Value</th>
+            <th>Description</th>
+            <th>Create/Update Date (UTC)</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Index</td>
+                <td>@item.ContentKey</td>
+                <td>
+                    @Dokan.WebEssentials.Typography.TrimString(item.ContentValue, 75);
+                </td>
+                <td>@item.Description</td>
+                <td>@item.UpdateDateTime</td>
+                <td>
+                    <button onclick="Restore(@item.Id)" title="Restore" class="btn btn-icon btn-gradient-success"><i class="mdi mdi-restore"></i></button>
+                    <button onclick="Details(@item.Id)" title="Details" class="btn btn-icon btn-gradient-info"><i class="mdi mdi-eye"></i></button>
+                    <button onclick="ConfirmDelete(@item.Id)" title="Delete" class="btn btn-icon btn-gradient-danger"><i class="mdi mdi-delete"></i></button>
+                </td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+

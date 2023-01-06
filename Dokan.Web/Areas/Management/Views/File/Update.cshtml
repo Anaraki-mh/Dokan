@@ -1,0 +1,40 @@
+﻿@model Dokan.Web.Areas.Management.Models.FileModel
+
+@{
+    ViewBag.Title = "Update";
+    Layout = "~/Areas/Management/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Edit</h4>
+        <p class="card-description">
+            Rename and Edit a Files
+        </p>
+        <form class="forms-sample" method="post" action="~/Management/File/update" enctype="multipart/form-data">
+
+            @Html.HiddenFor(x => x.Id)
+            @Html.HiddenFor(x => x.CreateDateTime)
+
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Title)
+                @Html.TextBoxFor(x => x.Title, new { @class = "form-control", @placeholder = "File title" })
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.Title, "", new { @class = "text-danger" })
+                </label>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.FileType)
+                @Html.EnumDropDownListFor(x => x.FileType, "Select a file type...", new { @class = "form-control" })
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.FileType, "", new { @class = "text-danger" })
+                </label>
+            </div>
+
+            <button type="submit" class="btn btn-gradient-primary mr-2">Save Changes</button>
+            <a href="~/Management/File/Index" class="btn btn-light">Cancel</a>
+        </form>
+    </div>
+</div>

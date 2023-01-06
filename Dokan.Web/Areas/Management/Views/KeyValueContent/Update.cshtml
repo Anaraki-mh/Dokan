@@ -1,0 +1,49 @@
+﻿@model Dokan.Web.Areas.Management.Models.KeyValueContentModel
+
+@{
+    ViewBag.Title = "Update";
+    Layout = "~/Areas/Management/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Edit</h4>
+        <p class="card-description">
+            Edit a KeyValue Pair
+        </p>
+        <form class="forms-sample" method="post" action="~/Management/KeyValueContent/update" enctype="application/x-www-form-urlencoded">
+
+            @Html.HiddenFor(x => x.Id)
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.ContentKey)
+                @Html.TextBoxFor(x => x.ContentKey, new { @class = "form-control" })
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.ContentKey, "", new { @class = "text-danger", @placeholder = "Contnent Key" })
+                </label>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.ContentValue)
+                @Html.TextAreaFor(x => x.ContentValue, new { @class = "form-control" })
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.ContentValue, "", new { @class = "text-danger", @placeholder = "Contnent Value" })
+                </label>
+
+                <script>
+                    ClassicEditor
+                        .create(document.querySelector('#ContentValue'));
+                </script>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.Description)
+                @Html.TextBoxFor(x => x.Description, new { @class = "form-control", @placeholder = "A short summary about this key value pair" })
+                <label class="m-3">
+                    @Html.ValidationMessageFor(x => x.Description, "", new { @class = "text-danger" })
+                </label>
+            </div>
+
+            <button type="submit" class="btn btn-gradient-primary mr-2">Save Changes</button>
+            <a href="~/Management/KeyValueContent/Index" class="btn btn-light">Cancel</a>
+        </form>
+    </div>
+</div>
