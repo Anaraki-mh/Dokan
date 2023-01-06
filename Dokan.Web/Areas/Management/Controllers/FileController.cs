@@ -77,6 +77,8 @@ namespace Dokan.Web.Areas.Management.Controllers
                 index++;
             }
 
+            convertedEntityList = convertedEntityList.OrderBy(x => x.FileType).ThenBy(x => x.CreateDateTime).ToList();
+
             ViewBag.NumberOfPages = Math.Ceiling((decimal)_allEntities.Count / (decimal)numberOfResults);
             ViewBag.ActivePage = page;
 
@@ -102,22 +104,27 @@ namespace Dokan.Web.Areas.Management.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(FileModel model, HttpPostedFileBase file)
+        public async Task<ActionResult> Create(FileModel model, HttpPostedFileBase uploadedFile)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || uploadedFile is null)
                 return View(model);
 
             try
             {
                 ModelToEntity(model, ref _entity);
-                model.Title = Path.GetFileName(file.FileName);
+
+                string fileFormat = uploadedFile.FileName.Substring(uploadedFile.FileName.LastIndexOf('.'));
+
+                _entity.Title += fileFormat;
+
+                //model.Title = Path.GetFileName(uploadedFile.FileName);
 
                 _entity.CreateDateTime = DateTime.UtcNow;
 
                 await _fileService.CreateAsync(_entity);
 
-                string path = Path.Combine(Server.MapPath("~/Files"), model.Title);
-                file.SaveAs(path);
+                string path = Path.Combine(Server.MapPath("~/Files"), _entity.Title);
+                uploadedFile.SaveAs(path);
 
                 await Log(LogType.ContentAdd, "Create", $"{_entity.Id}_ {_entity.Title}");
             }
