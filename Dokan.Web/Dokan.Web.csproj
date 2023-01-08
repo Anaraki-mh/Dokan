@@ -258,6 +258,10 @@
     <Content Include="Content\chosen-sprite%402x.png" />
     <Content Include="Content\chosen-sprite.png" />
     <Content Include="Content\chosen.css" />
+    <Content Include="EmailTemplates\Invoice.html" />
+    <Content Include="EmailTemplates\Reply.html" />
+    <Content Include="EmailTemplates\Update.html" />
+    <Content Include="EmailTemplates\Layout.html" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />

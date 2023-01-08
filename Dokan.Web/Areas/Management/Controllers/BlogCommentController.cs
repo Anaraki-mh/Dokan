@@ -2,6 +2,7 @@
 using Dokan.Domain.Website;
 using Dokan.Services;
 using Dokan.Web.Areas.Management.Models;
+using Dokan.WebEssentials;
 using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,8 @@ namespace Dokan.Web.Areas.Management.Controllers
 
         private IBlogCommentService _blogCommentService { get; }
         private ILogService _logService { get; }
+        private IEmailService _emailService { get; }
+
 
         private List<BlogComment> _allEntities { get; set; }
         private BlogCommentModel _model;
@@ -33,10 +36,11 @@ namespace Dokan.Web.Areas.Management.Controllers
 
         #region Constructor
 
-        public BlogCommentController(IBlogCommentService BlogCommentService, ILogService logService)
+        public BlogCommentController(IBlogCommentService BlogCommentService, ILogService logService, IEmailService emailService)
         {
             _blogCommentService = BlogCommentService;
             _logService = logService;
+            _emailService = emailService;
 
             _allEntities = new List<BlogComment>();
             _model = new BlogCommentModel();
@@ -122,7 +126,15 @@ namespace Dokan.Web.Areas.Management.Controllers
 
                 await _blogCommentService.CreateAsync(_entity);
 
-                // use email service (to be made...) to send an email back as the reply
+                var comment = await _blogCommentService.FindByIdAsync(model.ParentId);
+                var recipientEmail = comment.User.Email;
+
+                string emailBody = EmailTemplate.PrepareReply("An admin has replied on your comment!",
+                    "",
+                    model.Body,
+                    EmailTemplate.CreateButton("Open Website", EmailTemplate.WebAddress));
+
+                _emailService.SendEmail("Someone has replied on your comment!", emailBody, recipientEmail);
 
                 await Log(LogType.ContentAdd, "Reply", $"{_entity.Id}");
             }

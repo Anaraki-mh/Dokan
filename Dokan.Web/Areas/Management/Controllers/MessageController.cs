@@ -2,6 +2,7 @@
 using Dokan.Domain.Website;
 using Dokan.Services;
 using Dokan.Web.Areas.Management.Models;
+using Dokan.WebEssentials;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
@@ -22,6 +23,7 @@ namespace Dokan.Web.Areas.Management.Controllers
 
         private IMessageService _messageService { get; }
         private ILogService _logService { get; }
+        private IEmailService _emailService { get; }
 
         private List<Message> _allEntities { get; set; }
         private MessageModel _model;
@@ -32,10 +34,11 @@ namespace Dokan.Web.Areas.Management.Controllers
 
         #region Constructor
 
-        public MessageController(IMessageService MessageService, ILogService logService)
+        public MessageController(IMessageService MessageService, ILogService logService, IEmailService emailService)
         {
             _messageService = MessageService;
             _logService = logService;
+            _emailService = emailService;
 
             _allEntities = new List<Message>();
             _model = new MessageModel();
@@ -124,8 +127,9 @@ namespace Dokan.Web.Areas.Management.Controllers
 
             try
             {
+                string emailBody = EmailTemplate.PrepareReply("Thank you for contacting us!", "", model.MessageBody, "");
 
-                // use email service (to be made...) to send an email back as the reply
+                _emailService.SendEmail(model.Subject, emailBody, model.Email);
 
                 await Log(LogType.ContentUpdate, "Reply", $"{model.Id}_ {model.Subject}");
             }
