@@ -67,6 +67,8 @@ namespace Dokan.Web.App_Start
             kernel.Bind<DokanContext>().To<DokanContext>().InRequestScope();
             kernel.Bind(typeof(IRepository<>)).To(typeof(Repository<>)).InRequestScope();
 
+            kernel.Bind<IEmailService>().To<EmailService>().InRequestScope();
+
             kernel.Bind<IUserService>().To<UserService>();
             kernel.Bind<IUserInformationService>().To<UserInformationService>();
 
