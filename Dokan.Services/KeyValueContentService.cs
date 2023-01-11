@@ -1,4 +1,5 @@
 ﻿using Dokan.Core.DataAccess;
+using Dokan.Core.Migrations;
 using Dokan.Domain.Website;
 using System;
 using System.Collections.Generic;
@@ -69,11 +70,29 @@ namespace Dokan.Services
             try
             {
                 var entityList = await _repository.ListAsync();
-                return entityList.FirstOrDefault(x => x.Id == id);
+                return entityList.FirstOrDefault(x => x.Id == id) ?? new KeyValueContent();
             }
             catch (Exception ex)
             {
                 return new KeyValueContent();
+            }
+        }
+
+        /// <summary>
+        /// Finds a recond of the table KeyValueContent by the ContentKey of it 
+        /// </summary>
+        /// <param name="key">The ContentKey of a KeyValueContent</param>
+        /// <returns>A (task of) string</returns>
+        public async Task<string> GetValueByKeyAsync(string key)
+        {
+            try
+            {
+                var entityList = await _repository.ListAsync();
+                return entityList.FirstOrDefault(x => x.ContentKey == key)?.ContentValue ?? key;
+            }
+            catch (Exception ex)
+            {
+                return "";
             }
         }
 

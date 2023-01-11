@@ -11,6 +11,7 @@ namespace Dokan.Services
         Task DeleteAsync(int id);
         Task DeleteRangeAsync(List<KeyValueContent> entities);
         Task<KeyValueContent> FindByIdAsync(int id);
+        Task<string> GetValueByKeyAsync(string key);
         Task<List<KeyValueContent>> ListAsync();
         Task<List<KeyValueContent>> ListOfRemovedAsync();
         Task RemoveAsync(int id);
