@@ -217,14 +217,18 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\BlogCommentController.cs" />
     <Compile Include="Controllers\ProductCommentController.cs" />
     <Compile Include="Controllers\BlogController.cs" />
-    <Compile Include="Controllers\ProductController.cs" />
+    <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\LayoutHelper.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Areas\Management\Models\BlogCategoryModel.cs" />
+    <Compile Include="Models\DiscountCategoryModel.cs" />
+    <Compile Include="Models\MessageModel.cs" />
     <Compile Include="Models\ProductCommentModel.cs" />
     <Compile Include="Models\BlogCommentModel.cs" />
     <Compile Include="Models\BlogPostModel.cs" />
@@ -510,7 +514,6 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
     <Content Include="Views\Account\ConfirmEmail.cshtml" />
@@ -546,6 +549,17 @@
     <Content Include="Assets\fonts\themify.eot" />
     <Content Include="Assets\fonts\themify.ttf" />
     <Content Include="Assets\fonts\themify.woff" />
+    <Content Include="Views\Home\_HeroCarousel.cshtml" />
+    <Content Include="Views\Home\_MainCategories.cshtml" />
+    <Content Include="Views\Home\_DealsBanner.cshtml" />
+    <Content Include="Views\Home\_WomensNewest.cshtml" />
+    <Content Include="Views\Home\_MensNewest.cshtml" />
+    <Content Include="Views\Home\_NewestBlogsSection.cshtml" />
+    <Content Include="Views\Products\Index.cshtml" />
+    <Content Include="Views\Products\_Filters.cshtml" />
+    <Content Include="Views\Products\_List.cshtml" />
+    <Content Include="Views\Products\Details.cshtml" />
+    <Content Include="Views\Blog\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

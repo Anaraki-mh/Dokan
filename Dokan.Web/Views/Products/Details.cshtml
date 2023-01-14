@@ -1,0 +1,250 @@
+﻿@model Dokan.Web.Models.ProductModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<!-- Breadcrumb Section Begin -->
+<div class="breacrumb-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb-text product-more">
+                    <a href="./home.html"><i class="fa fa-home"></i> Home</a>
+                    <a href="./shop.html">Shop</a>
+                    <span>Details</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Breadcrumb Section Begin -->
+<!-- Product Shop Section Begin -->
+<section class="product-shop spad page-details">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-9">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="product-pic-zoom">
+                            <img class="product-big-img" src="~/Files/@Model.Images.First()" alt="@Model.Title">
+                            <div class="zoom-icon">
+                                <i class="fa fa-search-plus"></i>
+                            </div>
+                        </div>
+
+                        <div class="product-thumbs">
+                            <div class="product-thumbs-track ps-slider owl-carousel">
+
+                                @foreach (var image in Model.Images)
+                                {
+                                    <div class="pt active" data-imgbigurl="~/Files/@image">
+                                        <img src="~/Files/@image" alt="@Model.Title">
+                                    </div>
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="product-details">
+                            <div class="pd-title">
+                                <span>@Model.CategoryTitle</span>
+                                <h3>@Model.Title</h3>
+                            </div>
+                            <div class="pd-rating">
+                                @for (int i = 1; i < 6; i++)
+                                {
+                                    if (Model.Rating > i)
+                                    {
+                                        <i class="fa fa-star"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="fa fa-star-o"></i>
+                                    }
+                                }
+                                <span>(@Model.Rating)</span>
+                            </div>
+                            <div class="pd-desc">
+                                <p>
+                                    @Model.ShortDescription
+                                </p>
+                                <h4>
+                                    $@Model.Price
+                                    @if (Model.NoDiscountPrice != Model.Price)
+                                    {
+                                        <span>
+                                            $@Model.NoDiscountPrice
+                                        </span>
+                                    }
+                                </h4>
+                            </div>
+
+                            <div class="quantity">
+                                <div class="pro-qty">
+                                    <input type="text" value="1" id="quantity">
+                                </div>
+
+                                <a href="#" class="primary-btn pd-cart">Add To Cart</a>
+
+                            </div>
+                            <ul class="pd-tags">
+                                <li><span>CATEGORY</span>: @Model.CategoryTitle </li>
+                            </ul>
+
+                            <div class="pd-share">
+                                <div class="p-code">availability : @Model.Stock in stock</div>
+                            </div>
+
+                            <div class="pd-share">
+                                <div class="p-code">Sku : @($"{Model.Id:00000}")</div>
+
+                                <div class="pd-social">
+                                    <a href="@String.Concat("https://www.facebook.com/sharer/sharer.php?u=https%3A//", $"{HttpContext.Current.Request.Url.Authority}/Products/Details/{Model.Id}/{Dokan.WebEssentials.SEO.CreateSeoFriendlyUrlTitle(Model.Title)}")">
+                                        <i class="ti-facebook"></i>
+                                    </a>
+                                    <a href="@String.Concat("https://twitter.com/intent/tweet?text=https%3A//", $"{HttpContext.Current.Request.Url.Authority}/Products/Details/{Model.Id}/{Dokan.WebEssentials.SEO.CreateSeoFriendlyUrlTitle(Model.Title)}")">
+                                        <i class="ti-twitter-alt"></i>
+                                    </a>
+                                    <a href="@String.Concat("https://www.linkedin.com/shareArticle?mini=true&url=https%3A//", $"{HttpContext.Current.Request.Url.Authority}/Products/Details/{Model.Id}/{Dokan.WebEssentials.SEO.CreateSeoFriendlyUrlTitle(Model.Title)}")">
+                                        <i class="ti-linkedin"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-tab">
+                    <div class="tab-item">
+                        <ul class="nav" role="tablist">
+                            <li>
+                                <a class="active" data-toggle="tab" href="#tab-1" role="tab">DESCRIPTION</a>
+                            </li>
+                            <li>
+                                <a data-toggle="tab" href="#tab-2" role="tab">SPECIFICATIONS</a>
+                            </li>
+                            <li>
+                                <a data-toggle="tab" href="#tab-3" role="tab">Customer Reviews (02)</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="tab-item-content">
+                        <div class="tab-content">
+                            <div class="tab-pane fade-in active" id="tab-1" role="tabpanel">
+                                <div class="product-content">
+
+                                    @Model.Description
+
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade" id="tab-2" role="tabpanel">
+                                <div class="specification-table">
+                                    <table>
+                                        <tr>
+                                            <td class="p-catagory">Customer Rating</td>
+                                            <td>
+                                                <div class="pd-rating">
+                                                    @for (int i = 1; i < 6; i++)
+                                                    {
+                                                        if (Model.Rating > i)
+                                                        {
+                                                            <i class="fa fa-star"></i>
+                                                        }
+                                                        else
+                                                        {
+                                                            <i class="fa fa-star-o"></i>
+                                                        }
+                                                    }
+                                                    <span>(@Model.Rating)</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-catagory">Price</td>
+                                            <td>
+                                                <div class="p-price">
+                                                    $@Model.Price
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-catagory">Add To Cart</td>
+                                            <td>
+                                                <a class="cart-add" href="#">+ add to cart</a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-catagory">Availability</td>
+                                            <td>
+                                                <div class="p-stock">
+                                                    @Model.Stock in stock
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td class="p-catagory">Sku</td>
+                                            <td>
+                                                <div class="p-code">@($"{Model.Id:00000}")</div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade" id="tab-3" role="tabpanel">
+                                <div class="customer-review-option">
+
+                                    <div class="personal-rating">
+                                        <h6>Your Ratind</h6>
+                                        <div class="rating">
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star-o"></i>
+                                        </div>
+                                    </div>
+                                    <div class="leave-comment">
+                                        <h4>Leave A Comment</h4>
+                                        <form action="#" class="comment-form">
+                                            <div class="row">
+                                                <div class="col-lg-6">
+                                                    <input type="text" placeholder="Name">
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <input type="text" placeholder="Email">
+                                                </div>
+                                                <div class="col-lg-12">
+                                                    <textarea placeholder="Messages"></textarea>
+                                                    <button type="submit" class="site-btn">Send message</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+
+
+                                    <h4>2 Comments</h4>
+
+                                    <div class="comment-option">
+
+
+                                        COMMENTS LIST HERE
+
+
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Product Shop Section End -->

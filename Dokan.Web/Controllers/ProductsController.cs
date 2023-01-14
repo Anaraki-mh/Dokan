@@ -1,5 +1,6 @@
 ﻿using Dokan.Domain.Website;
 using Dokan.Services;
+using Dokan.Web.Helpers;
 using Dokan.Web.Models;
 using Microsoft.Win32;
 using System;
@@ -11,7 +12,7 @@ using System.Web.Mvc;
 
 namespace Dokan.Web.Controllers
 {
-    public class ProductController : Controller
+    public class ProductsController : Controller
     {
 
         #region Fields and Properties
@@ -28,7 +29,7 @@ namespace Dokan.Web.Controllers
 
         #region Constructor
 
-        public ProductController(IProductService productService, IProductCategoryService productCategoryService)
+        public ProductsController(IProductService productService, IProductCategoryService productCategoryService)
         {
             _productService = productService;
             _productCategoryService = productCategoryService;
@@ -36,6 +37,8 @@ namespace Dokan.Web.Controllers
             _allEntities = new List<Product>();
             _model = new ProductModel();
             _entity = new Product();
+
+            LayoutHelper.PrepareLayout();
         }
 
         #endregion
@@ -46,13 +49,40 @@ namespace Dokan.Web.Controllers
         [HttpGet]
         public ActionResult Index()
         {
-            return View();
+            ViewBag.Active = "Shop";
+            ViewBag.Title = "Products";
+            ViewBag.OnlyDeals = false;
+
+            return View(0);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> Category(int id)
+        {
+            ViewBag.Active = "Shop";
+            ViewBag.Title = "Products";
+            ViewBag.OnlyDeals = false;
+
+            ProductCategory category = await _productCategoryService.FindByIdAsync(id);
+
+            if (category != null && category?.Id != 0)
+            {
+                ViewBag.Title = $"Products - {category.Title}";
+                return View("Index", id);
+            }
+
+            // return the exact same view as Index with an int of product category 
+            // Js checks if it has a value except 0 and null to send the ajax request only for that category,
+            return View("Index", 0);
         }
 
         [HttpGet]
         public ActionResult Deals()
         {
-            return View();
+            ViewBag.Title = "Deals";
+            ViewBag.OnlyDeals = true;
+
+            return View("Index");
         }
 
         [HttpGet]
@@ -114,6 +144,7 @@ namespace Dokan.Web.Controllers
         public async Task<ActionResult> Filters()
         {
             List<ProductCategory> entities = await _productCategoryService.ListAsync();
+            entities = entities.OrderBy(x => x.Priority).ToList();
 
             ViewBag.MinPrice = Convert.ToInt32(Math.Ceiling(_allEntities.Select(x => x.Price).Min()));
             ViewBag.MaxPrice = Convert.ToInt32(Math.Ceiling(_allEntities.Select(x => x.Price).Max()));
@@ -123,11 +154,15 @@ namespace Dokan.Web.Controllers
 
         [HttpGet]
         public async Task<ActionResult> Details(int id)
-
         {
             Product entity = await _productService.FindByIdAsync(id);
 
+            if (entity.Id != id)
+                return RedirectToAction("Index");
+
             EntityToModel(entity, ref _model);
+
+            ViewBag.Title = entity.Title;
 
             return View(_model);
         }
@@ -149,7 +184,7 @@ namespace Dokan.Web.Controllers
                 searchResults.Add(_model);
             }
 
-            return PartialView("_Search", searchResults);
+            return PartialView("_List", searchResults);
         }
 
         #endregion
@@ -163,7 +198,12 @@ namespace Dokan.Web.Controllers
             model.Title = entity.Title;
             model.ShortDescription = entity.ShortDescription;
             model.Description = entity.Description;
-            model.Price = $"{entity.Price:0.00}";
+            model.NoDiscountPrice = $"{entity.Price:0.00}";
+            model.Price = model.NoDiscountPrice;
+
+            if (entity.DiscountCategory != null)
+                model.Price = $"{(entity.Price - entity.Price * (double)entity.DiscountCategory?.Discount):0.00}";
+
             model.Stock = entity.Stock;
             model.Images.Clear();
             model.Images.Add(entity.Image1);
@@ -171,6 +211,7 @@ namespace Dokan.Web.Controllers
             model.Images.Add(entity.Image3);
             model.Images.Add(entity.Image4);
             model.Images.Add(entity.Image5);
+            model.Rating = entity.ProductComments?.Average(x => x.Rating) ?? 5;
             model.CategoryId = entity.ProductCategoryId;
             model.CategoryTitle = entity.ProductCategory?.Title ?? " - ";
             model.CreateDateTime = entity.CreateDateTime;

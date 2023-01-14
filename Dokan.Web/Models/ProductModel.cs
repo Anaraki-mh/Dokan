@@ -42,12 +42,17 @@ namespace Dokan.Web.Models
         [Display(Name = "Price")]
         public string Price { get; set; }
 
+        [Display(Name = "Price Without Discount")]
+        public string NoDiscountPrice { get; set; }
+
         [Display(Name = "Stock")]
         public int Stock { get; set; }
 
         [Display(Name = "Images")]
         public List<string> Images { get; set; }
 
+        [Display(Name = "Rating")]
+        public double Rating { get; set; }
 
         [Display(Name = "Category")]
         public int CategoryId { get; set; }

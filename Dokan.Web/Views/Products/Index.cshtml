@@ -1,0 +1,114 @@
+﻿@model int
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="breacrumb-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb-text">
+                    <a href="#"><i class="fa fa-home"></i> Home</a>
+                    <span>Shop</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<section class="product-shop spad">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-lg-3 col-md-6 col-sm-8 order-2 order-lg-1 produts-sidebar-filter" id="filters">
+
+
+                <div class="loading-more">
+                    <i class="icon_loading"></i>
+                    <a>
+                        Loading...
+                    </a>
+                </div>
+
+
+            </div>
+
+            <div class="col-lg-9 order-1 order-lg-2" id="list">
+
+
+                <div class="loading-more">
+                    <i class="icon_loading"></i>
+                    <a>
+                        Loading...
+                    </a>
+                </div>
+
+
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<input id="productCategoryId" type="text" hidden value="@Model" />
+<input id="onlyDeals" type="text" hidden value="@ViewBag.OnlyDeals" />
+
+
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script type="text/javascript" defer>
+
+    $(document).ready(function () {
+        LoadFilters();
+        RefreshList();
+    });
+
+    function RefreshList(page) {
+        if (page == null || page < 1)
+            page = 1;
+
+        productCategoryId = document.getElementById("productCategoryId").value;
+        minPrice = parseInt(document.getElementById("minPrice").value.replace('$', ''));
+        maxPrice = parseInt(document.getElementById("maxPrice").value.replace('$', ''));
+        onlyDeals = document.getElementById("onlyDeals").value;
+
+        $.ajax({
+            type: "GET",
+            url: "/Products/List",
+            dataType: "html",
+            data: "productCategoryId=" + productCategoryId + "&minPrice=" + minPrice + "&maxPrice=" + maxPrice + "&onlyDeals" + onlyDeals + "&page=" + page,
+            success: function (data) {
+                document.getElementById("list").innerHTML = data;
+            }
+        });
+    }
+
+    function LoadFilters() {
+        $.ajax({
+            type: "GET",
+            url: "/Products/Filters",
+            dataType: "html",
+            data: "",
+            success: function (data) {
+                document.getElementById("filters").innerHTML = data;
+            }
+        });
+    }
+
+    function Search() {
+        searchString = document.getElementById("searchString").value;
+
+        $.ajax({
+            type: "GET",
+            url: "/Blog/Search",
+            dataType: "html",
+            data: "searchString=" + searchString,
+            success: function (data) {
+                document.getElementById("list").innerHTML = data;
+            }
+        });
+    }
+
+</script>
