@@ -26,7 +26,7 @@ namespace Dokan.Web.Models
         public int Id { get; set; }
 
         [Display(Name = "Create date")]
-        public DateTime CreateDateTime { get; set; }
+        public string CreateDateTime { get; set; }
 
         public int Index { get; set; }
 

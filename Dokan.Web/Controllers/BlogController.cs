@@ -1,5 +1,6 @@
 ﻿using Dokan.Domain.Website;
 using Dokan.Services;
+using Dokan.Web.Helpers;
 using Dokan.Web.Models;
 using Microsoft.Win32;
 using System;
@@ -36,6 +37,8 @@ namespace Dokan.Web.Controllers
             _allEntities = new List<BlogPost>();
             _model = new BlogPostModel();
             _entity = new BlogPost();
+
+            LayoutHelper.PrepareLayout();
         }
 
         #endregion
@@ -46,7 +49,30 @@ namespace Dokan.Web.Controllers
         [HttpGet]
         public ActionResult Index()
         {
-            return View();
+            // put in view
+            ViewBag.Active = "Blog";
+            ViewBag.Title = "Blog";
+
+            return View(0);
+        }
+
+        public async Task<ActionResult> Category(int id)
+        {
+            ViewBag.Active = "Shop";
+            ViewBag.Title = "Products";
+            ViewBag.OnlyDeals = false;
+
+            BlogCategory category = await _blogCategoryService.FindByIdAsync(id);
+
+            if (category != null && category?.Id != 0)
+            {
+                ViewBag.Title = $"Products - {category.Title}";
+                return View("Index", id);
+            }
+
+            // return the exact same view as Index with an int of product category 
+            // Js checks if it has a value except 0 and null to send the ajax request only for that category,
+            return View("Index", 0);
         }
 
         [HttpGet]
@@ -99,7 +125,12 @@ namespace Dokan.Web.Controllers
         {
             BlogPost entity = await _blogPostService.FindByIdAsync(id);
 
+            if (entity.Id != id)
+                return RedirectToAction("Index");
+
             EntityToModel(entity, ref _model);
+
+            ViewBag.Title = entity.Title;
 
             return View(_model);
         }
@@ -121,7 +152,7 @@ namespace Dokan.Web.Controllers
                 searchResults.Add(_model);
             }
 
-            return PartialView("_Search", searchResults);
+            return PartialView("_List", searchResults);
         }
 
         #endregion
@@ -138,7 +169,7 @@ namespace Dokan.Web.Controllers
             model.Image = entity.Image;
             model.CategoryId = entity.BlogCategoryId;
             model.CategoryTitle = entity.BlogCategory?.Title ?? " - ";
-            model.CreateDateTime = entity.CreateDateTime;
+            model.CreateDateTime = $"{entity.CreateDateTime:MMM d - yyyy}";
         }
 
 
