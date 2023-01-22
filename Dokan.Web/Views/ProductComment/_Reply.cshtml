@@ -1,0 +1,17 @@
+﻿@model Dokan.Web.Models.ProductCommentModel
+
+
+<div class="leave-comment">
+    <h4>Reply</h4>
+    <form class="comment-form">
+        <div class="row">
+            @Html.HiddenFor(x => x.UserId, new { id = "userId"})
+
+            <div class="col-lg-12">
+                <textarea placeholder="Messages" name="message" id="message"></textarea>
+
+                <button onclick="NewComment()" type="button" class="site-btn">Send message</button>
+            </div>
+        </div>
+    </form>
+</div>

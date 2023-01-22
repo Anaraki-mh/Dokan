@@ -1,0 +1,214 @@
+﻿@model Dokan.Web.Models.BlogPostModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="blog-details spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="blog-details-inner">
+                    <div class="blog-detail-title">
+                        <h2>@Model.Title</h2>
+                        <p>
+                            @Model.CategoryTitle
+                            <span>- @Model.CreateDateTime.Replace(" -", ", ")</span>
+                        </p>
+                    </div>
+                    <div class="blog-large-pic">
+                        <img src="~/Files/@Model.Image" alt="@Model.Title">
+                    </div>
+                    <div class="blog-detail-desc">
+                        <p>
+                            @Model.ShortDescription
+                        </p>
+                    </div>
+
+                    @Model.Content
+
+                    <div class="tag-share">
+                        <div class="blog-share">
+                            <span>Share:</span>
+                            <div class="social-links">
+                                <a href="@String.Concat("https://www.facebook.com/sharer/sharer.php?u=https%3A//", $"{HttpContext.Current.Request.Url.Authority}/Products/Details/{Model.Id}/{Dokan.WebEssentials.SEO.CreateSeoFriendlyUrlTitle(Model.Title)}")">
+                                    <i class="ti-facebook"></i>
+                                </a>
+                                <a href="@String.Concat("https://twitter.com/intent/tweet?text=https%3A//", $"{HttpContext.Current.Request.Url.Authority}/Products/Details/{Model.Id}/{Dokan.WebEssentials.SEO.CreateSeoFriendlyUrlTitle(Model.Title)}")">
+                                    <i class="ti-twitter-alt"></i>
+                                </a>
+                                <a href="@String.Concat("https://www.linkedin.com/shareArticle?mini=true&url=https%3A//", $"{HttpContext.Current.Request.Url.Authority}/Products/Details/{Model.Id}/{Dokan.WebEssentials.SEO.CreateSeoFriendlyUrlTitle(Model.Title)}")">
+                                    <i class="ti-linkedin"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="createNew">
+
+                        <div class="col-lg-12">
+                            <div class="loading-more">
+                                <i class="icon_loading"></i>
+                                <a>
+                                    Loading...
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="customer-review-option" id="list">
+
+                        <div class="col-lg-12">
+                            <div class="loading-more">
+                                <i class="icon_loading"></i>
+                                <a>
+                                    Loading...
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+
+    $(document).ready(function () {
+        loadCreateForm();
+        RefreshList();
+    });
+
+    function loadCreateForm() {
+        $.ajax({
+            type: "GET",
+            url: "/BlogComment/Create",
+            dataType: "html",
+            data: "",
+            success: function (data) {
+                document.getElementById("createNew").innerHTML = data;
+            }
+        });
+    }
+
+    function RefreshList(page) {
+        if (page == null || page < 1)
+            page = 1;
+
+        $.ajax({
+            type: "GET",
+            url: "/BlogComment/List",
+            dataType: "html",
+            data: "page=" + page,
+            success: function (data) {
+                document.getElementById("list").innerHTML = data;
+            }
+        });
+    }
+
+    function NewComment() {
+        $.ajax({
+            type: 'POST',
+            url: "/BlogComment/Create",
+            data: JSON.stringify(
+                {
+                    UserId: document.getElementById('userId').value,
+                    BlogPostId: @Model.Id,
+                    Body: document.getElementById('message').value
+                }),
+            dataType: "json",
+            success: function (resultData) {
+                toastr.success('It will be displayed in the comment section once approved', 'Comment Saved!');
+            }
+        });
+    }
+
+    function Reply(id) {
+        $.ajax({
+            type: "GET",
+            url: "/BlogComment/Reply",
+            dataType: "html",
+            data: "id=" + id,
+            success: function (data) {
+                bootbox.alert({
+                    message: data,
+                    backdrop: true,
+                    size: 'large',
+                    centerVertical: true,
+                    buttons: {
+                        send: {
+                            label: 'Send',
+                            className: 'btn-success',
+                            callback: function () {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: "/BlogComment/Create",
+                                    data: JSON.stringify(
+                                        {
+                                            UserId: document.getElementById('userId').value,
+                                            BlogPostId: @Model.Id,
+                                            ParentId: id,
+                                            Body: document.getElementById('replyMessage').value
+                                        }),
+                                    dataType: "json",
+                                    success: function (resultData) {
+                                        toastr.success('It will be displayed in the comment section once approved', 'Reply Saved!');
+                                    }
+                                });
+                            }
+                        },
+                        cancel: {
+                            label: 'Cancel',
+                            className: 'btn-light',
+                            callback: function () {
+
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    function ConfirmDelete(id) {
+        bootbox.confirm({
+            message: '<br />Do you confirm deleting this comment?',
+            backdrop: true,
+            centerVertical: true,
+            buttons: {
+                confirm: {
+                    label: 'Confirm',
+                    className: 'btn-gradient-danger'
+                },
+                cancel: {
+                    label: 'Cancel',
+                    className: 'btn-light'
+                }
+            },
+            callback: function (result) {
+                if (result == true) {
+
+                    $.ajax({
+                        type: "GET",
+                        url: "/BlogComment/Delete",
+                        dataType: "application/json",
+                        data: "id=" + id,
+                        success: function (data) {
+                            toastr.danger('Comment Deleted!');
+                        }
+                    });
+                    setTimeout(function () {
+                        RefreshList($('#activePage'));
+                    }, 1000);
+
+                }
+            }
+        });
+    }
+
+
+</script>

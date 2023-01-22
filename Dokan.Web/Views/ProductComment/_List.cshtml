@@ -1,0 +1,138 @@
+﻿@model List<Dokan.Web.Models.ProductCommentModel>
+
+
+<h4>@Model.Count Comments</h4>
+<div class="comment-option">
+
+    @{
+        var user = Model.FirstOrDefault(x => x.UserId == ViewBag.UserId);
+    }
+
+    @if (user != null)
+    {
+        <div class="co-item">
+            <div class="row">
+                <div class="col-10">
+                    <div class="avatar-pic">
+                        <img src="~/Files/@user.UserProfilePic" alt="@user.Username">
+                    </div>
+                    <div class="avatar-text">
+                        <h5>
+                            @user.Username
+                            <span>
+                                @user.CreateDateTime
+                            </span>
+                        </h5>
+                        <div class="at-reply">
+                            @user.Body
+                        </div>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="col-2">
+                        <a onclick="ConfirmDelete(@user.Id)" class="primary-btn text-white mt-3 cursor-pointer bg-danger">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    @{
+        var parents = Model.Where(x => x.ParentId == 0 && x.UserId != ViewBag.UserId).ToList();
+    }
+
+    @foreach (var item in parents)
+    {
+        <div class="co-item">
+            <div class="row">
+                <div class="col-10">
+                    <div class="avatar-pic">
+                        <img src="~/Files/@item.UserProfilePic" alt="@item.Username">
+                    </div>
+                    <div class="avatar-text">
+                        <h5>
+                            @item.Username
+                            <span>
+                                @item.CreateDateTime
+                            </span>
+                        </h5>
+                        <div class="at-reply">
+                            @item.Body
+                        </div>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="col-2">
+                        <a onclick="Reply(@item.Id)" class="primary-btn text-white mt-3 cursor-pointer">Reply</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        var children = Model.Where(x => x.ParentId == item.Id).ToList();
+
+        foreach (var child in children)
+        {
+            <div class="co-item ml-5">
+                <div class="row">
+                    <div class="col-10">
+                        <div class="avatar-pic">
+                            <img src="~/Files/@child.UserProfilePic" alt="@child.Username">
+                        </div>
+                        <div class="avatar-text">
+                            <h5>
+                                @child.Username
+                                <span>
+                                    @child.CreateDateTime
+                                </span>
+                            </h5>
+                            <div class="at-reply">
+                                @child.Body
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="col-2">
+                            <a onclick="Reply(@child.Id)" class="primary-btn text-white mt-3 cursor-pointer">Reply</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+
+        @if (ViewBag.ActivePage != 1)
+        {
+            <li id="leftArrow" class="page-item">
+                <button onclick="RefreshList(@(ViewBag.ActivePage - 1))" class="page-link"><i class="mdi mdi-arrow-left"></i></button>
+            </li>
+
+            <li class="page-item"><button onclick="RefreshList(1)" class="page-link">1</button></li>
+            <li class="page-item disabled"><button class="page-link">...</button></li>
+        }
+
+        <li class="page-item active"><button onclick="" class="page-link">@ViewBag.ActivePage</button></li>
+
+        @if (ViewBag.ActivePage < ViewBag.NumberOfPages)
+        {
+
+            <li class="page-item disabled"><button class="page-link">...</button></li>
+            <li class="page-item"><button onclick="RefreshList(@ViewBag.NumberOfPages)" class="page-link">@(ViewBag.NumberOfPages)</button></li>
+
+            <li id="rightArrow" class="page-item">
+                <button onclick="RefreshList(@(ViewBag.ActivePage + 1))" class="page-link"><i class="mdi mdi-arrow-right"></i></button>
+            </li>
+        }
+
+
+    </ul>
+</nav>
+
+<input id="activePage" type="text" hidden value="@ViewBag.ActivePage" />
+<input id="numberOfPages" type="text" hidden value="@ViewBag.NumberOfPages" />
+
