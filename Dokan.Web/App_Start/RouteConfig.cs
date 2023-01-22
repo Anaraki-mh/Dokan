@@ -26,14 +26,6 @@ namespace Dokan.Web
             namespaces: new[] { "Dokan.Web.Controllers" }
             );
 
-            // merge the two
-            routes.MapRoute(
-            name: "ProductDetails",
-            url: "Products/Details/{id}/{title}",
-            defaults: new { controller = "Product", action = "Details", id = UrlParameter.Optional },
-            namespaces: new[] { "Dokan.Web.Controllers" }
-            );
-
             routes.MapRoute(
             name: "Details",
             url: "{controller}/Details/{id}/{title}",
