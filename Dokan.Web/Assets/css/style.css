@@ -4316,3 +4316,7 @@ ol {
 .mw-100{
 	max-width: 100%;
 }
+
+.cursor-pointer {
+	cursor: pointer;
+}
