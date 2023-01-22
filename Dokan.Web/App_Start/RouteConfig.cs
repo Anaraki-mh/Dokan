@@ -21,6 +21,13 @@ namespace Dokan.Web
             );
 
             routes.MapRoute(
+            name: "Category",
+            url: "{controller}/Category/{id}/{title}",
+            namespaces: new[] { "Dokan.Web.Controllers" }
+            );
+
+            // merge the two
+            routes.MapRoute(
             name: "ProductDetails",
             url: "Products/Details/{id}/{title}",
             defaults: new { controller = "Product", action = "Details", id = UrlParameter.Optional },
@@ -28,9 +35,16 @@ namespace Dokan.Web
             );
 
             routes.MapRoute(
-            name: "BlogDetails",
-            url: "Blog/Details/{id}/{title}",
+            name: "Details",
+            url: "{controller}/Details/{id}/{title}",
             defaults: new { controller = "Blog", action = "Details", id = UrlParameter.Optional },
+            namespaces: new[] { "Dokan.Web.Controllers" }
+            );
+
+            routes.MapRoute(
+            name: "Home",
+            url: "{action}/{id}",
+            defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional },
             namespaces: new[] { "Dokan.Web.Controllers" }
             );
 
