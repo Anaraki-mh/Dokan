@@ -27,7 +27,7 @@ namespace Dokan.Web.Models
         public int Id { get; set; }
 
         [Display(Name = "Create date")]
-        public DateTime CreateDateTime { get; set; }
+        public string CreateDateTime { get; set; }
 
         public int BlogPostId { get; set; }
         public int ParentId { get; set; }
@@ -37,6 +37,8 @@ namespace Dokan.Web.Models
         public string Username { get; set; }
 
         public string UserId { get; set; }
+
+        public string UserProfilePic { get; set; }
 
         [Display(Name = "Comment Body")]
         [MaxLength(300, ErrorMessage = "{0} can not be longer than {1} characters")]

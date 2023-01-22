@@ -64,13 +64,17 @@ namespace Dokan.Web.Controllers
 
             ViewBag.NumberOfPages = Math.Ceiling((decimal)_allEntities.Count / (decimal)numberOfResults);
             ViewBag.ActivePage = page;
+            ViewBag.UserId = User.Identity.GetUserId();
 
             return View("_List", convertedEntityList);
         }
 
         public ActionResult Create()
         {
-            return PartialView("_Create");
+            _model = new BlogCommentModel();
+            _model.UserId = User.Identity.GetUserId();
+
+            return PartialView("_Create", _model);
         }
 
         [HttpPost]
@@ -83,7 +87,7 @@ namespace Dokan.Web.Controllers
 
             await _blogCommentService.CreateAsync(_entity);
 
-            return PartialView("_Created");
+            return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
 
         public async Task<ActionResult> Delete(int id)
@@ -113,19 +117,6 @@ namespace Dokan.Web.Controllers
             return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
         }
 
-        [HttpPost]
-        public async Task<ActionResult> Reply(BlogCommentModel model)
-        {
-            if (!ModelState.IsValid)
-                return PartialView("_Create");
-
-            ModelToEntity(model, ref _entity);
-
-            await _blogCommentService.CreateAsync(_entity);
-
-            return PartialView("_Created");
-        }
-
         #endregion
 
 
@@ -136,10 +127,11 @@ namespace Dokan.Web.Controllers
             model.Id = entity.Id;
             model.Username = entity.User?.UserName;
             model.UserId = entity.UserId;
+            model.UserProfilePic = entity.User?.UserInformation?.ProfilePicture;
             model.BlogPostId = entity.BlogPostId;
             model.Body = entity.Body;
             model.Rating = entity.Rating;
-            model.CreateDateTime = entity.CreateDateTime;
+            model.CreateDateTime = $"{entity.CreateDateTime:MMM d yyyy}";
         }
 
         private void ModelToEntity(BlogCommentModel model, ref BlogComment entity)
