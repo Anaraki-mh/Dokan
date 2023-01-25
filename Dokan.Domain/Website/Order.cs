@@ -35,9 +35,6 @@ namespace Dokan.Domain.Website
         public string TrackingCode { get; set; }
 
         [MaxLength(50)]
-        public string ProfilePicture { get; set; }
-
-        [MaxLength(50)]
         public string FirstName { get; set; }
 
         [MaxLength(50)]

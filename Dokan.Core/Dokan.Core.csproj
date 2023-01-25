@@ -133,6 +133,10 @@
     <Compile Include="Migrations\202301042213371_FixedCouponProductCategoryRelation.designer.cs">
       <DependentUpon>202301042213371_FixedCouponProductCategoryRelation.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202301221501126_RemovedProfilePictureFromOrderEntity.cs" />
+    <Compile Include="Migrations\202301221501126_RemovedProfilePictureFromOrderEntity.designer.cs">
+      <DependentUpon>202301221501126_RemovedProfilePictureFromOrderEntity.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -189,6 +193,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202301042213371_FixedCouponProductCategoryRelation.resx">
       <DependentUpon>202301042213371_FixedCouponProductCategoryRelation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202301221501126_RemovedProfilePictureFromOrderEntity.resx">
+      <DependentUpon>202301221501126_RemovedProfilePictureFromOrderEntity.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
