@@ -1,0 +1,40 @@
+﻿@model List<Dokan.Domain.Website.Carousel>
+
+<section class="hero-section">
+    <div class="hero-items owl-carousel">
+
+        @foreach (var item in Model)
+        {
+
+            <div class="single-hero-items set-bg" data-setbg="~/Files/@item.Image">
+                <div class="container">
+
+                    <div class="row">
+                        <div class="col-lg-5">
+                            <h1 style="color: @item.TitleColor">
+                                @item.Title
+                            </h1>
+                            <p style="color: @item.DescriptionColor">
+                                @item.Description
+                            </p>
+                            @if (item.ButtonOne != null && item.ButtonOne != "")
+                            {
+                                <a href="@item.LinkOne" class="primary-btn" style="color: @item.ButtonOneFgColor; background-color: @item.ButtonOneBgColor;">
+                                    @item.ButtonOne
+                                </a>
+                            }
+                            @if (item.ButtonTwo != null && item.ButtonTwo != "")
+                            {
+                                <a href="@item.LinkTwo" class="primary-btn" style="color: @item.ButtonTwoFgColor; background-color: @item.ButtonTwoBgColor;">
+                                    @item.ButtonTwo
+                                </a>
+                            }
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        }
+
+    </div>
+</section>

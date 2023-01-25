@@ -1,17 +1,112 @@
-﻿@{
+﻿@model Dokan.Web.Models.MessageModel
+
+@{
     ViewBag.Title = "Contact";
+    ViewBag.Active = "Contact";
 }
-<h2>@ViewBag.Title.</h2>
-<h3>@ViewBag.Message</h3>
 
-<address>
-    One Microsoft Way<br />
-    Redmond, WA 98052-6399<br />
-    <abbr title="Phone">P:</abbr>
-    425.555.0100
-</address>
 
-<address>
-    <strong>Support:</strong>   <a href="mailto:Support@example.com">Support@example.com</a><br />
-    <strong>Marketing:</strong> <a href="mailto:Marketing@example.com">Marketing@example.com</a>
-</address>
+<div class="breacrumb-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb-text">
+                    <a href="#"><i class="fa fa-home"></i> Home</a>
+                    <span>Contact</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="map spad">
+    <div class="container">
+        <div class="map-inner">
+            <iframe src="@ViewBag.MapAddress" height="610" style="border:0" allowfullscreen="">
+            </iframe>
+            <div class="icon">
+                <i class="fa fa-map-marker"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="contact-section spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-5">
+                <div class="contact-title">
+                    <h4>Contacts Us</h4>
+                    <p>
+                        @ViewBag.ContactUsAboutText
+                    </p>
+                </div>
+                <div class="contact-widget">
+                    <div class="cw-item">
+                        <div class="ci-icon">
+                            <i class="ti-location-pin"></i>
+                        </div>
+                        <div class="ci-text">
+                            <span>Address:</span>
+                            <p>
+                                @ViewBag.Address
+                            </p>
+                        </div>
+                    </div>
+                    <div class="cw-item">
+                        <div class="ci-icon">
+                            <i class="ti-mobile"></i>
+                        </div>
+                        <div class="ci-text">
+                            <span>Phone:</span>
+                            <p>
+                                @ViewBag.Phone
+                            </p>
+                        </div>
+                    </div>
+                    <div class="cw-item">
+                        <div class="ci-icon">
+                            <i class="ti-email"></i>
+                        </div>
+                        <div class="ci-text">
+                            <span>Email:</span>
+                            <p>
+                                @ViewBag.Email
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 offset-lg-1">
+                <div class="contact-form">
+                    <div class="leave-comment">
+                        <h4>Leave A Comment</h4>
+                        <p>
+                            @ViewBag.ContactUSFormText
+                        </p>
+                        <form action="~/Contact" method="post" enctype="application/x-www-form-urlencoded" class="comment-form">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    @Html.TextBoxFor(x => x.Name, new { type = "text", placeholder = "Your name", @class = "mb-0" })
+                                    @Html.ValidationMessageFor(x => x.Name, "", new { @class = "text-danger ml-2" })
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    @Html.TextBoxFor(x => x.Email, new { type = "text", placeholder = "Your email", @class = "mb-0" })
+                                    @Html.ValidationMessageFor(x => x.Email, "", new { @class = "text-danger ml-2" })
+                                </div>
+                                <div class="col-lg-12 mb-3">
+                                    @Html.TextAreaFor(x => x.MessageBody, new { type = "text", placeholder = "Your message", @class = "mb-0" })
+                                    @Html.ValidationMessageFor(x => x.MessageBody, "", new { @class = "text-danger ml-2" })
+                                </div>
+                                <div class="col-lg-12">
+                                    <button type="submit" class="site-btn">Send message</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

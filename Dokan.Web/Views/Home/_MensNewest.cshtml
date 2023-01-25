@@ -1,0 +1,66 @@
+﻿
+@model List<Dokan.Web.Models.ProductModel>
+
+<section class="women-banner spad">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="product-large set-bg" data-setbg="@ViewBag.MensNewestPicture">
+                    <h2>Women’s</h2>
+                    <a href="@Url.Action("Deals", "Product")">Discover More</a>
+                </div>
+            </div>
+            <div class="col-lg-8 offset-lg-1">
+                <div class="filter-control">
+                    <ul>
+                        <li class="active">Newest Products</li>
+                    </ul>
+                </div>
+                <div class="product-slider owl-carousel">
+
+                    @foreach (var product in Model)
+                    {
+
+                        <div class="product-item">
+                            <div class="pi-pic">
+                                <img src="~/Files/@product.Images.First()" alt="@product.Title">
+                                @if (product.NoDiscountPrice != product.Price)
+                                {
+                                    <div class="sale">Sale</div>
+                                }
+                                <ul>
+                                    <li class="w-icon active"><a href="#"><i class="icon_bag_alt"></i></a></li>
+                                    <li class="quick-view">
+                                        <a href="~/Products/Details/@product.Id/@Dokan.WebEssentials.SEO.CreateSeoFriendlyUrlTitle(product.Title)" target="_blank">
+                                            + View
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="pi-text">
+                                <div class="catagory-name">
+                                    @product.CategoryTitle
+                                </div>
+                                <a href="#">
+                                    <h5>
+                                        @product.Title
+                                    </h5>
+                                </a>
+                                <div class="product-price">
+                                    $@product.Price
+                                    @if (product.NoDiscountPrice != product.Price)
+                                    {
+                                        <span>
+                                            $@product.NoDiscountPrice
+                                        </span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
