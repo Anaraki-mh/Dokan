@@ -75,6 +75,9 @@ namespace Dokan.Domain.Website
         public string UserId { get; set; }
         public virtual User User { get; set; }
 
+        public int CouponId { get; set; }
+        public virtual Coupon Coupon { get; set; }
+
         public virtual List<OrderItem> OrderItems { get; set; }
 
         #endregion

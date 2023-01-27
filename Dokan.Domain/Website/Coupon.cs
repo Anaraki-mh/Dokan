@@ -16,6 +16,8 @@ namespace Dokan.Domain.Website
         public Coupon()
         {
             ProductCategories = new List<ProductCategory>();
+            Users = new List<User>();
+            Orders = new List<Order>();
         }
 
         #endregion
@@ -42,6 +44,7 @@ namespace Dokan.Domain.Website
 
         public virtual List<ProductCategory> ProductCategories { get; set; }
         public virtual List<User> Users { get; set; }
+        public virtual List<Order> Orders { get; set; }
 
         #endregion
     }
