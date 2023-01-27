@@ -141,6 +141,10 @@
     <Compile Include="Migrations\202301271204110_AddedAOneToManyRelationBetweenCouponAndOrder.designer.cs">
       <DependentUpon>202301271204110_AddedAOneToManyRelationBetweenCouponAndOrder.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202301271639587_MadeTheCouponIdNullableInOrderTable.cs" />
+    <Compile Include="Migrations\202301271639587_MadeTheCouponIdNullableInOrderTable.designer.cs">
+      <DependentUpon>202301271639587_MadeTheCouponIdNullableInOrderTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -203,6 +207,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202301271204110_AddedAOneToManyRelationBetweenCouponAndOrder.resx">
       <DependentUpon>202301271204110_AddedAOneToManyRelationBetweenCouponAndOrder.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202301271639587_MadeTheCouponIdNullableInOrderTable.resx">
+      <DependentUpon>202301271639587_MadeTheCouponIdNullableInOrderTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
