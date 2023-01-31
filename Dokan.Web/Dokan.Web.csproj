@@ -46,6 +46,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.1.1.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Ninject, Version=3.3.4.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <HintPath>..\packages\Ninject.3.3.4\lib\net45\Ninject.dll</HintPath>
@@ -59,9 +62,23 @@
     <Reference Include="Ninject.Web.Mvc, Version=3.3.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <HintPath>..\packages\Ninject.MVC5.3.3.0\lib\net45\Ninject.Web.Mvc.dll</HintPath>
     </Reference>
+    <Reference Include="Stripe.net, Version=41.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Stripe.net.41.5.0\lib\net461\Stripe.net.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.2\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -215,6 +232,7 @@
     <Compile Include="Areas\Management\Models\MenuModel.cs" />
     <Compile Include="Areas\Management\Models\ProductCategoryModel.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\CartController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\BlogCommentController.cs" />
@@ -227,6 +245,8 @@
     <Compile Include="Helpers\LayoutHelper.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Areas\Management\Models\BlogCategoryModel.cs" />
+    <Compile Include="Models\CartItemModel.cs" />
+    <Compile Include="Models\CartModel.cs" />
     <Compile Include="Models\DiscountCategoryModel.cs" />
     <Compile Include="Models\MessageModel.cs" />
     <Compile Include="Models\ProductCommentModel.cs" />
@@ -269,6 +289,8 @@
     <Content Include="Content\chosen-sprite%402x.png" />
     <Content Include="Content\chosen-sprite.png" />
     <Content Include="Content\chosen.css" />
+    <Content Include="Content\toastr.css" />
+    <Content Include="Content\toastr.min.css" />
     <Content Include="EmailTemplates\Invoice.html" />
     <Content Include="EmailTemplates\Reply.html" />
     <Content Include="EmailTemplates\Update.html" />
@@ -459,6 +481,8 @@
     <Content Include="Areas\Management\Views\File\Create.cshtml" />
     <Content Include="Areas\Management\Views\File\Index.cshtml" />
     <Content Include="Areas\Management\Views\File\Update.cshtml" />
+    <Content Include="Content\toastr.scss" />
+    <Content Include="Content\toastr.less" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\chosen.jquery.js" />
     <Content Include="Scripts\chosen.jquery.min.js" />
@@ -502,6 +526,8 @@
     <Content Include="Assets\js\jquery.zoom.min.js" />
     <Content Include="Assets\js\main.js" />
     <Content Include="Assets\js\owl.carousel.min.js" />
+    <Content Include="Scripts\toastr.js" />
+    <Content Include="Scripts\toastr.min.js" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -560,10 +586,20 @@
     <Content Include="Views\Products\_List.cshtml" />
     <Content Include="Views\Products\Details.cshtml" />
     <Content Include="Views\Blog\Index.cshtml" />
+    <Content Include="Views\Blog\_Filters.cshtml" />
+    <Content Include="Views\Blog\_List.cshtml" />
+    <Content Include="Views\Blog\Details.cshtml" />
+    <Content Include="Views\BlogComment\_Create.cshtml" />
+    <Content Include="Views\BlogComment\_List.cshtml" />
+    <Content Include="Views\BlogComment\_Reply.cshtml" />
+    <Content Include="Views\ProductComment\_Create.cshtml" />
+    <Content Include="Views\ProductComment\_List.cshtml" />
+    <Content Include="Views\ProductComment\_Reply.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Files\" />
+    <Folder Include="Views\Cart\" />
     <Folder Include="Views\Help\" />
   </ItemGroup>
   <ItemGroup>
