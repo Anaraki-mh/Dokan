@@ -201,6 +201,7 @@
     <Compile Include="App_Start\NinjectWebCommon.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="Areas\Management\Controllers\OrderController.cs" />
     <Compile Include="Areas\Management\Controllers\ProductCommentController.cs" />
     <Compile Include="Areas\Management\Controllers\FileController.cs" />
     <Compile Include="Areas\Management\Controllers\BlogCommentController.cs" />
@@ -217,6 +218,8 @@
     <Compile Include="Areas\Management\Controllers\ProductCategoryController.cs" />
     <Compile Include="Areas\Management\Controllers\BlogCategoryController.cs" />
     <Compile Include="Areas\Management\ManagementAreaRegistration.cs" />
+    <Compile Include="Areas\Management\Models\OrderItemModel.cs" />
+    <Compile Include="Areas\Management\Models\OrderModel.cs" />
     <Compile Include="Areas\Management\Models\ProductCommentModel.cs" />
     <Compile Include="Areas\Management\Models\FileModel.cs" />
     <Compile Include="Areas\Management\Models\BlogCommentModel.cs" />
@@ -598,6 +601,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Areas\Management\Views\Order\" />
     <Folder Include="Files\" />
     <Folder Include="Views\Cart\" />
     <Folder Include="Views\Help\" />
