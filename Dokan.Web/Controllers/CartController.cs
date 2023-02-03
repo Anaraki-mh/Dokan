@@ -364,10 +364,7 @@ namespace Dokan.Web.Controllers
 
             var options = new SessionCreateOptions
             {
-                Metadata = new Dictionary<string, string>()
-                {
-                    ["OrderId"] = _orderEntity.Id.ToString(),
-                },
+                ClientReferenceId = _orderEntity.Id.ToString(),
                 LineItems = lineItems,
                 Mode = "payment",
                 SuccessUrl = $"{domain}/Cart/Success",
@@ -404,17 +401,15 @@ namespace Dokan.Web.Controllers
             //automate based on event type
             if (stripeEvent.Type == "checkout.session.completed")
             {
-                string orderId = "";
-
                 var session = stripeEvent.Data.Object as Stripe.Checkout.Session;
-                session.Metadata.TryGetValue("OrderId", out orderId);
+                string orderId = session.ClientReferenceId;
 
                 // If there are no matching orders with the payment... 
-                if(orderId == "")
+                if(orderId is null)
                 {
                     // send email to the admin to report the error
                     _emailService.SendEmail("Error! New payment with no matching order", 
-                        $"A new payment with the session id of {session.Id} has been processed that has no matching order. " +
+                        $"A new payment with the session id of {session.Id} and payment id of {session.PaymentIntentId} has been processed that has no matching order. " +
                         $"Please refund the payment and/or contact the user (user's email: {session.CustomerEmail}).",
                         WebConfigurationManager.AppSettings["AdminEmail"]);
 
@@ -425,7 +420,7 @@ namespace Dokan.Web.Controllers
                 _orderEntity = await _orderService.FindByIdAsync(Convert.ToInt32(orderId));
                 _orderEntity.OrderState = OrderState.Placed;
                 _orderEntity.PaymentState = PaymentState.Paid;
-                _orderEntity.TrackingCode = session.Id;
+                _orderEntity.TrackingCode = session.PaymentIntentId;
                 await _orderService.UpdateAsync(_orderEntity);
 
                 // Send the invoice to the user as an email
@@ -504,18 +499,6 @@ namespace Dokan.Web.Controllers
                     Total = item.Total,
                 });
             }
-        }
-
-        private void OrderItemEntityToModel(BlogPost entity, ref BlogPostModel model)
-        {
-            model.Id = entity.Id;
-            model.Title = entity.Title;
-            model.ShortDescription = entity.ShortDescription;
-            model.Content = entity.Content;
-            model.Image = entity.Image;
-            model.CategoryId = entity.BlogCategoryId;
-            model.CategoryTitle = entity.BlogCategory?.Title ?? " - ";
-            model.CreateDateTime = $"{entity.CreateDateTime:MMM d - yyyy}";
         }
 
 
