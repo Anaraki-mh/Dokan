@@ -10,7 +10,8 @@ namespace Dokan.Domain.Enums
     {
         Paid = 0,
         Pending = 1,
-        Refunded = 2,
+        PendingRefund = 2,
+        Refunded = 3,
         Canceled = -1,
     }
 }
