@@ -82,7 +82,7 @@ namespace Dokan.Web.Controllers
         #region Methods
 
         [HttpGet]
-        public async Task<ActionResult> GetCart(bool partial = false)
+        public async Task<ActionResult> ShoppingCart(bool partial = false)
         {
             HttpCookie cartIdCookie = Request.Cookies["cartId"];
             int cartId = 0;
