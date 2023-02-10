@@ -29,14 +29,21 @@ namespace Dokan.Web
             routes.MapRoute(
             name: "Details",
             url: "{controller}/Details/{id}/{title}",
-            defaults: new { controller = "Blog", action = "Details", id = UrlParameter.Optional },
+            defaults: new { controller = "Blog", action = "Details", title = UrlParameter.Optional },
             namespaces: new[] { "Dokan.Web.Controllers" }
             );
 
             routes.MapRoute(
+                name: "Default",
+                url: "Cart/{action}",
+                defaults: new { controller = "Cart", action = "ShoppingCart" },
+                namespaces: new[] { "Dokan.Web.Controllers" }
+            );
+
+            routes.MapRoute(
             name: "Home",
-            url: "{action}/{id}",
-            defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional },
+            url: "{action}",
+            defaults: new { controller = "Home" },
             namespaces: new[] { "Dokan.Web.Controllers" }
             );
 
