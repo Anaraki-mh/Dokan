@@ -31,41 +31,58 @@ namespace Dokan.Web.Models
 
         public DateTime CreateDateTime { get; set; }
 
-        [MaxLength(50)]
+        [Display(Name = "Email Address")]
+        [Required(ErrorMessage = "{0} can not be empty")]
+        [MaxLength(50, ErrorMessage = "{0} can not be longer than {1} characters")]
         public string Email { get; set; }
 
-        [MaxLength(25)]
+        [Display(Name = "Password")]
+        [MaxLength(25, ErrorMessage = "{0} can not be longer than {1} characters")]
         public string Password { get; set; }
-        [MaxLength(25)]
-        public string ConfirmPassword { get; set; }
 
         [MaxLength(50)]
         public string TrackingCode { get; set; }
 
-        [MaxLength(50)]
+        [Display(Name = "First Name")]
+        [Required(ErrorMessage = "{0} can not be empty")]
+        [MaxLength(50, ErrorMessage = "{0} can not be longer than {1} characters")]
         public string FirstName { get; set; }
 
-        [MaxLength(50)]
+        [Display(Name = "Last Name")]
+        [Required(ErrorMessage = "{0} can not be empty")]
+        [MaxLength(50, ErrorMessage = "{0} can not be longer than {1} characters")]
         public string LastName { get; set; }
 
-        [MaxLength(50)]
+        [Display(Name = "Country")]
+        [Required(ErrorMessage = "{0} can not be empty")]
+        [MaxLength(50, ErrorMessage = "{0} can not be longer than {1} characters")]
         public string Country { get; set; }
 
-        [MaxLength(50)]
+        [Display(Name = "State")]
+        [Required(ErrorMessage = "{0} can not be empty")]
+        [MaxLength(50, ErrorMessage = "{0} can not be longer than {1} characters")]
         public string State { get; set; }
 
-        [MaxLength(50)]
+        [Display(Name = "City")]
+        [Required(ErrorMessage = "{0} can not be empty")]
+        [MaxLength(50, ErrorMessage = "{0} can not be longer than {1} characters")]
         public string City { get; set; }
 
-        [MaxLength(120)]
+        [Display(Name = "Street Address")]
+        [Required(ErrorMessage = "{0} can not be empty")]
+        [MaxLength(120, ErrorMessage = "{0} can not be longer than {1} characters")]
         public string Address { get; set; }
 
-        [MaxLength(12)]
+        [Display(Name = "Zip / Postcode")]
+        [Required(ErrorMessage = "{0} can not be empty")]
+        [MaxLength(12, ErrorMessage = "{0} can not be longer than {1} characters")]
         public string ZipCode { get; set; }
 
-        [MaxLength(15)]
+        [Display(Name = "Phone Number")]
+        [Required(ErrorMessage = "{0} can not be empty")]
+        [MaxLength(15, ErrorMessage = "{0} can not be longer than {1} characters")]
         public string PhoneNumber { get; set; }
-
+        
         public double ShippingCost { get; set; }
 
         public DeliveryMethod DeliveryMethod { get; set; }

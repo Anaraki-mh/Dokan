@@ -19,7 +19,7 @@ namespace Dokan.Web.Models
         #region Properties
 
         public int Id { get; set; }
-        public double Price { get; set; }
+        public string Price { get; set; }
         public int Discount { get; set; }
         public int Tax { get; set; }
         public int Quantity { get; set; }

@@ -3,10 +3,12 @@ using Dokan.Domain.Enums;
 using Dokan.Domain.UsersAndRoles;
 using Dokan.Domain.Website;
 using Dokan.Services;
+using Dokan.Web.Helpers;
 using Dokan.Web.Models;
 using Dokan.WebEssentials;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNet.Identity.Owin;
 using Stripe;
 using Stripe.Checkout;
 using System;
@@ -74,6 +76,8 @@ namespace Dokan.Web.Controllers
             _orderEntity = new Order();
             _orderItemEntity = new OrderItem();
             _random = new Random();
+
+            LayoutHelper.PrepareLayout();
         }
 
         #endregion
@@ -92,14 +96,16 @@ namespace Dokan.Web.Controllers
 
             // If there is no order with this id...
             _orderEntity = await _orderService.FindByIdAsync(cartId);
-            if (_orderEntity is null)
+            if (_orderEntity is null || _orderEntity?.OrderState != OrderState.Pending)
             {
                 // Create an Order entity and a cookie and set the id of the order entity as the value of the cookie
                 _orderEntity = new Order()
                 {
                     UserId = User.Identity.GetUserId() ?? "",
                     PaymentState = PaymentState.Pending,
-                    OrderState = OrderState.Pending
+                    OrderState = OrderState.Pending,
+                    DeliveryMethod = DeliveryMethod.StandardShipping,
+                    ShippingCost = Convert.ToInt32(WebConfigurationManager.AppSettings["StandardShippingCost"])
                 };
                 await _orderService.CreateAsync(_orderEntity);
 
@@ -108,11 +114,11 @@ namespace Dokan.Web.Controllers
                 Response.Cookies.Add(cartIdCookie);
             }
 
-            _cartItemModel = new CartItemModel();
+            _cartModel = new CartModel();
             OrderEntityToModel(_orderEntity, ref _cartModel);
 
             if (partial == true)
-                return View("_Cart", _cartModel);
+                return View("_ShoppingCart", _cartModel);
 
             return View(_cartModel);
         }
@@ -138,12 +144,12 @@ namespace Dokan.Web.Controllers
             // Try to find the Order entity with cartId and check if exists
             _orderEntity = await _orderService.FindByIdAsync(cartId);
 
-            if (_orderEntity is null)
+            if (_orderEntity is null || _orderEntity?.OrderState != OrderState.Pending)
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
             _orderItemEntity = _orderEntity.OrderItems.Find(x => x.ProductId == productId);
 
-            if (_orderEntity is null)
+            if (_orderItemEntity is null)
                 _orderItemEntity = new OrderItem()
                 {
                     ProductId = productId,
@@ -230,12 +236,13 @@ namespace Dokan.Web.Controllers
             // Try to find the Order entity by cartId and check if its null 
             _orderEntity = await _orderService.FindByIdAsync(cartId);
 
-            if (_orderEntity is null)
+            if (_orderEntity is null || _orderEntity?.OrderState != OrderState.Pending)
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
-            // Convert Order to CartItemModel
-            _cartItemModel = new CartItemModel();
+            // Convert Order to CartModel
+            _cartModel = new CartModel();
             OrderEntityToModel(_orderEntity, ref _cartModel);
+            _cartModel.Country = "United States";
 
             // To update the shipping cost in the list when the delivery method dropdown changes 
             ViewBag.ShippingCost = Convert.ToInt32(WebConfigurationManager.AppSettings["StandardShippingCost"]);
@@ -257,15 +264,25 @@ namespace Dokan.Web.Controllers
             // Try to find the Order entity by cartId and check if its null 
             _orderEntity = await _orderService.FindByIdAsync(cartId);
 
-            if (_orderEntity is null)
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            if (_orderEntity is null || _orderEntity?.OrderState != OrderState.Pending)
+            {
+                ViewBag.ErrorMessage = "Invalid Order. This order does not exist or has already been processed.";
+                return View(model);
+            }
+
+            string userId = User.Identity.GetUserId();
+            if (userId != null && userId != _orderEntity.UserId)
+            {
+                ViewBag.ErrorMessage = "Invalid Checkout Request. Orders can not be checked out by any user other than the one associated with the order.";
+                return View(model);
+            }
 
             // Create an account if the user doesnt have an account
-            if ((_orderEntity.UserId == "" || _orderEntity.UserId is null) && _userManager.FindByEmail(model.Email) is null)
+            if (_userManager.FindByEmail(model.Email) is null && (model.Password != string.Empty || model.Password != null))
             {
                 var user = new User
                 {
-                    UserName = model.FirstName + model.LastName,
+                    UserName = model.FirstName + " " + model.LastName,
                     Email = model.Email,
                     PhoneNumber = model.PhoneNumber,
                     UserInformation = new UserInformation
@@ -281,13 +298,13 @@ namespace Dokan.Web.Controllers
                     }
                 };
                 _userManager.Create(user, model.Password);
+                _orderEntity.UserId = user.Id;
             }
             else
             {
                 ViewBag.ErrorMessage = "This Email is already in use, please log on if you aleady have an account with this email or create a new account";
                 return View(model);
             }
-
 
             // Save the billing and shipping info 
             _orderEntity.FirstName = model.FirstName;
@@ -340,26 +357,6 @@ namespace Dokan.Web.Controllers
                 });
             }
 
-            // The shipping cost
-            lineItems.Add(new SessionLineItemOptions
-            {
-                PriceData = new SessionLineItemPriceDataOptions
-                {
-                    UnitAmount = Convert.ToInt32(_orderEntity.ShippingCost) * 100,
-                    Currency = "USD",
-                    ProductData = new SessionLineItemPriceDataProductDataOptions
-                    {
-                        Name = "Shipping"
-                    },
-                    TaxBehavior = "unspecified"
-                },
-                AdjustableQuantity = new SessionLineItemAdjustableQuantityOptions
-                {
-                    Enabled = false,
-                },
-                Quantity = 1
-            });
-
             var domain = HttpContext.Request.Url.GetLeftPart(UriPartial.Authority);
 
             var options = new SessionCreateOptions
@@ -370,6 +367,35 @@ namespace Dokan.Web.Controllers
                 SuccessUrl = $"{domain}/Cart/Success",
                 CancelUrl = $"{domain}/Cart/Failure",
                 CustomerEmail = _orderEntity.User.Email,
+                ShippingOptions = new List<SessionShippingOptionOptions>
+                {
+                    new SessionShippingOptionOptions
+                    {
+                        ShippingRateData = new SessionShippingOptionShippingRateDataOptions
+                        {
+                            Type = "fixed_amount",
+                            FixedAmount = new SessionShippingOptionShippingRateDataFixedAmountOptions
+                            {
+                                Amount = Convert.ToInt32(_orderEntity.ShippingCost) * 100,
+                                Currency = "usd",
+                            },
+                            DisplayName = "Shipping",
+                            DeliveryEstimate = new SessionShippingOptionShippingRateDataDeliveryEstimateOptions
+                            {
+                                Minimum = new SessionShippingOptionShippingRateDataDeliveryEstimateMinimumOptions
+                                {
+                                    Unit = "business_day",
+                                    Value = 3,
+                                },
+                                Maximum = new SessionShippingOptionShippingRateDataDeliveryEstimateMaximumOptions
+                                {
+                                    Unit = "business_day",
+                                    Value = 7,
+                                },
+                            },
+                        },
+                    },
+                }
             };
 
             var service = new SessionService();
@@ -405,10 +431,10 @@ namespace Dokan.Web.Controllers
                 string orderId = session.ClientReferenceId;
 
                 // If there are no matching orders with the payment... 
-                if(orderId is null)
+                if (orderId is null)
                 {
                     // send email to the admin to report the error
-                    _emailService.SendEmail("Error! New payment with no matching order", 
+                    _emailService.SendEmail("Error! New payment with no matching order",
                         $"A new payment with the session id of {session.Id} and payment id of {session.PaymentIntentId} has been processed that has no matching order. " +
                         $"Please refund the payment and/or contact the user (user's email: {session.CustomerEmail}).",
                         WebConfigurationManager.AppSettings["AdminEmail"]);
@@ -428,10 +454,10 @@ namespace Dokan.Web.Controllers
                 foreach (var item in _orderEntity.OrderItems)
                 {
                     productsList += EmailTemplate.CreateInvoiceProductRow
-                            ($"{EmailTemplate.WebAddress}/Products/{item.Id}/{SEO.CreateSeoFriendlyUrlTitle(item.Product.Title)}", 
-                            item.Product.Image1, 
-                            item.Product.Title, 
-                            item.Quantity, 
+                            ($"{EmailTemplate.WebAddress}/Products/{item.Id}/{SEO.CreateSeoFriendlyUrlTitle(item.Product.Title)}",
+                            item.Product.Image1,
+                            item.Product.Title,
+                            item.Quantity,
                             item.Price);
                 }
 
@@ -494,7 +520,7 @@ namespace Dokan.Web.Controllers
                     ProductTitle = item.Product.Title,
                     Discount = item.Discount,
                     Tax = item.Tax,
-                    Price = item.Price,
+                    Price = $"{item.Total / (double)item.Quantity:0.00}",
                     Quantity = item.Quantity,
                     Total = item.Total,
                 });

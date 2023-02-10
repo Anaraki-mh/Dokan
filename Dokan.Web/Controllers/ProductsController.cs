@@ -198,11 +198,11 @@ namespace Dokan.Web.Controllers
             model.Title = entity.Title;
             model.ShortDescription = entity.ShortDescription;
             model.Description = entity.Description;
-            model.NoDiscountPrice = $"{entity.Price:0.00}";
+            model.NoDiscountPrice = $"{entity.Price + entity.Price * (double)entity.ProductCategory.TaxCategory?.Tax:0.00}";
             model.Price = model.NoDiscountPrice;
 
             if (entity.DiscountCategory != null)
-                model.Price = $"{(entity.Price - entity.Price * (double)entity.DiscountCategory?.Discount):0.00}";
+                model.Price = $"{(entity.Price + entity.Price * (double)entity.ProductCategory.TaxCategory?.Tax - entity.Price * (double)entity.DiscountCategory?.Discount):0.00}";
 
             model.Stock = entity.Stock;
             model.Images.Clear();
