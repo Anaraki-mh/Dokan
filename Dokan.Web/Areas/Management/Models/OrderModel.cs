@@ -18,7 +18,7 @@ namespace Dokan.Web.Areas.Management.Models
         {
             OrderState = OrderState.Pending;
             PaymentState = PaymentState.Pending;
-            CartItems = new List<OrderItemModel>();
+            OrderItems = new List<OrderItemModel>();
             CreateDateTime = DateTime.UtcNow;
         }
 
@@ -66,7 +66,7 @@ namespace Dokan.Web.Areas.Management.Models
         public string Address { get; set; }
 
         [MaxLength(12)]
-        [Display(Name = "Zip Code")]
+        [Display(Name = "Zip / Post Code")]
         public string ZipCode { get; set; }
 
         [MaxLength(15)]
@@ -96,7 +96,7 @@ namespace Dokan.Web.Areas.Management.Models
         public int? CouponId { get; set; }
         public virtual Coupon Coupon { get; set; }
 
-        public virtual List<OrderItemModel> CartItems { get; set; }
+        public virtual List<OrderItemModel> OrderItems { get; set; }
 
         #endregion
     }

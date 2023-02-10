@@ -1,0 +1,198 @@
+﻿@model Dokan.Web.Areas.Management.Models.OrderModel
+
+@{
+    ViewBag.Title = "_Details";
+}
+
+<div class="">
+    <div class="card-body">
+        <h4 class="card-title">Details</h4>
+        <p class="card-description">
+
+        </p>
+
+        <div class="d-flex justify-content-lg-between">
+            <button onclick="CancelAndRefundOrder(@Model.Id)" class="btn btn-gradient-danger">Cancel And Refund Order</button>
+            <button onclick="CancelOrder(@Model.Id)" class="btn btn-gradient-danger">Cancel Order Without Refunding</button>
+        </div>
+
+        <form class="forms-sample">
+
+            <div class="form-group">
+                @Html.Label("Order Id")
+                <input class="form-control" readonly="readonly" value="#@Model.Id.ToString("D5")" />
+            </div>
+            <div class="form-group">
+                @Html.Label("Payment Id")
+                <input class="form-control" readonly="readonly" value="#@Model.TrackingCode" />
+            </div>
+            <div class="form-group">
+                @Html.Label("User Id")
+                <input class="form-control" readonly="readonly" value="#@Model.UserId" />
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.CreateDateTime)
+                @Html.TextBoxFor(x => x.CreateDateTime, new { @class = "form-control", @readonly = true })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.FirstName)
+                @Html.TextBoxFor(x => x.FirstName, new { @class = "form-control", @readonly = true })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.LastName)
+                @Html.TextBoxFor(x => x.LastName, new { @class = "form-control", @readonly = true })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.OrderState)
+                @switch (Model.OrderState)
+                {
+                    case Dokan.Domain.Enums.OrderState.Completed:
+                        <h4 class="text-success">Completed</h4>
+                        break;
+                    case Dokan.Domain.Enums.OrderState.Placed:
+                        <h4 class="text-warning">Placed</h4>
+                        <br />
+                        <div class="d-flex justify-content-center">
+                            <button onclick="ChanegOrderState(@Model.Id, 'Processing')" class="btn btn-gradient-info btn-icon-text"><i class="mdi mdi-arrow-right"></i> Processing</button>
+                            <button onclick="ChanegOrderState(@Model.Id, 'Completed')" class="btn btn-gradient-success btn-icon-text"><i class="mdi mdi-arrow-right"></i> Completed</button>
+                        </div>
+                        break;
+                    case Dokan.Domain.Enums.OrderState.Processing:
+                        <h4 class="text-info">Processing</h4>
+                        <br />
+                        <div class="d-flex justify-content-center">
+                            <button onclick="ChanegOrderState(@Model.Id, 'Completed')" class="btn btn-gradient-success btn-icon-text"><i class="mdi mdi-arrow-right"></i> Completed</button>
+                        </div> break;
+                    case Dokan.Domain.Enums.OrderState.Canceled:
+                        <h4 class="text-danger">Canceled</h4>
+                        break;
+                    default:
+                        <h4 class="text-danger">Undefined</h4>
+                        break;
+                }
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.PaymentState)
+                @switch (Model.PaymentState)
+                {
+                    case Dokan.Domain.Enums.PaymentState.Paid:
+                        <h4 class="text-success">Paid</h4>
+                        break;
+                    case Dokan.Domain.Enums.PaymentState.Pending:
+                        <h4 class="text-light">Pending</h4>
+                        break;
+                    case Dokan.Domain.Enums.PaymentState.PendingRefund:
+                        <h4 class="text-warning">Pending Refund</h4>
+                        break;
+                    case Dokan.Domain.Enums.PaymentState.Refunded:
+                        <h4 class="text-danger">Refunded</h4>
+                        break;
+                    case Dokan.Domain.Enums.PaymentState.Canceled:
+                        <h4 class="text-danger">Canceled</h4>
+                        break;
+                    default:
+                        <h4 class="text-danger">Undefined</h4>
+                        break;
+                }
+            </div>
+
+
+            <table class="table table-responsive-sm table-hover text-center">
+                <thead>
+                    <tr>
+                        <th>Product Id</th>
+                        <th>Product Title</th>
+                        <th>Price</th>
+                        <th>Tax</th>
+                        <th>Discount</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (var item in Model.OrderItems)
+                    {
+                        <tr>
+                            <td>@item.ProductId</td>
+                            <td>@item.ProductTitle</td>
+                            <td>$@item.Price</td>
+                            <td>%@item.Tax</td>
+                            <td>%@item.Discount</td>
+                            <td>@item.Quantity</td>
+                            <td>$@item.Total</td>
+                        </tr>
+                    }
+
+                    <tr>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>@Model.OrderItems.Sum(x => x.Total).ToString("N0")</td>
+                    </tr>
+
+                </tbody>
+            </table>
+
+
+            @if (Model.Coupon != null)
+            {
+                <div class="form-group">
+                    @Html.Label("Coupon Code")
+                    <input class="form-control" readonly="readonly" value="@Model.Coupon.Code" />
+                </div>
+                <div class="form-group">
+                    @Html.Label("Coupon Discount")
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text bg-gradient-primary text-white">%</span>
+                        </div>
+                        <input type="number" class="form-control" readonly="readonly" value="%@Model.Coupon.Discount" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("Coupon Categories")
+                    <input class="form-control" readonly="readonly" value="@String.Join(", ", Model.Coupon.ProductCategories?.Select(c => c.Title).ToList())" />
+                </div>
+            }
+            <div class="form-group">
+                @Html.LabelFor(x => x.Email)
+                @Html.TextBoxFor(x => x.Email, new { @class = "form-control", @readonly = true })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.PhoneNumber)
+                @Html.TextBoxFor(x => x.PhoneNumber, new { @class = "form-control", @readonly = true })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.Country)
+                @Html.TextBoxFor(x => x.Country, new { @class = "form-control", @readonly = true })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.State)
+                @Html.TextBoxFor(x => x.State, new { @class = "form-control", @readonly = true })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.City)
+                @Html.TextBoxFor(x => x.City, new { @class = "form-control", @readonly = true })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.ZipCode)
+                @Html.TextBoxFor(x => x.ZipCode, new { @class = "form-control", @readonly = true })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.DeliveryMethod)
+                <input class="form-control" readonly="readonly" value="@Model.DeliveryMethod.ToString()" />
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.ShippingCost)
+                @Html.TextBoxFor(x => x.ShippingCost, new { @class = "form-control", @readonly = true })
+            </div>
+
+
+        </form>
+    </div>
+</div>

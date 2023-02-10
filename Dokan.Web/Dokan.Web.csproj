@@ -486,6 +486,9 @@
     <Content Include="Areas\Management\Views\File\Update.cshtml" />
     <Content Include="Content\toastr.scss" />
     <Content Include="Content\toastr.less" />
+    <Content Include="Areas\Management\Views\Order\Index.cshtml" />
+    <Content Include="Areas\Management\Views\Order\_List.cshtml" />
+    <Content Include="Areas\Management\Views\Order\_Details.cshtml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\chosen.jquery.js" />
     <Content Include="Scripts\chosen.jquery.min.js" />
@@ -598,12 +601,13 @@
     <Content Include="Views\ProductComment\_Create.cshtml" />
     <Content Include="Views\ProductComment\_List.cshtml" />
     <Content Include="Views\ProductComment\_Reply.cshtml" />
+    <Content Include="Views\Cart\_ShoppingCart.cshtml" />
+    <Content Include="Views\Cart\ShoppingCart.cshtml" />
+    <Content Include="Views\Cart\Checkout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Areas\Management\Views\Order\" />
     <Folder Include="Files\" />
-    <Folder Include="Views\Cart\" />
     <Folder Include="Views\Help\" />
   </ItemGroup>
   <ItemGroup>

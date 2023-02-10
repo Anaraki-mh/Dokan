@@ -155,7 +155,8 @@ namespace Dokan.Web.Areas.Management.Controllers
 
             var options = new RefundCreateOptions
             {
-                PaymentIntent = _orderEntity.TrackingCode
+                PaymentIntent = _orderEntity.TrackingCode,
+                Reason = reason
             };
             var service = new RefundService();
             service.Create(options);
@@ -238,12 +239,12 @@ namespace Dokan.Web.Areas.Management.Controllers
             model.PaymentState = entity.PaymentState;
             model.OrderState = entity.OrderState;
             model.UserId = entity.UserId;
-            model.Coupon = entity.Coupon ?? new Domain.Website.Coupon();
+            model.Coupon = entity.Coupon;
             model.CouponId = entity.CouponId;
 
             foreach (var item in entity.OrderItems)
             {
-                model.CartItems.Add(new OrderItemModel
+                model.OrderItems.Add(new OrderItemModel
                 {
                     Id = item.Id,
                     CartId = model.Id,
