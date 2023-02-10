@@ -1,0 +1,55 @@
+﻿@model Dokan.Web.Models.CartModel
+
+
+<ul class="nav-right">
+
+    <li class="cart-icon">
+
+        <a href="#">
+            <i class="icon_bag_alt"></i>
+            <span>
+                @Model.CartItems.Count
+            </span>
+        </a>
+
+        <div class="cart-hover">
+            <div class="select-items">
+                <table>
+                    <tbody>
+
+                        @foreach (var item in Model.CartItems)
+                        {
+
+                            <tr>
+                                <td class="si-pic"><img src="~/Files/@item.ProductImage" alt="@item.ProductTitle"></td>
+                                <td class="si-text">
+                                    <div class="product-selected">
+                                        <p>$@item.Price x @item.Quantity</p>
+                                        <h6>
+                                            @item.ProductTitle
+                                        </h6>
+                                    </div>
+                                </td>
+                                <td class="si-close">
+                                    <i class="ti-close"></i>
+                                </td>
+                            </tr>
+
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="select-total">
+                <span>total:</span>
+                <h5>$@Model.CartItems.Sum(x => x.Total).ToString("N0")</h5>
+            </div>
+            <div class="select-button">
+                <a href="~/Cart" class="primary-btn view-card">VIEW CART</a>
+                <a href="~/Cart/Checkout" class="primary-btn checkout-btn">CHECK OUT</a>
+            </div>
+        </div>
+    </li>
+
+    <li class="cart-price">$@Model.CartItems.Sum(x => x.Total)</li>
+</ul>

@@ -1,0 +1,213 @@
+﻿@model Dokan.Web.Models.CartModel
+
+@{
+    ViewBag.Title = "Checkout";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="breacrumb-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb-text product-more">
+                    <a href="/"><i class="fa fa-home"></i> Home</a>
+                    <a href="~/Cart"> Cart</a>
+                    <span>Check Out</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<section class="checkout-section spad">
+    <div class="container">
+        <form action="~/Cart/Checkout" method="post" enctype="application/x-www-form-urlencoded" autocomplete="on" class="checkout-form">
+            <div class="row">
+
+
+                <div class="col-lg-6">
+
+                    @if (User.Identity.Name is null || User.Identity.Name == string.Empty)
+                    {
+                        <section>
+                            <h4>Sign Up</h4>
+                            <label class="label">Enter your Email and a Password below, and a new account will be created for you after checking out.</label>
+                            <br />
+                            <br />
+                            <div class="col-12">
+                                <label>
+                                    @Html.LabelFor(x => x.Email)
+                                    <span>*</span>
+                                </label>
+                                @Html.TextBoxFor(x => x.Email)
+                                @Html.ValidationMessageFor(x => x.Email, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="col-12">
+                                <label>
+                                    @Html.LabelFor(x => x.Password)
+                                    <span>*</span>
+                                </label>
+                                @Html.TextBoxFor(x => x.Password, new { type = "password" })
+                                @Html.ValidationMessageFor(x => x.Password, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="checkout-content col-12">
+                                <label class="label d-flex justify-content-center">Or</label>
+                                <a href="#" class="content-btn">Click Here To Login</a>
+                            </div>
+                        </section>
+                    }
+
+
+                    <h4>Billing Details</h4>
+                    <div class="row">
+
+
+                        <div class="col-lg-12">
+                            <label>
+                                @Html.LabelFor(x => x.FirstName)
+                                <span>*</span>
+                            </label>
+                            @Html.TextBoxFor(x => x.FirstName)
+                            @Html.ValidationMessageFor(x => x.FirstName, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="col-lg-12">
+                            <label>
+                                @Html.LabelFor(x => x.LastName)
+                                <span>*</span>
+                            </label>
+                            @Html.TextBoxFor(x => x.LastName)
+                            @Html.ValidationMessageFor(x => x.LastName, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="col-lg-12">
+                            <label>
+                                @Html.LabelFor(x => x.Country)
+                                <span>*</span>
+                            </label>
+                            @Html.TextBoxFor(x => x.Country, new { @readonly = true })
+                            @Html.ValidationMessageFor(x => x.Country, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="col-lg-6">
+                            <label>
+                                @Html.LabelFor(x => x.State)
+                                <span>*</span>
+                            </label>
+                            @Html.TextBoxFor(x => x.State)
+                            @Html.ValidationMessageFor(x => x.State, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="col-lg-6">
+                            <label>
+                                @Html.LabelFor(x => x.City)
+                                <span>*</span>
+                            </label>
+                            @Html.TextBoxFor(x => x.City)
+                            @Html.ValidationMessageFor(x => x.City, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="col-lg-12">
+                            <label>
+                                @Html.LabelFor(x => x.Address)
+                                <span>*</span>
+                            </label>
+                            @Html.TextBoxFor(x => x.Address)
+                            @Html.ValidationMessageFor(x => x.Address, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="col-lg-6">
+                            <label>
+                                @Html.LabelFor(x => x.ZipCode)
+                                <span>*</span>
+                            </label>
+                            @Html.TextBoxFor(x => x.ZipCode)
+                            @Html.ValidationMessageFor(x => x.ZipCode, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="col-lg-6">
+                            <label>
+                                @Html.LabelFor(x => x.PhoneNumber)
+                                <span>*</span>
+                            </label>
+                            @Html.TextBoxFor(x => x.PhoneNumber)
+                            @Html.ValidationMessageFor(x => x.PhoneNumber, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="col-lg-12 justify-content-center">
+                            <label>
+                                @Html.LabelFor(x => x.DeliveryMethod)
+                                <span>*</span>
+                            </label>
+                            <select class="custom-select" data-val="true" data-val-required="The DeliveryMethod field is required." id="DeliveryMethod" name="DeliveryMethod">
+                                <option onselect="UpdateShippingPrice('+')" selected="selected" value="0">Standard Shipping</option>
+                                <option onselect="UpdateShippingPrice('-')" value="1">Pickup</option>
+                            </select>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+
+                    <div class="place-order" style="position: sticky; top: 70px;">
+                        <h4>Your Order</h4>
+                        <div class="order-total">
+                            <ul class="order-table">
+                                <li>Product <span>Total</span></li>
+
+                                @foreach (var item in Model.CartItems)
+                                {
+                                    <li class="fw-normal">
+                                        @item.ProductTitle x @item.Quantity <span>@item.Price</span>
+                                        <span>$</span>
+                                    </li>
+                                }
+
+                                <li class="fw-normal">
+                                    Shipping <span id="shipping">@Model.ShippingCost.ToString("N0")</span>
+                                    <span>$</span>
+                                </li>
+
+                                <li class="total-price">Total <span id="total">@Model.CartItems.Sum(x => x.Total).ToString("N0")</span><span>$</span></li>
+                            </ul>
+
+                            <div class="order-btn">
+                                <button type="submit" class="site-btn place-btn">Place Order</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+<input id="standardShippingPrice" type="hidden" value="@ViewBag.ShippingCost" />
+
+<script>
+    var standardShippingPrice = 0;
+    var shippingCostElement;
+    var totalCostElement;
+
+    $(document).ready(function () {
+        standardShippingPrice = parseInt(document.getElementById("standardShippingPrice").value);
+        shippingCostElement = document.getElementById("shipping");
+        totalCostElement = document.getElementById("total");
+    });
+
+    function UpdateShippingPrice(sign) {
+        if (sign == '-') {
+            shippingCostElement.innerHTML = "0.00";
+            totalCostElement.value = parseInt(totalCostElement.value) - standardShippingPrice;
+        }
+        else {
+            shippingCostElement.innerHTML = standardShippingPrice.toString() + ".00";
+            totalCostElement.value = parseInt(totalCostElement.value) + standardShippingPrice;
+        }
+    }
+
+</script>

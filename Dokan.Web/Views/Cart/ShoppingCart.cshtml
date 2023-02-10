@@ -1,0 +1,163 @@
+﻿@model Dokan.Web.Models.CartModel
+
+@{
+    ViewBag.Title = "ShoppingCart";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="breacrumb-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb-text product-more">
+                    <a href="/"><i class="fa fa-home"></i> Home</a>
+                    <span>Cart</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<section class="shopping-cart spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="cart-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th class="p-name">Product Name</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                                <th><i class="ti-close"></i></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach (var item in Model.CartItems)
+                            {
+
+                                <tr id="cartItem-@item.ProductId">
+                                    <td class="cart-pic first-row"><img src="~/Files/@item.ProductImage" alt="@item.ProductTitle"></td>
+                                    <td class="cart-title first-row">
+                                        <h5>
+                                            @item.ProductTitle
+                                        </h5>
+                                    </td>
+                                    <td class="p-price first-row">
+                                        $@item.Price
+                                    </td>
+                                    <td class="qua-col first-row">
+                                        <div class="quantity">
+                                            <div class="pro-qty">
+                                                <span class="dec qtybtn">-</span>
+
+                                                <input onchange="UpdateQuantity(@item.ProductId, this)" type="text" value="@item.Quantity">
+
+                                                <span class="inc qtybtn">+</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="total-price first-row">$@Model.CartItems.Sum(x => x.Total).ToString("N0")</td>
+                                    <td onclick="RemoveFromCart(@item.ProductId)" class="close-td first-row"><i class="ti-close"></i></td>
+                                </tr>
+
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="cart-buttons">
+                            <a href="~/Products" class="primary-btn continue-shop">Continue shopping</a>
+                            <a onclick="location.reload()" class="primary-btn up-cart cursor-pointer">Update cart</a>
+                        </div>
+                        <div class="discount-coupon">
+                            <h6>Discount Code</h6>
+                            <form class="coupon-form">
+                                @if (Model.CouponId == 0 || Model.CouponId is null)
+                                {
+                                    <input id="couponInput" type="text" placeholder="Enter your discount code">
+                                    <button onclick="ApplyCoupon()" type="button" class="site-btn coupon-btn">Apply</button>
+                                }
+                                else
+                                {
+                                    <input disabled type="text" value="Coupon applied successfully!">
+                                    <button disabled type="button" class="site-btn coupon-btn">Apply</button>
+                                }
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 offset-lg-4">
+                        <div class="proceed-checkout">
+                            <ul>
+                                <li class="cart-total">Total <span>$@Model.CartItems.Sum(x => x.Total).ToString("N0")</span></li>
+                            </ul>
+                            <a href="~/Cart/Checkout" class="proceed-btn">PROCEED TO CHECK OUT</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+
+    function UpdateQuantity(productId, element) {
+        element.value = element.value.replace(/[^0-9]/g, '');
+        number = element.value;
+
+        if (number === 0) {
+            RemoveFromCart(productId);
+            return;
+        }
+
+        $.ajax({
+            type: "GET",
+            url: "/Cart/Add",
+            dataType: "json",
+            data: "productId=" + productId + "&number=" + number
+        });
+    }
+
+    function RemoveFromCart(productId) {
+        $.ajax({
+            type: "GET",
+            url: "/Cart/Add",
+            dataType: "json",
+            data: "productId=" + productId + "&number=0",
+            success: function () {
+                document.getElementById("cartItem-" + productId).remove();
+            }
+        });
+    }
+
+    function ApplyCoupon() {
+        document.getElementById("couponInput").disabled = true;
+
+        $.ajax({
+            type: "GET",
+            url: "/Cart/Add",
+            dataType: "json",
+            data: "productId=" + productId + "&number=0",
+            success: function () {
+                toastr.success('Coupon apllied successfully!');
+                setTimeout(function () {
+                    location.reload();
+                }, 2000);
+            },
+            error: function () {
+                toastr.error("Coupon doesn't exist or has been expired");
+            }
+        });
+    }
+
+</script>
