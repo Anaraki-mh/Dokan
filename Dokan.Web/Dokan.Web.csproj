@@ -201,6 +201,7 @@
     <Compile Include="App_Start\NinjectWebCommon.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="Areas\Management\Controllers\ManagementBaseController.cs" />
     <Compile Include="Areas\Management\Controllers\OrderController.cs" />
     <Compile Include="Areas\Management\Controllers\ProductCommentController.cs" />
     <Compile Include="Areas\Management\Controllers\FileController.cs" />
@@ -285,6 +286,9 @@
     <Content Include="Areas\Management\Assets\vendors\js\vendor.bundle.base.js" />
     <Content Include="Areas\Management\Views\BlogCategory\Index.cshtml" />
     <Content Include="Areas\Management\Views\BlogCategory\_List.cshtml" />
+    <Content Include="Assets\img\flag-1.jpg" />
+    <Content Include="Assets\img\footer-logo.png" />
+    <Content Include="Assets\img\logo.png" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
@@ -299,6 +303,33 @@
     <Content Include="EmailTemplates\Update.html" />
     <Content Include="EmailTemplates\Layout.html" />
     <Content Include="favicon.ico" />
+    <Content Include="Files\benifitsone.png" />
+    <Content Include="Files\benifitstwo.png" />
+    <Content Include="Files\benifitsthree.png" />
+    <Content Include="Files\kids.jpg" />
+    <Content Include="Files\mennewest.jpg" />
+    <Content Include="Files\dealsbanner.jpg" />
+    <Content Include="Files\womennewest.jpg" />
+    <Content Include="Files\women.jpg" />
+    <Content Include="Files\men.jpg" />
+    <Content Include="Files\blogpostthree.jpg" />
+    <Content Include="Files\blogposttwo.jpg" />
+    <Content Include="Files\blogpostone.jpg" />
+    <Content Include="Files\carouselone.jpg" />
+    <Content Include="Files\carouseltwo.jpg" />
+    <Content Include="Files\carouselthree.jpg" />
+    <Content Include="Files\productten.jpg" />
+    <Content Include="Files\productnine.jpg" />
+    <Content Include="Files\producteight.jpg" />
+    <Content Include="Files\productseven.jpg" />
+    <Content Include="Files\productsix.jpg" />
+    <Content Include="Files\productfive.jpg" />
+    <Content Include="Files\productfour.jpg" />
+    <Content Include="Files\productthree.jpg" />
+    <Content Include="Files\producttwo.jpg" />
+    <Content Include="Files\productone.jpg" />
+    <Content Include="Files\producteleven.jpg" />
+    <Content Include="Files\producttwelve.jpg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -516,11 +547,6 @@
     <Content Include="Assets\fonts\ElegantIcons.svg" />
     <Content Include="Assets\fonts\fontawesome-webfont.svg" />
     <Content Include="Assets\fonts\themify.svg" />
-    <Content Include="Assets\img\footer-logo.png" />
-    <Content Include="Assets\img\icon-1.png" />
-    <Content Include="Assets\img\icon-2.png" />
-    <Content Include="Assets\img\icon-3.png" />
-    <Content Include="Assets\img\logo.png" />
     <Content Include="Assets\js\bootstrap.min.js" />
     <Content Include="Assets\js\imagesloaded.pkgd.min.js" />
     <Content Include="Assets\js\jquery-3.3.1.min.js" />
@@ -607,7 +633,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Files\" />
+    <Folder Include="Areas\Management\Views\ManagementBase\" />
     <Folder Include="Views\Help\" />
   </ItemGroup>
   <ItemGroup>

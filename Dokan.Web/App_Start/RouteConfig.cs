@@ -21,23 +21,39 @@ namespace Dokan.Web
             );
 
             routes.MapRoute(
-            name: "Category",
-            url: "{controller}/Category/{id}/{title}",
+            name: "ProductCategory",
+            url: "Products/Category/{id}/{title}",
+            defaults: new { controller = "Products", action = "Category", id = UrlParameter.Optional },
             namespaces: new[] { "Dokan.Web.Controllers" }
             );
 
             routes.MapRoute(
-            name: "Details",
-            url: "{controller}/Details/{id}/{title}",
+            name: "BlogCategory",
+            url: "Blog/Category/{id}/{title}",
+            defaults: new { controller = "Blog", action = "Category", id = UrlParameter.Optional },
+            namespaces: new[] { "Dokan.Web.Controllers" }
+            );
+
+            routes.MapRoute(
+            name: "ProductDetails",
+            url: "Products/Details/{id}/{title}",
+            defaults: new { controller = "Products", action = "Details", title = UrlParameter.Optional },
+            namespaces: new[] { "Dokan.Web.Controllers" }
+            );
+
+            routes.MapRoute(
+            name: "BlogDetails",
+            url: "Blog/Details/{id}/{title}",
             defaults: new { controller = "Blog", action = "Details", title = UrlParameter.Optional },
             namespaces: new[] { "Dokan.Web.Controllers" }
             );
 
+
             routes.MapRoute(
-                name: "Default",
-                url: "Cart/{action}",
-                defaults: new { controller = "Cart", action = "ShoppingCart" },
-                namespaces: new[] { "Dokan.Web.Controllers" }
+            name: "Cart",
+            url: "Cart",
+            defaults: new { controller = "Cart", Action = "ShoppingCart" },
+            namespaces: new[] { "Dokan.Web.Controllers" }
             );
 
             routes.MapRoute(
