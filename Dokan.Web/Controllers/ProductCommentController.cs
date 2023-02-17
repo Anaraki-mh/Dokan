@@ -13,6 +13,7 @@ using System.Web.Mvc;
 
 namespace Dokan.Web.Controllers
 {
+    [Authorize]
     public class ProductCommentController : Controller
     {
         #region Fields and Properties
@@ -40,6 +41,7 @@ namespace Dokan.Web.Controllers
 
         #region Methods
 
+        [AllowAnonymous]
         public async Task<ActionResult> List(int page = 1)
         {
             int numberOfResults = 10;
@@ -69,6 +71,7 @@ namespace Dokan.Web.Controllers
             return View("_List", convertedEntityList);
         }
 
+        [AllowAnonymous]
         public ActionResult Create()
         {
             _model = new ProductCommentModel();
