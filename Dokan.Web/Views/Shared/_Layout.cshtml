@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="zxx">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -30,9 +30,9 @@
 
 <body>
     <!-- Page Preloder -->
-    <div id="preloder">
-        <div class="loader"></div>
-    </div>
+    @*<div id="preloder">
+            <div class="loader"></div>
+        </div>*@
 
     <!-- Header Section Begin -->
     <header class="header-section">
@@ -49,13 +49,24 @@
                     </div>
                 </div>
                 <div class="ht-right">
-                    <a href="#" class="login-panel"><i class="fa fa-user"></i>Login</a>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <a href="#" class="login-panel"><i class="fa fa-user"></i>Profile</a>
+                    }
+                    else
+                    {
+                        <a href="~/Account/Login?ReturnUrl=%2F" class="login-panel"><i class="fa fa-user"></i>Login</a>
+                    }
+                    <div class="lan-selector">
+                        <select class="language_drop" name="countries" id="countries" style="width:300px;">
+                            <option value='yt' data-image="/Assets/img/flag-1.jpg" data-imagecss="flag yt"
+                                    data-title="English">
+                                English
+                            </option>
+                        </select>
+                    </div>
                     <div class="top-social">
-                        @Dokan.Web.Helpers.LayoutHelper.HeaderSocialLinks
-                        <a href="#"><i class="ti-facebook"></i></a>
-                        <a href="#"><i class="ti-twitter-alt"></i></a>
-                        <a href="#"><i class="ti-linkedin"></i></a>
-                        <a href="#"><i class="ti-pinterest"></i></a>
+                        @Html.Raw(Dokan.Web.Helpers.LayoutHelper.HeaderSocialLinks)
                     </div>
                 </div>
             </div>
@@ -65,7 +76,7 @@
                 <div class="row">
                     <div class="col-lg-2 col-md-2">
                         <div class="logo">
-                            <a href="./index.html">
+                            <a href="/">
                                 <img src="~/Assets/img/logo.png" alt="">
                             </a>
                         </div>
@@ -77,12 +88,12 @@
                                 </button>*@
 
                             <div class="input-group mw-100">
-                                <input type="text" placeholder="What do you need?">
+                                <input type="text" placeholder="What do you need?" disabled>
                                 <button type="button"><i class="ti-search"></i></button>
                             </div>
                         </div>
                     </div>
-                    
+
                     <div id="cart" class="col-lg-3 text-right col-md-3">
 
                         <ul class="nav-right">
@@ -108,7 +119,7 @@
                                                         <i class="ti-close"></i>
                                                     </td>
                                                 </tr>
-                                               
+
                                             </tbody>
                                         </table>
                                     </div>
@@ -131,7 +142,21 @@
             </div>
         </div>
         <div class="nav-item">
-            <div class="container d-flex justify-content-center">
+            <div class="container d-block d-md-flex justify-content-md-center">
+
+                <div class="nav-depart">
+                    <div class="depart-btn">
+                        <i class="ti-menu"></i>
+                        <span>All Categories</span>
+                        <ul class="depart-hover">
+                            @foreach (var item in Dokan.Web.Helpers.LayoutHelper.ProductCategoryParentsList)
+                            {
+                                <li><a href="/Products/Category/@item.Id/@item.Title">@item.Title</a></li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+
                 <nav class="nav-menu mobile-menu">
                     <ul>
                         @foreach (var menu in Dokan.Web.Helpers.LayoutHelper.MenuParentsList)
@@ -159,6 +184,7 @@
 
                     </ul>
                 </nav>
+
                 <div id="mobile-menu-wrap"></div>
             </div>
         </div>
@@ -197,11 +223,7 @@
                             <li>Email: @Dokan.Web.Helpers.LayoutHelper.Email</li>
                         </ul>
                         <div class="footer-social">
-                            @Dokan.Web.Helpers.LayoutHelper.FooterSocialLinks
-                            <a href="#"><i class="fa fa-facebook"></i></a>
-                            <a href="#"><i class="fa fa-instagram"></i></a>
-                            <a href="#"><i class="fa fa-twitter"></i></a>
-                            <a href="#"><i class="fa fa-pinterest"></i></a>
+                            @Html.Raw(Dokan.Web.Helpers.LayoutHelper.FooterSocialLinks)
                         </div>
                     </div>
                 </div>
@@ -211,12 +233,7 @@
                             @Dokan.Web.Helpers.LayoutHelper.FooterWidgetOneTitle
                         </h5>
                         <ul>
-                            @Dokan.Web.Helpers.LayoutHelper.FooterWidgetOneList
-                            <li><a href="#">About Us</a></li>
-                            <li><a href="#">Contact Us</a></li>
-                            <li><a href="#">Terms Of Service</a></li>
-                            <li><a href="#">Privacy Policy</a></li>
-                            <li><a href="#">FAQ</a></li>
+                            @Html.Raw(Dokan.Web.Helpers.LayoutHelper.FooterWidgetOneList)
                         </ul>
                     </div>
                 </div>
@@ -226,11 +243,7 @@
                             @Dokan.Web.Helpers.LayoutHelper.FooterWidgetTwoTitle
                         </h5>
                         <ul>
-                            @Dokan.Web.Helpers.LayoutHelper.FooterWidgetTwoList
-                            <li><a href="#">Log In / Sign Up</a></li>
-                            <li><a href="#">My Account</a></li>
-                            <li><a href="#">Shopping Cart</a></li>
-                            <li><a href="#">Shop</a></li>
+                            @Html.Raw(Dokan.Web.Helpers.LayoutHelper.FooterWidgetTwoList)
                         </ul>
                     </div>
                 </div>
@@ -277,16 +290,38 @@
 
     <script>
         $(document).ready(function () {
+            LoadCartPartial();
+        });
+
+        function LoadCartPartial() {
             $.ajax({
                 type: "GET",
-                url: "/Cart",
+                url: "/Cart/ShoppingCart",
                 dataType: "html",
                 data: "partial=true",
                 success: function (data) {
                     document.getElementById("cart").innerHTML = data;
                 }
             });
-        });
+        }
+
+        function RemoveFromCart(productId) {
+            $.ajax({
+                type: "GET",
+                url: "/Cart/Add",
+                dataType: "json",
+                data: "productId=" + productId + "&number=0",
+                success: function (data) {
+                    document.getElementById("cartItem-" + productId).remove();
+                }
+            });
+            toastr.success('Removed from cart');
+            document.getElementById("cartItem-" + productId).remove();
+            setTimeout(function () {
+                LoadCartPartial();
+            }, 500);
+        }
+
     </script>
 
     @*@Scripts.Render("~/bundles/jquery")*@
