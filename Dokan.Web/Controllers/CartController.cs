@@ -101,7 +101,7 @@ namespace Dokan.Web.Controllers
                 // Create an Order entity and a cookie and set the id of the order entity as the value of the cookie
                 _orderEntity = new Order()
                 {
-                    UserId = User.Identity.GetUserId() ?? "",
+                    UserId = User.Identity.GetUserId() ?? _userManager.FindByEmail("Guest@Dokan.com").Id,
                     PaymentState = PaymentState.Pending,
                     OrderState = OrderState.Pending,
                     DeliveryMethod = DeliveryMethod.StandardShipping,
@@ -109,7 +109,7 @@ namespace Dokan.Web.Controllers
                 };
                 await _orderService.CreateAsync(_orderEntity);
 
-                cartIdCookie = WriteCookie("cartId", string.Concat(_orderEntity.Id.ToString(), _random.Next(10000).ToString("D6")), 30);
+                cartIdCookie = WriteCookie("cartId", string.Concat(_orderEntity.Id.ToString(), _random.Next(10000).ToString("D4")), 30);
 
                 Response.Cookies.Add(cartIdCookie);
             }
@@ -118,7 +118,7 @@ namespace Dokan.Web.Controllers
             OrderEntityToModel(_orderEntity, ref _cartModel);
 
             if (partial == true)
-                return View("_ShoppingCart", _cartModel);
+                return PartialView("_ShoppingCart", _cartModel);
 
             return View(_cartModel);
         }
@@ -182,6 +182,9 @@ namespace Dokan.Web.Controllers
         [HttpGet]
         public async Task<ActionResult> ApplyCoupon(string couponCode)
         {
+            if (couponCode == "")
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
             // Get the cartId from the cookie
             HttpCookie cartIdCookie = Request.Cookies["cartId"];
             int cartId = 0;
@@ -196,13 +199,20 @@ namespace Dokan.Web.Controllers
             // Find the Coupon by its code and check if it exists or whether or not the user has already used this coupon/discount code
             var couponEntity = await _couponService.SearchAsync(couponCode);
 
-            if (couponEntity is null ||
+
+            var userid = User.Identity.GetUserId();
+
+
+            if (couponEntity?.Id == 0 ||
                 couponEntity?.Users?.FirstOrDefault(x => x.Id == User.Identity.GetUserId()) != null)
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
             // Add current user to the coupon users and increment its usage count
             var user = await _userService.FindByIdAsync(User.Identity.GetUserId());
-            couponEntity.Users.Add(user);
+
+            if (user?.Id != _userManager.FindByEmail("Guest@Dokan.com").Id)
+                couponEntity.Users.Add(user);
+            
             couponEntity.UsageCount++;
             await _couponService.UpdateAsync(couponEntity);
 
@@ -271,14 +281,16 @@ namespace Dokan.Web.Controllers
             }
 
             string userId = User.Identity.GetUserId();
-            if (userId != null && userId != _orderEntity.UserId)
+            bool isGuest = userId == _userManager.FindByEmail("Guest@Dokan.com").Id ? true : false;
+
+            if ((userId != null || !isGuest) && userId != _orderEntity.UserId)
             {
                 ViewBag.ErrorMessage = "Invalid Checkout Request. Orders can not be checked out by any user other than the one associated with the order.";
                 return View(model);
             }
 
             // Create an account if the user doesnt have an account
-            if (_userManager.FindByEmail(model.Email) is null && (model.Password != string.Empty || model.Password != null))
+            if (isGuest && (model.Password != string.Empty || model.Password != null))
             {
                 var user = new User
                 {
@@ -297,6 +309,8 @@ namespace Dokan.Web.Controllers
                         ZipCode = model.ZipCode
                     }
                 };
+                user.UsedCoupons.Add(_orderEntity.Coupon);
+
                 _userManager.Create(user, model.Password);
                 _orderEntity.UserId = user.Id;
             }
@@ -305,7 +319,7 @@ namespace Dokan.Web.Controllers
                 ViewBag.ErrorMessage = "This Email is already in use, please log on if you aleady have an account with this email or create a new account";
                 return View(model);
             }
-
+            
             // Save the billing and shipping info 
             _orderEntity.FirstName = model.FirstName;
             _orderEntity.LastName = model.LastName;
