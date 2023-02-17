@@ -13,3 +13,20 @@
 @Html.Action("MensNewestSection", "Home")
 
 @Html.Action("NewestBlogsSection", "Home")
+
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script src="~/Scripts/toastr.min.js"></script>
+<script>
+    function AddToCart(id) {
+        $.ajax({
+            type: "GET",
+            url: "/Cart/Add",
+            dataType: "html",
+            data: "productId=" + id + "&number=1",
+            success: function (data) {
+                toastr.success('Product added to cart!');
+                LoadCartPartial();
+            }
+        });
+    }
+</script>

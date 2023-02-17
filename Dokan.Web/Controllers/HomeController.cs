@@ -112,13 +112,20 @@ namespace Dokan.Web.Controllers
 
         public ActionResult DealsBannerSection()
         {
-            var discountEntity = Task.Run(() => _discountCategoryService.ListAsync()).Result
-                .Where(x => x.IsActive == true && x.ExpiryDateTime > DateTime.UtcNow)
-                .OrderBy(x => x.Discount)
-                .First();
+            var discountEntities = Task.Run(() => _discountCategoryService.ListAsync()).Result;
 
             DiscountCategoryModel model = new DiscountCategoryModel();
-            DiscountCategoryEntityToModel(discountEntity, ref model);
+
+            if (discountEntities.Count > 0)
+            {
+                var discountEntity = discountEntities
+                    .Where(x => x.IsActive == true && x.ExpiryDateTime > DateTime.UtcNow)
+                    .OrderBy(x => x.Discount)
+                    .First();
+                DiscountCategoryEntityToModel(discountEntity, ref model);
+            }
+
+            ViewBag.DealsBanner = Task.Run(() => _kvContentService.GetValueByKeyAsync("@deals-banner")).Result;
 
             return PartialView("_DealsBanner", model);
         }
@@ -176,7 +183,7 @@ namespace Dokan.Web.Controllers
             ViewBag.BenifitsThreeDescription = Task.Run(() => _kvContentService.GetValueByKeyAsync("@benifits-three-description")).Result;
             ViewBag.BenifitsThreeImage = Task.Run(() => _kvContentService.GetValueByKeyAsync("@benifits-three-image")).Result;
 
-            return PartialView("_NewestBlogs", blogPostModels);
+            return PartialView("_NewestBlogsSection", blogPostModels);
         }
 
         public async Task<ActionResult> Contact()
