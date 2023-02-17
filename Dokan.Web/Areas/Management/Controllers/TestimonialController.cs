@@ -16,7 +16,7 @@ using System.Web.UI;
 
 namespace Dokan.Web.Areas.Management.Controllers
 {
-    public class TestimonialController : Controller
+    public class TestimonialController : ManagementBaseController
     {
         #region Properties and fields
 

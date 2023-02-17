@@ -19,7 +19,7 @@ using File = Dokan.Domain.Website.File;
 
 namespace Dokan.Web.Areas.Management.Controllers
 {
-    public class FileController : Controller
+    public class FileController : ManagementBaseController
     {
         #region Properties and fields
 

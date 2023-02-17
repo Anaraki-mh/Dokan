@@ -17,7 +17,7 @@ using System.Web.UI;
 
 namespace Dokan.Web.Areas.Management.Controllers
 {
-    public class MessageController : Controller
+    public class MessageController : ManagementBaseController
     {
         #region Properties and fields
 

@@ -16,7 +16,7 @@ using System.Web.UI;
 
 namespace Dokan.Web.Areas.Management.Controllers
 {
-    public class CarouselController : Controller
+    public class CarouselController : ManagementBaseController
     {
         #region Properties and fields
 

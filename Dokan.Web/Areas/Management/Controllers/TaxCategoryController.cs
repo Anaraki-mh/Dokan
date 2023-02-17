@@ -16,7 +16,7 @@ using System.Web.UI;
 
 namespace Dokan.Web.Areas.Management.Controllers
 {
-    public class TaxCategoryController : Controller
+    public class TaxCategoryController : ManagementBaseController
     {
         #region Properties and fields
 

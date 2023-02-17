@@ -15,7 +15,7 @@ using System.Web.UI;
 
 namespace Dokan.Web.Areas.Management.Controllers
 {
-    public class MenuController : Controller
+    public class MenuController : ManagementBaseController
     {
         #region Properties and fields
 

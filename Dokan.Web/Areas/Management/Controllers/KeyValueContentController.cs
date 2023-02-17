@@ -17,7 +17,7 @@ using System.Web.UI;
 
 namespace Dokan.Web.Areas.Management.Controllers
 {
-    public class KeyValueContentController : Controller
+    public class KeyValueContentController : ManagementBaseController
     {
         #region Properties and fields
 

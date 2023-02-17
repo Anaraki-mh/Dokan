@@ -18,7 +18,7 @@ using System.Web.UI;
 
 namespace Dokan.Web.Areas.Management.Controllers
 {
-    public class ProductCommentController : Controller
+    public class ProductCommentController : ManagementBaseController
     {
         #region Properties and fields
 

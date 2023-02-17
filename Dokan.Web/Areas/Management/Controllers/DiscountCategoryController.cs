@@ -11,7 +11,7 @@ using System.Web.Mvc;
 
 namespace Dokan.Web.Areas.Management.Controllers
 {
-    public class DiscountCategoryController : Controller
+    public class DiscountCategoryController : ManagementBaseController
     {
         #region Properties and fields
 

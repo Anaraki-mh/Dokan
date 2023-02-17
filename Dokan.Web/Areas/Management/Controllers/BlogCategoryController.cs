@@ -2,6 +2,7 @@
 using Dokan.Domain.Website;
 using Dokan.Services;
 using Dokan.Web.Areas.Management.Models;
+using Dokan.Web.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,7 +16,7 @@ using System.Web.UI;
 
 namespace Dokan.Web.Areas.Management.Controllers
 {
-    public class BlogCategoryController : Controller
+    public class BlogCategoryController : ManagementBaseController
     {
         #region Properties and fields
 

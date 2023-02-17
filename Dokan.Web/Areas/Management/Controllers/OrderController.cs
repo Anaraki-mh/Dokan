@@ -18,7 +18,7 @@ using System.Web.Mvc;
 
 namespace Dokan.Web.Areas.Management.Controllers
 {
-    public class OrderController : Controller
+    public class OrderController : ManagementBaseController
     {
         #region Fields and Properties
 

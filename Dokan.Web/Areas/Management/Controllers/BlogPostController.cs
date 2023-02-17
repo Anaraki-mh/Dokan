@@ -16,7 +16,7 @@ using System.Web.UI;
 
 namespace Dokan.Web.Areas.Management.Controllers
 {
-    public class BlogPostController : Controller
+    public class BlogPostController : ManagementBaseController
     {
         #region Properties and fields
 
