@@ -8,7 +8,7 @@
     <div class="card-body">
         <h4 class="card-title">Details</h4>
         <p class="card-description">
-            
+
         </p>
         <form class="forms-sample">
 
@@ -20,7 +20,9 @@
                 @Html.LabelFor(x => x.ContentValue)
                 @Html.TextBoxFor(x => x.ContentValue, new { @class = "form-control", @readonly = true })
                 <br />
-                @Html.Raw(Model.ContentValue)
+                <div class="w-100" style="overflow: auto;">
+                    @Html.Raw(Model.ContentValue)
+                </div>
             </div>
             <div class="form-group">
                 @Html.LabelFor(x => x.Description)

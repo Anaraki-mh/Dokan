@@ -9,7 +9,6 @@
         <tr>
             <th>Index</th>
             <th>Content Key</th>
-            <th>Content Value</th>
             <th>Description</th>
             <th>Create/Update Date (UTC)</th>
             <th>Actions</th>
@@ -22,9 +21,6 @@
             <tr>
                 <td>@item.Index</td>
                 <td>@item.ContentKey</td>
-                <td>
-                    @Dokan.WebEssentials.Typography.TrimString(item.ContentValue, 75);
-                </td>
                 <td>@item.Description</td>
                 <td>@item.UpdateDateTime</td>
                 <td>

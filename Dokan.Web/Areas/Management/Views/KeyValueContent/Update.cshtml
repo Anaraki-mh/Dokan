@@ -28,11 +28,6 @@
                 <label class="m-3">
                     @Html.ValidationMessageFor(x => x.ContentValue, "", new { @class = "text-danger", @placeholder = "Contnent Value" })
                 </label>
-
-                <script>
-                    ClassicEditor
-                        .create(document.querySelector('#ContentValue'));
-                </script>
             </div>
             <div class="form-group">
                 @Html.LabelFor(x => x.Description)
