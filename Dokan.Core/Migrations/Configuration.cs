@@ -18,6 +18,20 @@
 
             //  You can use the DbSet<T>.AddOrUpdate() helper extension method
             //  to avoid creating duplicate seed data.
+
+            SeedData seed = new SeedData(context);
+
+            seed.Roles();
+            seed.Users();
+            seed.Menu();
+            seed.KeyValueContent();
+            seed.Carousel();
+            seed.ProductCategories();
+            seed.Products();
+            seed.BlogCategories();
+            seed.BlogPosts();
+            //seed.Testimonials();
+
         }
     }
 }
