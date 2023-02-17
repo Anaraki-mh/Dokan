@@ -51,7 +51,7 @@ namespace Dokan.Web.Controllers
         {
             ViewBag.Active = "Shop";
             ViewBag.Title = "Products";
-            ViewBag.OnlyDeals = false;
+            ViewBag.OnlyDeals = "false";
 
             return View(0);
         }
@@ -61,7 +61,7 @@ namespace Dokan.Web.Controllers
         {
             ViewBag.Active = "Shop";
             ViewBag.Title = "Products";
-            ViewBag.OnlyDeals = false;
+            ViewBag.OnlyDeals = "false";
 
             ProductCategory category = await _productCategoryService.FindByIdAsync(id);
 
@@ -80,7 +80,7 @@ namespace Dokan.Web.Controllers
         public ActionResult Deals()
         {
             ViewBag.Title = "Deals";
-            ViewBag.OnlyDeals = true;
+            ViewBag.OnlyDeals = "true";
 
             return View("Index");
         }
@@ -144,6 +144,7 @@ namespace Dokan.Web.Controllers
         public async Task<ActionResult> Filters()
         {
             List<ProductCategory> entities = await _productCategoryService.ListAsync();
+            _allEntities = await _productService.ListAsync();
             entities = entities.OrderBy(x => x.Priority).ToList();
 
             ViewBag.MinPrice = Convert.ToInt32(Math.Ceiling(_allEntities.Select(x => x.Price).Min()));
@@ -198,7 +199,9 @@ namespace Dokan.Web.Controllers
             model.Title = entity.Title;
             model.ShortDescription = entity.ShortDescription;
             model.Description = entity.Description;
-            model.NoDiscountPrice = $"{entity.Price + entity.Price * (double)entity.ProductCategory.TaxCategory?.Tax:0.00}";
+
+            var tax = entity.ProductCategory.TaxCategory?.Tax ?? 0;
+            model.NoDiscountPrice = $"{entity.Price + entity.Price * (double)tax:0.00}";
             model.Price = model.NoDiscountPrice;
 
             if (entity.DiscountCategory != null)
@@ -211,7 +214,11 @@ namespace Dokan.Web.Controllers
             model.Images.Add(entity.Image3);
             model.Images.Add(entity.Image4);
             model.Images.Add(entity.Image5);
-            model.Rating = entity.ProductComments?.Average(x => x.Rating) ?? 5;
+            model.Rating = 5;
+
+            if (entity.ProductComments.Count > 0)
+                model.Rating = (double)entity.ProductComments?.Average(x => x.Rating);
+
             model.CategoryId = entity.ProductCategoryId;
             model.CategoryTitle = entity.ProductCategory?.Title ?? " - ";
             model.CreateDateTime = entity.CreateDateTime;

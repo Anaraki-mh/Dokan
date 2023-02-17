@@ -36,11 +36,11 @@
 
                         <div class="product-thumbs">
                             <div class="product-thumbs-track ps-slider owl-carousel">
-
-                                @foreach (var image in Model.Images)
+                                @foreach (var image in Model.Images.Where(x => x != null).ToList())
                                 {
-                                    <div class="pt active" data-imgbigurl="~/Files/@image">
-                                        <img src="~/Files/@image" alt="@Model.Title">
+
+                                    <div class="pt active" data-imgbigurl="/Files/@image">
+                                        <img src="/Files/@image" alt="@Model.Title">
                                     </div>
                                 }
 
@@ -87,7 +87,7 @@
                                     <input type="text" value="1" id="quantity">
                                 </div>
 
-                                <a href="#" class="primary-btn pd-cart">Add To Cart</a>
+                                <a href="#" onclick="AddToCart(@Model.Id)" class="primary-btn pd-cart">Add To Cart</a>
 
                             </div>
                             <ul class="pd-tags">
@@ -125,9 +125,9 @@
                             <li>
                                 <a data-toggle="tab" href="#tab-2" role="tab">SPECIFICATIONS</a>
                             </li>
-                            <li>
+                            @*<li>
                                 <a data-toggle="tab" href="#tab-3" role="tab">Customer Reviews (02)</a>
-                            </li>
+                            </li>*@
                         </ul>
                     </div>
                     <div class="tab-item-content">
@@ -195,7 +195,7 @@
                                 </div>
                             </div>
 
-                            <div class="tab-pane fade" id="tab-3" role="tabpanel">
+                            @*<div class="tab-pane fade" id="tab-3" role="tabpanel">
                                 <div class="customer-review-option">
 
                                     <div class="personal-rating">
@@ -239,7 +239,7 @@
 
 
                                 </div>
-                            </div>
+                            </div>*@
                         </div>
                     </div>
                 </div>
@@ -248,3 +248,21 @@
     </div>
 </section>
 <!-- Product Shop Section End -->
+
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script src="~/Scripts/toastr.min.js"></script>
+<script>
+    function AddToCart(id) {
+        var quantity = document.getElementById("quantity").value;
+        $.ajax({
+            type: "GET",
+            url: "/Cart/Add",
+            dataType: "html",
+            data: "productId=" + id + "&number=" + quantity,
+            success: function (data) {
+                toastr.success('Product added to cart!');
+                LoadCartPartial();
+            }
+        });
+    }
+</script>

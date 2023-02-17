@@ -55,7 +55,7 @@
 
                             <div class="checkout-content col-12">
                                 <label class="label d-flex justify-content-center">Or</label>
-                                <a href="#" class="content-btn">Click Here To Login</a>
+                                <a href="~/Account/Login?ReturnUrl=%2FCart%2FCheckout" class="content-btn">Click Here To Login</a>
                             </div>
                         </section>
                     }
@@ -142,9 +142,9 @@
                                 @Html.LabelFor(x => x.DeliveryMethod)
                                 <span>*</span>
                             </label>
-                            <select class="custom-select" data-val="true" data-val-required="The DeliveryMethod field is required." id="DeliveryMethod" name="DeliveryMethod">
-                                <option onselect="UpdateShippingPrice('+')" selected="selected" value="0">Standard Shipping</option>
-                                <option onselect="UpdateShippingPrice('-')" value="1">Pickup</option>
+                            <select onchange="UpdateShippingPrice()" class="custom-select" data-val="true" data-val-required="The DeliveryMethod field is required." id="DeliveryMethod" name="DeliveryMethod">
+                                <option selected="selected" value="0">Standard Shipping</option>
+                                <option value="1">Pickup</option>
                             </select>
                         </div>
 
@@ -172,7 +172,7 @@
                                     <span>$</span>
                                 </li>
 
-                                <li class="total-price">Total <span id="total">@Model.CartItems.Sum(x => x.Total).ToString("N0")</span><span>$</span></li>
+                                <li class="total-price">Total <span id="total">@((Model.CartItems.Sum(x => x.Total) + Model.ShippingCost).ToString("N0"))</span><span>$</span></li>
                             </ul>
 
                             <div class="order-btn">
@@ -189,24 +189,23 @@
 <input id="standardShippingPrice" type="hidden" value="@ViewBag.ShippingCost" />
 
 <script>
-    var standardShippingPrice = 0;
-    var shippingCostElement;
-    var totalCostElement;
 
-    $(document).ready(function () {
+    function UpdateShippingPrice() {
         standardShippingPrice = parseInt(document.getElementById("standardShippingPrice").value);
         shippingCostElement = document.getElementById("shipping");
         totalCostElement = document.getElementById("total");
-    });
 
-    function UpdateShippingPrice(sign) {
-        if (sign == '-') {
-            shippingCostElement.innerHTML = "0.00";
-            totalCostElement.value = parseInt(totalCostElement.value) - standardShippingPrice;
+        var value = document.getElementById("DeliveryMethod").value;
+
+        if (value == 1) {
+            shippingCostElement.textContent = "0.00";
+            total = parseFloat(totalCostElement.textContent);
+            totalCostElement.textContent = total - standardShippingPrice;
         }
         else {
-            shippingCostElement.innerHTML = standardShippingPrice.toString() + ".00";
-            totalCostElement.value = parseInt(totalCostElement.value) + standardShippingPrice;
+            shippingCostElement.textContent = standardShippingPrice.toString() + ".00";
+            total = parseFloat(totalCostElement.textContent);
+            totalCostElement.textContent = total + standardShippingPrice;
         }
     }
 

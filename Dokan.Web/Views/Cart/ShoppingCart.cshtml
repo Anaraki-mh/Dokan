@@ -51,13 +51,11 @@
                                         $@item.Price
                                     </td>
                                     <td class="qua-col first-row">
-                                        <div class="quantity">
+                                        <div class="quantity" onclick="UpdateQuantity(@item.ProductId)">
                                             <div class="pro-qty">
-                                                <span class="dec qtybtn">-</span>
 
-                                                <input onchange="UpdateQuantity(@item.ProductId, this)" type="text" value="@item.Quantity">
+                                                <input id="p-@item.ProductId" type="text" value="@item.Quantity">
 
-                                                <span class="inc qtybtn">+</span>
                                             </div>
                                         </div>
                                     </td>
@@ -74,7 +72,7 @@
                 <div class="row">
                     <div class="col-lg-4">
                         <div class="cart-buttons">
-                            <a href="~/Products" class="primary-btn continue-shop">Continue shopping</a>
+                            <a href="~/Products/Index" class="primary-btn continue-shop">Continue shopping</a>
                             <a onclick="location.reload()" class="primary-btn up-cart cursor-pointer">Update cart</a>
                         </div>
                         <div class="discount-coupon">
@@ -99,7 +97,7 @@
                             <ul>
                                 <li class="cart-total">Total <span>$@Model.CartItems.Sum(x => x.Total).ToString("N0")</span></li>
                             </ul>
-                            <a href="~/Cart/Checkout" class="proceed-btn">PROCEED TO CHECK OUT</a>
+                            <a @( Model.CartItems.Count > 0 ? Html.Raw("href=\"/Cart/Checkout\"") : Html.Raw("onclick='toastr.error(\"Cart is empty\")' href=\"#\"") ) class="proceed-btn">PROCEED TO CHECK OUT</a>
                         </div>
                     </div>
                 </div>
@@ -108,14 +106,17 @@
         </div>
     </div>
 </section>
-
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/toastr.min.js"></script>
 <script>
 
-    function UpdateQuantity(productId, element) {
-        element.value = element.value.replace(/[^0-9]/g, '');
-        number = element.value;
+    function UpdateQuantity(productId) {
+        var quantityInput = document.getElementById("p-" + productId);
+        quantityInput.value = quantityInput.value.replace(/[^0-9]/g, '');
+        var number = quantityInput.value;
 
-        if (number === 0) {
+        if (number == 0) {
+            console.log("removed")
             RemoveFromCart(productId);
             return;
         }
@@ -124,8 +125,12 @@
             type: "GET",
             url: "/Cart/Add",
             dataType: "json",
-            data: "productId=" + productId + "&number=" + number
+            data: "productId=" + productId + "&number=" + number,
+            success: function (data) {
+
+            }
         });
+        toastr.success('Updated quantity');
     }
 
     function RemoveFromCart(productId) {
@@ -134,22 +139,24 @@
             url: "/Cart/Add",
             dataType: "json",
             data: "productId=" + productId + "&number=0",
-            success: function () {
+            success: function (data) {
                 document.getElementById("cartItem-" + productId).remove();
             }
         });
+        toastr.success('Removed from cart');
+        document.getElementById("cartItem-" + productId).remove();
     }
 
     function ApplyCoupon() {
-        document.getElementById("couponInput").disabled = true;
 
         $.ajax({
             type: "GET",
-            url: "/Cart/Add",
+            url: "/Cart/ApplyCoupon",
             dataType: "json",
-            data: "productId=" + productId + "&number=0",
+            data: "couponCode=" + document.getElementById("couponInput").value,
             success: function () {
                 toastr.success('Coupon apllied successfully!');
+                document.getElementById("couponInput").disabled = true;
                 setTimeout(function () {
                     location.reload();
                 }, 2000);

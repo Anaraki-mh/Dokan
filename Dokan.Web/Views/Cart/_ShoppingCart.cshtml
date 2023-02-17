@@ -20,7 +20,7 @@
                         @foreach (var item in Model.CartItems)
                         {
 
-                            <tr>
+                            <tr id="cartItem-@item.ProductId">
                                 <td class="si-pic"><img src="~/Files/@item.ProductImage" alt="@item.ProductTitle"></td>
                                 <td class="si-text">
                                     <div class="product-selected">
@@ -30,7 +30,7 @@
                                         </h6>
                                     </div>
                                 </td>
-                                <td class="si-close">
+                                <td onclick="RemoveFromCart(@item.ProductId)" class="si-close">
                                     <i class="ti-close"></i>
                                 </td>
                             </tr>
