@@ -21,36 +21,38 @@
     </div>
 }
 
-<nav aria-label="Page navigation">
-    <ul class="pagination justify-content-center">
+<div class="d-flex justify-content-center col-12">
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
 
 
-        @if (ViewBag.ActivePage != 1)
-        {
-            <li id="leftArrow" class="page-item">
-                <button onclick="RefreshList(@(ViewBag.ActivePage - 1))" class="page-link"><i class="mdi mdi-arrow-left"></i></button>
-            </li>
+            @if (ViewBag.ActivePage != 1)
+            {
+                <li id="leftArrow" class="page-item">
+                    <button onclick="RefreshList(@(ViewBag.ActivePage - 1))" class="page-link"><i class="mdi mdi-arrow-left"></i></button>
+                </li>
 
-            <li class="page-item"><button onclick="RefreshList(1)" class="page-link">1</button></li>
-            <li class="page-item disabled"><button class="page-link">...</button></li>
-        }
+                <li class="page-item"><button onclick="RefreshList(1)" class="page-link">1</button></li>
+                <li class="page-item disabled"><button class="page-link">...</button></li>
+            }
 
-        <li class="page-item active"><button onclick="" class="page-link">@ViewBag.ActivePage</button></li>
+            <li class="page-item active"><button onclick="" class="page-link">@ViewBag.ActivePage</button></li>
 
-        @if (ViewBag.ActivePage < ViewBag.NumberOfPages)
-        {
+            @if (ViewBag.ActivePage < ViewBag.NumberOfPages)
+            {
 
-            <li class="page-item disabled"><button class="page-link">...</button></li>
-            <li class="page-item"><button onclick="RefreshList(@ViewBag.NumberOfPages)" class="page-link">@(ViewBag.NumberOfPages)</button></li>
+                <li class="page-item disabled"><button class="page-link">...</button></li>
+                <li class="page-item"><button onclick="RefreshList(@ViewBag.NumberOfPages)" class="page-link">@(ViewBag.NumberOfPages)</button></li>
 
-            <li id="rightArrow" class="page-item">
-                <button onclick="RefreshList(@(ViewBag.ActivePage + 1))" class="page-link"><i class="mdi mdi-arrow-right"></i></button>
-            </li>
-        }
+                <li id="rightArrow" class="page-item">
+                    <button onclick="RefreshList(@(ViewBag.ActivePage + 1))" class="page-link"><i class="mdi mdi-arrow-right"></i></button>
+                </li>
+            }
 
 
-    </ul>
-</nav>
+        </ul>
+    </nav>
 
+</div>
 <input id="activePage" type="text" hidden value="@ViewBag.ActivePage" />
 <input id="numberOfPages" type="text" hidden value="@ViewBag.NumberOfPages" />

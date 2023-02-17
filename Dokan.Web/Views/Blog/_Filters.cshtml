@@ -12,7 +12,7 @@
     <ul>
 
         @{
-            var parents = Model.Where(x => x.ParentId == 0 || x.ParentId == 0).ToList();
+            var parents = Model.Where(x => x.ParentId == 0 || x.ParentId is null).ToList();
         }
 
         @foreach (var item in parents)
@@ -22,13 +22,11 @@
                     @item.Title
                 </a>
             </li>
-
             var children = Model.Where(x => x.ParentId == item.Id).ToList();
-
             foreach (var child in children)
             {
                 <li class="ml-4">
-                    <a href="~/Blog/Category/@child.Id/@Dokan.WebEssentials.SEO.CreateSeoFriendlyUrlTitle(child.Title)">
+                    <a href="~/Products/Category/@child.Id/@Dokan.WebEssentials.SEO.CreateSeoFriendlyUrlTitle(child.Title)">
                         @child.Title
                     </a>
                 </li>
