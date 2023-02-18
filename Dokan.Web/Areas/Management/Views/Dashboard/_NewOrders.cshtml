@@ -1,0 +1,31 @@
+﻿@model List<Dokan.Domain.Website.Order>
+
+@if (Model.Count > 0)
+{
+    <table class="table table-responsive-sm table-hover text-center">
+        <thead>
+            <tr>
+                <th>Last Name</th>
+                <th>State</th>
+                <th>Total</th>
+                <th>Payment Id</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.LastName</td>
+                    <td>@item.State</td>
+                    <td>$@item.OrderItems.Sum(x => x.Total)</td>
+                    <td>$@item.TrackingCode</td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+
+
+}
+

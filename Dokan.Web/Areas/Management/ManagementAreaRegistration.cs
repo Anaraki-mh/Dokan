@@ -17,7 +17,7 @@ namespace Dokan.Web.Areas.Management
             context.MapRoute(
                 "Management_default",
                 "Management/{controller}/{action}/{id}",
-                new { action = "Index", id = UrlParameter.Optional }
+                new { controller = "Dashboard" ,action = "Overview", id = UrlParameter.Optional }
             );
         }
     }

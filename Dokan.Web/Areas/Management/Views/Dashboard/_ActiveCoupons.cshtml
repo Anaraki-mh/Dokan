@@ -1,0 +1,30 @@
+﻿@model List<Dokan.Domain.Website.Coupon>
+
+@if (Model.Count > 0)
+{ 
+    <table class="table table-responsive-sm table-hover text-center">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Code</th>
+                <th>Discount</th>
+                <th>Usage Limit</th>
+                <th>Usage Count</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Title</td>
+                    <td>@item.Code</td>
+                    <td>@item.Discount</td>
+                    <td>@item.UsageLimit</td>
+                    <td>@item.UsageCount</td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+}

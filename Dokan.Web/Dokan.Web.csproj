@@ -201,6 +201,7 @@
     <Compile Include="App_Start\NinjectWebCommon.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="Areas\Management\Controllers\DashboardController.cs" />
     <Compile Include="Areas\Management\Controllers\ManagementBaseController.cs" />
     <Compile Include="Areas\Management\Controllers\OrderController.cs" />
     <Compile Include="Areas\Management\Controllers\ProductCommentController.cs" />
@@ -263,6 +264,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Management\Assets\css\style.css" />
+    <Content Include="Areas\Management\Assets\images\circle.svg" />
     <Content Include="Areas\Management\Assets\images\faces-clipart\pic-1.png" />
     <Content Include="Areas\Management\Assets\images\faces-clipart\pic-2.png" />
     <Content Include="Areas\Management\Assets\images\faces-clipart\pic-3.png" />
@@ -520,6 +522,11 @@
     <Content Include="Areas\Management\Views\Order\Index.cshtml" />
     <Content Include="Areas\Management\Views\Order\_List.cshtml" />
     <Content Include="Areas\Management\Views\Order\_Details.cshtml" />
+    <Content Include="Areas\Management\Views\Dashboard\Overview.cshtml" />
+    <Content Include="Areas\Management\Views\Dashboard\_BestSellingProducts.cshtml" />
+    <Content Include="Areas\Management\Views\Dashboard\_NewOrders.cshtml" />
+    <Content Include="Areas\Management\Views\Dashboard\_OngoingDiscounts.cshtml" />
+    <Content Include="Areas\Management\Views\Dashboard\_ActiveCoupons.cshtml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\chosen.jquery.js" />
     <Content Include="Scripts\chosen.jquery.min.js" />

@@ -1,0 +1,235 @@
+﻿@model Dictionary<string, double>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Management/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="page-header">
+    <h3 class="page-title">
+        <span class="page-title-icon bg-gradient-primary text-white mr-2">
+            <i class="mdi mdi-home"></i>
+        </span>
+        Dashboard
+    </h3>
+    <nav aria-label="breadcrumb">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">
+                <span></span>Overview
+                <i class="mdi mdi-alert-circle-outline icon-sm text-primary align-middle"></i>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<div class="row">
+
+    <div class="col-lg-3 stretch-card grid-margin">
+        <div class="card bg-gradient-success card-img-holder text-white">
+            <div class="card-body d-flex justify-content-center flex-column">
+                <img src="~/Areas/Management/Assets/images/circle.svg" class="card-img-absolute" alt="circle-image" />
+                <h4 class="font-weight-normal mb-3">
+                    Weekly Sales
+                    <i class="mdi mdi-chart-line mdi-24px float-right"></i>
+                </h4>
+                <h2 class="">$ @ViewBag.TotalSalesOfWeek</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 stretch-card grid-margin">
+        <div class="card bg-gradient-info card-img-holder text-white">
+            <div class="card-body d-flex justify-content-center flex-column">
+                <img src="~/Areas/Management/Assets/images/circle.svg" class="card-img-absolute" alt="circle-image" />
+                <h4 class="font-weight-normal mb-3">
+                    Monthly Sales
+                    <i class="mdi mdi-chart-line mdi-24px float-right"></i>
+                </h4>
+                <h2 class="">$ @ViewBag.TotalSalesOfMonth</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 stretch-card grid-margin">
+        <div class="card bg-gradient-primary card-img-holder text-white">
+            <div class="card-body d-flex justify-content-center flex-column">
+                <img src="~/Areas/Management/Assets/images/circle.svg" class="card-img-absolute" alt="circle-image" />
+                <h4 class="font-weight-normal mb-3">
+                    Yearly Sales
+                    <i class="mdi mdi-chart-line mdi-24px float-right"></i>
+                </h4>
+                <h2 class="">$ @ViewBag.TotalSalesOfYear</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 stretch-card grid-margin">
+        <div class="card bg-gradient-danger card-img-holder text-white">
+            <div class="card-body d-flex justify-content-center flex-column">
+                <img src="~/Areas/Management/Assets/images/circle.svg" class="card-img-absolute" alt="circle-image" />
+                <h4 class="font-weight-normal mb-3">
+                    Yearly Sales Tax
+                    <i class="mdi mdi-chart-line mdi-24px float-right"></i>
+                </h4>
+                <h2 class="">$ @ViewBag.TotalSalesTaxOfYear</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Total sales per month</h4>
+                <canvas id="barChart" style="height:230px"></canvas>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div id="new-orders" class="h-auto">
+    <div class="d-flex justify-content-center mt-5">
+        <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+    </div>
+
+</div>
+<div id="best-selling-products" class="h-auto">
+    <div class="d-flex justify-content-center mt-5">
+        <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+    </div>
+
+</div>
+<div id="active-coupons" class="h-auto">
+    <div class="d-flex justify-content-center mt-5">
+        <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+    </div>
+
+</div>
+<div id="ongoing-discounts" class="h-auto">
+    <div class="d-flex justify-content-center mt-5">
+        <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+    </div>
+
+</div>
+
+
+
+<script>
+    window.addEventListener('load', function () {
+        LoadChart();
+        LoadNewOrdersSection();
+        LoadBestSellingProductsSection();
+        LoadActiveCouponsSection();
+        LoadOngoingDiscountsSection();
+    });
+
+    function LoadNewOrdersSection() {
+        $.ajax({
+            type: "GET",
+            url: "/Management/Dashboard/NewOrders",
+            dataType: "html",
+            data: "",
+            success: function (data) {
+                document.getElementById("new-orders").innerHTML = data;
+            }
+        });
+    }
+    function LoadBestSellingProductsSection() {
+        $.ajax({
+            type: "GET",
+            url: "/Management/Dashboard/BestSellingProducts",
+            dataType: "html",
+            data: "",
+            success: function (data) {
+                document.getElementById("best-selling-products").innerHTML = data;
+            }
+        });
+    }
+    function LoadActiveCouponsSection() {
+        $.ajax({
+            type: "GET",
+            url: "/Management/Dashboard/ActiveCoupons",
+            dataType: "html",
+            data: "",
+            success: function (data) {
+                document.getElementById("active-coupons").innerHTML = data;
+            }
+        });
+    }
+    function LoadOngoingDiscountsSection() {
+        $.ajax({
+            type: "GET",
+            url: "/Management/Dashboard/OngoingDiscounts",
+            dataType: "html",
+            data: "",
+            success: function (data) {
+                document.getElementById("ongoing-discounts").innerHTML = data;
+            }
+        });
+    }
+
+    function LoadChart() {
+        var data = {
+            labels: [ @Html.Raw(ViewBag.ChartLabels) ],
+            datasets: [{
+                label: '$ Sold',
+                data: [ @Html.Raw(ViewBag.ChartData) ],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255,99,132,1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(255,99,132,1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1,
+                fill: false
+            }]
+        };
+        var options = {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            },
+            legend: {
+                display: false
+            },
+            elements: {
+                point: {
+                    radius: 0
+                }
+            }
+
+        };
+        if ($("#barChart").length) {
+            var barChartCanvas = $("#barChart").get(0).getContext("2d");
+            // This will get the first returned node in the jQuery collection.
+            var barChart = new Chart(barChartCanvas, {
+                type: 'bar',
+                data: data,
+                options: options
+            });
+        }
+    }
+</script>
