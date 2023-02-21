@@ -83,14 +83,14 @@
 
                     @*change the url to the home index when completed*@
                     <li class="nav-item">
-                        <a class="nav-link" href="">
+                        <a class="nav-link" href="/Management">
                             <span class="menu-title">Dashboard</span>
                             <i class="mdi mdi-home menu-icon"></i>
                         </a>
                     </li>
 
-                    <li class="nav-item">
-                        <div class="nav-link cursor-pointer" href="#Orders">
+                    <li onclick="location.href = '/management/order/Index'" class="nav-item">
+                        <div class="nav-link cursor-pointer">
                             <span class="menu-title">Orders</span>
                             <i class="mdi mdi-file-document-box menu-icon"></i>
                         </div>
@@ -105,15 +105,15 @@
 
                         <div class="collapse" id="product-catalog">
                             <ul class="nav flex-column sub-menu">
-                                <li class="nav-item"><button class="btn btn-block btn-md btn-gradient-primary mt-1">Products</button></li>
-                                <li class="nav-item"><button class="btn btn-block btn-md btn-gradient-primary mt-1">Product Comments</button></li>
-                                <li class="nav-item"><button class="btn btn-block btn-md btn-gradient-primary mt-1">Product Category</button></li>
+                                <li class="nav-item"><button onclick="location.href = '/management/product/Index'" class="btn btn-block btn-md btn-gradient-primary mt-1">Products</button></li>
+                                <li class="nav-item"><button onclick="location.href = '/management/productcomment/Index'" class="btn btn-block btn-md btn-gradient-primary mt-1">Product Comments</button></li>
+                                <li class="nav-item"><button onclick="location.href = '/management/productcategory/Index'" class="btn btn-block btn-md btn-gradient-primary mt-1">Product Category</button></li>
                             </ul>
                         </div>
                     </li>
 
                     <li class="nav-item">
-                        <div class="nav-link cursor-pointer" data-toggle="collapse" href="#tax-and-discounts" aria-expanded="false" aria-controls="tax-and-discounts">
+                        <div class="nav-link cursor-pointer" data-toggle="collapse"  href="#tax-and-discounts" aria-expanded="false" aria-controls="tax-and-discounts">
                             <span class="menu-title">Tax and Discounts</span>
                             <i class="menu-arrow"></i>
                             <i class="mdi mdi-ticket-percent menu-icon"></i>
@@ -121,9 +121,9 @@
 
                         <div class="collapse" id="tax-and-discounts">
                             <ul class="nav flex-column sub-menu">
-                                <li class="nav-item"><button class="btn btn-block btn-md btn-gradient-primary mt-1">Tax Groups</button></li>
-                                <li class="nav-item"><button class="btn btn-block btn-md btn-gradient-primary mt-1">Discount Groups</button></li>
-                                <li class="nav-item"><button class="btn btn-block btn-md btn-gradient-primary mt-1">Coupons</button></li>
+                                <li class="nav-item"><button onclick="location.href = '/management/TaxCategory/Index'" class="btn btn-block btn-md btn-gradient-primary mt-1">Tax Groups</button></li>
+                                <li class="nav-item"><button onclick="location.href = '/management/DiscountCategory/Index'" class="btn btn-block btn-md btn-gradient-primary mt-1">Discount Groups</button></li>
+                                <li class="nav-item"><button onclick="location.href = '/management/Coupon/Index'" class="btn btn-block btn-md btn-gradient-primary mt-1">Coupons</button></li>
                             </ul>
                         </div>
                     </li>
@@ -137,9 +137,9 @@
 
                         <div class="collapse" id="blog-catalog">
                             <ul class="nav flex-column sub-menu">
-                                <li class="nav-item"><button onclick="" class="btn btn-block btn-md btn-gradient-primary mt-1">Blog Posts</button></li>
-                                <li class="nav-item"><button onclick="" class="btn btn-block btn-md btn-gradient-primary mt-1">Blog Comments</button></li>
-                                <li class="nav-item"><button onclick="location.href='@Url.Action("Index", "BlogCategory", new { area = "Management"})'" class="btn btn-block btn-md btn-gradient-primary mt-1">Blog Category</button></li>
+                                <li class="nav-item"><button onclick="location.href = '/management/BlogPost/Index'" class="btn btn-block btn-md btn-gradient-primary mt-1">Blog Posts</button></li>
+                                <li class="nav-item"><button onclick="location.href = '/management/BlogComment/Index'" class="btn btn-block btn-md btn-gradient-primary mt-1">Blog Comments</button></li>
+                                <li class="nav-item"><button onclick="location.href = '/management/BlogCategory/Index'" class="btn btn-block btn-md btn-gradient-primary mt-1">Blog Category</button></li>
                             </ul>
                         </div>
                     </li>
@@ -153,17 +153,17 @@
 
                         <div class="collapse" id="content-management">
                             <ul class="nav flex-column sub-menu">
-                                <li class="nav-item"><button class="btn btn-block btn-md btn-gradient-primary mt-1">Menus</button></li>
-                                <li class="nav-item"><button class="btn btn-block btn-md btn-gradient-primary mt-1">Carousel</button></li>
-                                <li class="nav-item"><button class="btn btn-block btn-md btn-gradient-primary mt-1">Testimonials</button></li>
-                                <li class="nav-item"><button class="btn btn-block btn-md btn-gradient-primary mt-1">Static Content</button></li>
-                                <li class="nav-item"><button class="btn btn-block btn-md btn-gradient-primary mt-1">Files</button></li>
+                                <li class="nav-item"><button onclick="location.href = '/management/Menu/Index'" class="btn btn-block btn-md btn-gradient-primary mt-1">Menus</button></li>
+                                <li class="nav-item"><button onclick="location.href = '/management/Carousel/Index'" class="btn btn-block btn-md btn-gradient-primary mt-1">Carousel</button></li>
+                                <li class="nav-item"><button onclick="location.href = '/management/Testimonial/Index'" class="btn btn-block btn-md btn-gradient-primary mt-1">Testimonials</button></li>
+                                <li class="nav-item"><button onclick="location.href = '/management/KeyValueContent/Index'" class="btn btn-block btn-md btn-gradient-primary mt-1">Static Content</button></li>
+                                <li class="nav-item"><button onclick="location.href = '/management/File/Index'" class="btn btn-block btn-md btn-gradient-primary mt-1">Files</button></li>
                             </ul>
                         </div>
                     </li>
 
                     <li class="nav-item">
-                        <div class="nav-link cursor-pointer" data-toggle="collapse" href="#messages" aria-expanded="false" aria-controls="messages">
+                        <div onclick="location.href = '/management/Message/Index'" class="nav-link cursor-pointer" data-toggle="collapse" href="#messages" aria-expanded="false" aria-controls="messages">
                             <span class="menu-title">Messages</span>
                             <i class="menu-arrow"></i>
                             <i class="mdi mdi-message-text menu-icon"></i>

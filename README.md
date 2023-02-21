@@ -1,4 +1,6 @@
 # Dokan
+![Dokan](Dokan.png)
+
 **Dokan** is an **E-commerce** solution made for small and medium size businesses to provide an online platform to sell their products directly to the customers. 
 
 Dokan provides the user with an easy-to-use yet very powerful **management dashboard** to manage  **Products**, **Product Categories**, **Blog posts**, **Blog Categories**, **Comments** on Products and Blog posts, **Menus**, **UI elements** and Info, **Tax Categories**, **Discounts** and **Coupons**, **Orders** and Stocks and more!
