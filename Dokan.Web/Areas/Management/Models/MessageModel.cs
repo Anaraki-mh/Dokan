@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dokan.Domain.Website;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -44,6 +45,43 @@ namespace Dokan.Web.Areas.Management.Models
         [Display(Name = "Message Body")]
         [MaxLength(400, ErrorMessage = "{0} can not be longer than {1} characters")]
         public string MessageBody { get; set; }
+
+        #endregion
+
+
+        #region Conversion Helpers
+
+        public static MessageModel EntityToModel(in Message entity, int index = 0)
+        {
+            var model = new MessageModel()
+            {
+                Id = entity.Id,
+                Index = index,
+                Name = entity.Name,
+                Email = entity.Email,
+                Subject = entity.Subject,
+                MessageBody = entity.MessageBody,
+                CreateDateTime = entity.CreateDateTime,
+            };
+
+            return model;
+        }
+
+        public static Message ModelToEntity(in MessageModel model)
+        {
+            var entity = new Message()
+            {
+                Id = model.Id,
+                Name = model.Name,
+                Email = model.Email,
+                Subject = model.Subject,
+                MessageBody = model.MessageBody,
+                CreateDateTime = model.CreateDateTime,
+            };
+
+            return entity;
+        }
+
 
         #endregion
     }

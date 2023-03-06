@@ -26,10 +26,6 @@ namespace Dokan.Web.Areas.Management.Controllers
         private ILogService _logService { get; }
         private IEmailService _emailService { get; }
 
-        private List<ProductComment> _allEntities { get; set; }
-        private ProductCommentModel _model;
-        private ProductComment _entity;
-
         #endregion
 
 
@@ -40,10 +36,6 @@ namespace Dokan.Web.Areas.Management.Controllers
             _productCommentService = ProductCommentService;
             _logService = logService;
             _emailService = emailService;
-
-            _allEntities = new List<ProductComment>();
-            _model = new ProductCommentModel();
-            _entity = new ProductComment();
         }
 
         #endregion
@@ -62,23 +54,22 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             List<ProductCommentModel> convertedEntityList = new List<ProductCommentModel>();
 
-            _allEntities = await _productCommentService.ListAsync();
+            var allEntities = await _productCommentService.ListAsync();
 
-            List<ProductComment> filteredList = _allEntities.Skip((page - 1) * numberOfResults).Take(numberOfResults).ToList();
+            List<ProductComment> filteredList = allEntities.Skip((page - 1) * numberOfResults).Take(numberOfResults).ToList();
 
             int index = (page - 1) * numberOfResults + 1;
 
             foreach (var entity in filteredList)
             {
-                _model = new ProductCommentModel();
-                EntityToModel(entity, ref _model, index);
+                var model = ProductCommentModel.EntityToModel(in entity, index);
 
-                convertedEntityList.Add(_model);
+                convertedEntityList.Add(model);
 
                 index++;
             }
 
-            ViewBag.NumberOfPages = Math.Ceiling((decimal)_allEntities.Count / (decimal)numberOfResults);
+            ViewBag.NumberOfPages = Math.Ceiling((decimal)allEntities.Count / (decimal)numberOfResults);
             ViewBag.ActivePage = page;
 
             return PartialView("_List", convertedEntityList);
@@ -87,24 +78,22 @@ namespace Dokan.Web.Areas.Management.Controllers
         [HttpGet]
         public async Task<ActionResult> Details(int id)
         {
-            _entity = await _productCommentService.FindByIdAsync(id);
-
-            EntityToModel(_entity, ref _model);
-
-            return PartialView("_Details", _model);
+            var entity = await _productCommentService.FindByIdAsync(id);
+            var model = ProductCommentModel.EntityToModel(in entity);
+            return PartialView("_Details", model);
         }
 
         [HttpGet]
         public async Task<ActionResult> Reply(int id)
         {
-            _entity = await _productCommentService.FindByIdAsync(id);
+            var entity = await _productCommentService.FindByIdAsync(id);
+            var model = new ProductCommentModel();
 
-            EmptyModel(ref _model);
-            _model.ProductId = _entity.Id;
-            _model.ParentId = _entity.Id;
-            _model.UserId = User.Identity.GetUserId();
+            model.ProductId = entity.Id;
+            model.ParentId = entity.Id;
+            model.UserId = User.Identity.GetUserId();
 
-            return View(_model);
+            return View(model);
         }
 
         [HttpPost]
@@ -118,11 +107,11 @@ namespace Dokan.Web.Areas.Management.Controllers
 
             try
             {
-                ModelToEntity(model, ref _entity);
+                var entity = ProductCommentModel.ModelToEntity(in model);
 
-                _entity.IsApproved = true;
+                entity.IsApproved = true;
 
-                await _productCommentService.CreateAsync(_entity);
+                await _productCommentService.CreateAsync(entity);
 
                 var comment = await _productCommentService.FindByIdAsync(model.ParentId);
                 var recipientEmail = comment.User.Email;
@@ -134,7 +123,7 @@ namespace Dokan.Web.Areas.Management.Controllers
 
                 _emailService.SendEmail("Someone has replied on your comment!", emailBody, recipientEmail);
 
-                await Log(LogType.ContentAdd, "Reply", $"{_entity.Id}");
+                await Log(LogType.ContentAdd, "Reply", $"{entity.Id}");
             }
             catch (Exception ex)
             {
@@ -162,10 +151,8 @@ namespace Dokan.Web.Areas.Management.Controllers
 
             foreach (var entity in removedEntityList)
             {
-                _model = new ProductCommentModel();
-                EntityToModel(entity, ref _model, index);
-
-                convertedEntityList.Add(_model);
+                var model = ProductCommentModel.EntityToModel(in entity, index);
+                convertedEntityList.Add(model);
 
                 index++;
             }
@@ -250,9 +237,9 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             try
             {
-                _entity = await _productCommentService.FindByIdAsync(id);
-                _entity.IsApproved = true;
-                await _productCommentService.UpdateAsync(_entity);
+                var entity = await _productCommentService.FindByIdAsync(id);
+                entity.IsApproved = true;
+                await _productCommentService.UpdateAsync(entity);
             }
             catch (Exception ex)
             {
@@ -269,9 +256,9 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             try
             {
-                _entity = await _productCommentService.FindByIdAsync(id);
-                _entity.IsApproved = false;
-                await _productCommentService.UpdateAsync(_entity);
+                var entity = await _productCommentService.FindByIdAsync(id);
+                entity.IsApproved = false;
+                await _productCommentService.UpdateAsync(entity);
             }
             catch (Exception ex)
             {
@@ -284,86 +271,7 @@ namespace Dokan.Web.Areas.Management.Controllers
         #endregion
 
 
-        #region Conversion Methods
-
-        private void EntityToModel(ProductComment entity, ref ProductCommentModel model)
-        {
-            EmptyModel(ref model);
-
-            model.Id = entity.Id;
-            model.ProductTitle = entity.Product?.Title;
-            model.ProductId = entity.ProductId;
-            model.Title = entity.Title;
-            model.Username = entity.User?.UserName;
-            model.UserId = entity.UserId;
-            model.Body = entity.Body;
-            model.IsApproved = entity.IsApproved;
-            model.Rating = entity.Rating;
-            model.CreateDateTime = entity.CreateDateTime;
-        }
-
-        private void EntityToModel(ProductComment entity, ref ProductCommentModel model, int index)
-        {
-            EmptyModel(ref model);
-
-            model.Id = entity.Id;
-            model.Index = index;
-            model.ProductTitle = entity.Product?.Title;
-            model.ProductId = entity.ProductId;
-            model.Title = entity.Title;
-            model.Username = entity.User?.UserName;
-            model.UserId = entity.UserId;
-            model.Body = entity.Body;
-            model.IsApproved = entity.IsApproved;
-            model.Rating = entity.Rating;
-            model.CreateDateTime = entity.CreateDateTime;
-        }
-
-        private void ModelToEntity(ProductCommentModel model, ref ProductComment entity)
-        {
-            EmptyEntity(ref entity);
-
-            entity.Id = model.Id;
-            entity.ProductId = model.ProductId;
-            entity.Title = model.Title;
-            entity.UserId = model.UserId;
-            entity.Body = model.Body;
-            entity.IsApproved = model.IsApproved;
-            entity.Rating = model.Rating;
-            entity.CreateDateTime = model.CreateDateTime;
-        }
-
-        private void EmptyEntity(ref ProductComment entity)
-        {
-            entity.Id = 0;
-            entity.ProductId = 0;
-            entity.Title = "";
-            entity.UserId = "";
-            entity.Body = "";
-            entity.IsApproved = false;
-            entity.Rating = 0;
-            entity.CreateDateTime = DateTime.UtcNow;
-        }
-
-        private void EmptyModel(ref ProductCommentModel model)
-        {
-            model.Id = 0;
-            model.Index = 0;
-            model.ProductTitle = "";
-            model.ProductId = 0;
-            model.Title = "";
-            model.Username = "";
-            model.UserId = "";
-            model.Body = "";
-            model.IsApproved = false;
-            model.Rating = 0;
-            model.CreateDateTime = DateTime.UtcNow;
-        }
-
-        #endregion
-
-
-        #region Log and Preperation Methods
+        #region Log Methods
 
         private async Task LogError(Exception ex)
         {

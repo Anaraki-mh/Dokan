@@ -99,5 +99,54 @@ namespace Dokan.Web.Areas.Management.Models
         public virtual List<OrderItemModel> OrderItems { get; set; }
 
         #endregion
+
+
+        #region Conversion Helpers
+
+        public static OrderModel OrderEntityToModel(in Order entity, int index = 0)
+        {
+            var model = new OrderModel()
+            {
+                Id = entity.Id,
+                Index = index,
+                CreateDateTime = entity.CreateDateTime,
+                TrackingCode = entity.TrackingCode,
+                FirstName = entity.User?.UserInformation?.FirstName ?? "",
+                LastName = entity.User?.UserInformation?.LastName ?? "",
+                Country = entity.User?.UserInformation?.Country ?? "",
+                State = entity.User?.UserInformation?.State ?? "",
+                City = entity.User?.UserInformation?.City ?? "",
+                Address = entity.User?.UserInformation?.Address ?? "",
+                ZipCode = entity.User?.UserInformation?.ZipCode ?? "",
+                PhoneNumber = entity.User?.UserInformation?.PhoneNumber ?? "",
+                ShippingCost = entity.ShippingCost,
+                DeliveryMethod = entity.DeliveryMethod,
+                PaymentState = entity.PaymentState,
+                OrderState = entity.OrderState,
+                UserId = entity.UserId,
+                Coupon = entity.Coupon,
+                CouponId = entity.CouponId,
+            };
+
+            foreach (var item in entity.OrderItems)
+            {
+                model.OrderItems.Add(new OrderItemModel
+                {
+                    Id = item.Id,
+                    CartId = model.Id,
+                    ProductId = item.ProductId,
+                    ProductTitle = item.Product.Title,
+                    Discount = item.Discount,
+                    Tax = item.Tax,
+                    Price = item.Price,
+                    Quantity = item.Quantity,
+                    Total = item.Total,
+                });
+            }
+
+            return model;
+        }
+
+        #endregion
     }
 }

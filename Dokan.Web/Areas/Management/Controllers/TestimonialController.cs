@@ -23,10 +23,6 @@ namespace Dokan.Web.Areas.Management.Controllers
         private ITestimonialService _testimonialService { get; }
         private ILogService _logService { get; }
 
-        private List<Testimonial> _allEntities { get; set; }
-        private TestimonialModel _model;
-        private Testimonial _entity;
-
         #endregion
 
 
@@ -36,10 +32,6 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             _testimonialService = TestimonialService;
             _logService = logService;
-
-            _allEntities = new List<Testimonial>();
-            _model = new TestimonialModel();
-            _entity = new Testimonial();
         }
 
         #endregion
@@ -58,23 +50,22 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             List<TestimonialModel> convertedEntityList = new List<TestimonialModel>();
 
-            _allEntities = await _testimonialService.ListAsync();
+            var allEntities = await _testimonialService.ListAsync();
 
-            List<Testimonial> filteredList = _allEntities.Skip((page - 1) * numberOfResults).Take(numberOfResults).ToList();
+            List<Testimonial> filteredList = allEntities.Skip((page - 1) * numberOfResults).Take(numberOfResults).ToList();
 
             int index = (page - 1) * numberOfResults + 1;
 
             foreach (var entity in filteredList)
             {
-                _model = new TestimonialModel();
-                EntityToModel(entity, ref _model, index);
+                var model = TestimonialModel.EntityToModel(in entity, index);
 
-                convertedEntityList.Add(_model);
+                convertedEntityList.Add(model);
 
                 index++;
             }
 
-            ViewBag.NumberOfPages = Math.Ceiling((decimal)_allEntities.Count / (decimal)numberOfResults);
+            ViewBag.NumberOfPages = Math.Ceiling((decimal)allEntities.Count / (decimal)numberOfResults);
             ViewBag.ActivePage = page;
 
             return PartialView("_List", convertedEntityList);
@@ -83,19 +74,18 @@ namespace Dokan.Web.Areas.Management.Controllers
         [HttpGet]
         public async Task<ActionResult> Details(int id)
         {
-            _entity = await _testimonialService.FindByIdAsync(id);
+            var entity = await _testimonialService.FindByIdAsync(id);
 
-            EntityToModel(_entity, ref _model);
+            var model = TestimonialModel.EntityToModel(in entity);
 
-            return PartialView("_Details", _model);
+            return PartialView("_Details", model);
         }
 
         [HttpGet]
         public async Task<ActionResult> Create()
         {
-            EmptyModel(ref _model);
-
-            return View(_model);
+            var model = new TestimonialModel();
+            return View(model);
         }
 
         [HttpPost]
@@ -106,14 +96,14 @@ namespace Dokan.Web.Areas.Management.Controllers
 
             try
             {
-                ModelToEntity(model, ref _entity);
+                var entity = TestimonialModel.ModelToEntity(in model);
 
-                _entity.CreateDateTime = DateTime.UtcNow;
-                _entity.UpdateDateTime = DateTime.UtcNow;
+                entity.CreateDateTime = DateTime.UtcNow;
+                entity.UpdateDateTime = DateTime.UtcNow;
 
-                await _testimonialService.CreateAsync(_entity);
+                await _testimonialService.CreateAsync(entity);
 
-                await Log(LogType.ContentAdd, "Create", $"{_entity.Id}_ {_entity.FullName}");
+                await Log(LogType.ContentAdd, "Create", $"{entity.Id}_ {entity.FullName}");
             }
             catch (Exception ex)
             {
@@ -128,9 +118,10 @@ namespace Dokan.Web.Areas.Management.Controllers
         [HttpGet]
         public async Task<ActionResult> Update(int id)
         {
+            var entity = new Testimonial();
             try
             {
-                _entity = await _testimonialService.FindByIdAsync(id);
+                entity = await _testimonialService.FindByIdAsync(id);
             }
             catch (Exception ex)
             {
@@ -139,9 +130,9 @@ namespace Dokan.Web.Areas.Management.Controllers
                 return View("Error400");
             }
 
-            EntityToModel(_entity, ref _model);
+            var model = TestimonialModel.EntityToModel(in entity);
 
-            return View(_model);
+            return View(model);
         }
 
         [HttpPost]
@@ -152,13 +143,13 @@ namespace Dokan.Web.Areas.Management.Controllers
 
             try
             {
-                ModelToEntity(model, ref _entity);
+                var entity = TestimonialModel.ModelToEntity(in model);
 
-                _entity.UpdateDateTime = DateTime.UtcNow;
+                entity.UpdateDateTime = DateTime.UtcNow;
 
-                await _testimonialService.UpdateAsync(_entity);
+                await _testimonialService.UpdateAsync(entity);
 
-                await Log(LogType.ContentUpdate, "Update", $"{_entity.Id}_ {_entity.FullName}");
+                await Log(LogType.ContentUpdate, "Update", $"{entity.Id}_ {entity.FullName}");
             }
             catch (Exception ex)
             {
@@ -186,16 +177,14 @@ namespace Dokan.Web.Areas.Management.Controllers
 
             foreach (var entity in removedEntityList)
             {
-                _model = new TestimonialModel();
-                EntityToModel(entity, ref _model, index);
-
-                convertedEntityList.Add(_model);
+                var model = TestimonialModel.EntityToModel(in entity, index);
+                convertedEntityList.Add(model);
 
                 index++;
             }
 
 
-            return PartialView("_TrashList" ,convertedEntityList);
+            return PartialView("_TrashList", convertedEntityList);
         }
 
         [HttpGet]
@@ -272,71 +261,7 @@ namespace Dokan.Web.Areas.Management.Controllers
         #endregion
 
 
-        #region Conversion Methods
-
-        private void EntityToModel(Testimonial entity, ref TestimonialModel model)
-        {
-            EmptyModel(ref model);
-
-            model.Id = entity.Id;
-            model.FullName = entity.FullName;
-            model.Position = entity.Position;
-            model.Content = entity.Content;
-            model.Image = entity.Content;
-
-            model.UpdateDateTime = entity.UpdateDateTime;
-        }
-
-        private void EntityToModel(Testimonial entity, ref TestimonialModel model, int index)
-        {
-            EmptyModel(ref model);
-
-            model.Id = entity.Id;
-            model.Index = index;
-            model.FullName = entity.FullName;
-            model.Position = entity.Position;
-            model.Content = entity.Content;
-            model.Image = entity.Content;
-
-            model.UpdateDateTime = entity.UpdateDateTime;
-        }
-
-        private void ModelToEntity(TestimonialModel model, ref Testimonial entity)
-        {
-            EmptyEntity(ref entity);
-
-            entity.Id = model.Id;
-            entity.FullName = model.FullName;
-            entity.Position = model.Position;
-            entity.Content = model.Content;
-            entity.Image = model.Content;
-        }
-
-        private void EmptyEntity(ref Testimonial entity)
-        {
-            entity.Id = 0;
-            entity.FullName = "";
-            entity.Position = "";
-            entity.Content = "";
-            entity.Image = "";
-            entity.UpdateDateTime = DateTime.UtcNow;
-        }
-
-        private void EmptyModel(ref TestimonialModel model)
-        {
-            model.Id = 0;
-            model.Index = 0;
-            model.FullName = "";
-            model.Position = "";
-            model.Content = "";
-            model.Image = "";
-            model.UpdateDateTime = DateTime.UtcNow;
-        }
-
-        #endregion
-
-
-        #region Log and Preperation Methods
+        #region Log Methods
 
         private async Task LogError(Exception ex)
         {
@@ -361,7 +286,7 @@ namespace Dokan.Web.Areas.Management.Controllers
                 Description = $"{logType} _ {description}",
             });
         }
-        
+
         #endregion
     }
 }

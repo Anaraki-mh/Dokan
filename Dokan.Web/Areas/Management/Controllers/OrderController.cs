@@ -25,10 +25,6 @@ namespace Dokan.Web.Areas.Management.Controllers
         private IOrderService _orderService { get; }
         private IEmailService _emailService { get; }
 
-        private Order _orderEntity;
-        private OrderModel _orderModel;
-        private OrderItemModel _orderItemModel;
-
         #endregion
 
 
@@ -38,10 +34,6 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             _orderService = orderService;
             _emailService = emailService;
-
-            _orderEntity = new Order();
-            _orderModel = new OrderModel();
-            _orderItemModel = new OrderItemModel();
         }
 
         #endregion
@@ -70,10 +62,9 @@ namespace Dokan.Web.Areas.Management.Controllers
 
             foreach (var entity in orderEntityList)
             {
-                _orderModel = new OrderModel();
-                OrderEntityToModel(entity, ref _orderModel, index);
+                var orderModel = OrderModel.OrderEntityToModel(entity, index);
 
-                convertedEntityList.Add(_orderModel);
+                convertedEntityList.Add(orderModel);
 
                 index++;
             }
@@ -89,36 +80,36 @@ namespace Dokan.Web.Areas.Management.Controllers
         [HttpGet]
         public async Task<ActionResult> Details(int id)
         {
-            _orderEntity = await _orderService.FindByIdAsync(id);
+            var entity = await _orderService.FindByIdAsync(id);
 
-            if (_orderEntity is null)
-                _orderEntity = new Order();
+            if (entity is null)
+                entity = new Order();
 
-            OrderEntityToModel(_orderEntity, ref _orderModel, 0);
+            var model = OrderModel.OrderEntityToModel(entity);
 
-            return View(_orderModel);
+            return View(model);
         }
 
         [HttpGet]
         public async Task<ActionResult> ChangeOrderState(int id, string newState)
         {
-            _orderEntity = await _orderService.FindByIdAsync(id);
+            var entity = await _orderService.FindByIdAsync(id);
 
-            if (_orderEntity is null)
+            if (entity is null)
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
             switch (newState)
             {
                 case "Processing":
-                    _orderEntity.OrderState = OrderState.Processing;
+                    entity.OrderState = OrderState.Processing;
                     break;
                 case "Completed":
-                    _orderEntity.OrderState = OrderState.Completed;
+                    entity.OrderState = OrderState.Completed;
                     break;
                 default:
                     return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            await _orderService.UpdateAsync(_orderEntity);
+            await _orderService.UpdateAsync(entity);
 
             return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
@@ -126,17 +117,17 @@ namespace Dokan.Web.Areas.Management.Controllers
         [HttpGet]
         public async Task<ActionResult> CancelOrder(int id)
         {
-            _orderEntity = await _orderService.FindByIdAsync(id);
+            var entity = await _orderService.FindByIdAsync(id);
 
-            if (_orderEntity is null)
+            if (entity is null)
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
-            _orderEntity.OrderState = OrderState.Canceled;
-            await _orderService.UpdateAsync(_orderEntity);
+            entity.OrderState = OrderState.Canceled;
+            await _orderService.UpdateAsync(entity);
 
-            var emailBody = EmailTemplate.PrepareUpdate("Order Canceled!", $"Your order with the ID of #{_orderEntity.Id:00000} has been canceled", "");
+            var emailBody = EmailTemplate.PrepareUpdate("Order Canceled!", $"Your order with the ID of #{entity.Id:00000} has been canceled", "");
 
-            _emailService.SendEmail("Order Canceled And Refunded Successfully!", emailBody, _orderEntity.User.Email);
+            _emailService.SendEmail("Order Canceled And Refunded Successfully!", emailBody, entity.User.Email);
 
             return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
@@ -144,18 +135,18 @@ namespace Dokan.Web.Areas.Management.Controllers
         [HttpGet]
         public async Task<ActionResult> CancelAndRefundOrder(int id, string reason)
         {
-            _orderEntity = await _orderService.FindByIdAsync(id);
+            var entity = await _orderService.FindByIdAsync(id);
 
-            if (_orderEntity is null)
+            if (entity is null)
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
-            _orderEntity.PaymentState = PaymentState.PendingRefund;
-            _orderEntity.OrderState = OrderState.Canceled;
-            await _orderService.UpdateAsync(_orderEntity);
+            entity.PaymentState = PaymentState.PendingRefund;
+            entity.OrderState = OrderState.Canceled;
+            await _orderService.UpdateAsync(entity);
 
             var options = new RefundCreateOptions
             {
-                PaymentIntent = _orderEntity.TrackingCode,
+                PaymentIntent = entity.TrackingCode,
                 Reason = reason
             };
             var service = new RefundService();
@@ -191,72 +182,27 @@ namespace Dokan.Web.Areas.Management.Controllers
 
                 // Update the status of the order
                 var orderEntityList = await _orderService.ListAsync();
-                _orderEntity = orderEntityList.FirstOrDefault(x => x.TrackingCode == paymentIndentId);
-                _orderEntity.OrderState = OrderState.Canceled;
-                _orderEntity.PaymentState = PaymentState.Refunded;
-                await _orderService.UpdateAsync(_orderEntity);
+                var entity = orderEntityList.FirstOrDefault(x => x.TrackingCode == paymentIndentId);
+                entity.OrderState = OrderState.Canceled;
+                entity.PaymentState = PaymentState.Refunded;
+                await _orderService.UpdateAsync(entity);
 
                 // Send an email to the Admin to infrom them of the successful refund
                 _emailService.SendEmail("Payment Refund Successful!", 
-                    $"Order with ID of #{_orderEntity.Id:00000} and payment ID of {_orderEntity.TrackingCode} was successfully refunded." +
+                    $"Order with ID of #{entity.Id:00000} and payment ID of {entity.TrackingCode} was successfully refunded." +
                     $"<br />Transaction number: {refund.ReceiptNumber}", 
                     WebConfigurationManager.AppSettings["AdminEmail"]);
 
                 // Send the invoice to the user as an email
-                var emailBody = EmailTemplate.PrepareUpdate("Order Canceled And Refunded!", $"Your order with the ID of #{_orderEntity.Id:00000} has been canceled" +
+                var emailBody = EmailTemplate.PrepareUpdate("Order Canceled And Refunded!", $"Your order with the ID of #{entity.Id:00000} has been canceled" +
                     $"and your payment has been fully refunded with the transaction number being {refund.ReceiptNumber}. " +
                     $"<br /> <b>Reason for refund: </b> {refund.Reason}", "");
 
-                _emailService.SendEmail("Order Canceled And Refunded Successfully!", emailBody, _orderEntity.User.Email);
+                _emailService.SendEmail("Order Canceled And Refunded Successfully!", emailBody, entity.User.Email);
             }
 
             //always have to return 200
             return new HttpStatusCodeResult(HttpStatusCode.OK);
-        }
-
-
-        #endregion
-
-
-        #region Conversion and Helper Methods 
-
-        private void OrderEntityToModel(Order entity, ref OrderModel model, int index)
-        {
-            model.Id = entity.Id;
-            model.Index = index;
-            model.CreateDateTime = entity.CreateDateTime;
-            model.TrackingCode = entity.TrackingCode;
-            model.FirstName = entity.User?.UserInformation?.FirstName ?? "";
-            model.LastName = entity.User?.UserInformation?.LastName ?? "";
-            model.Country = entity.User?.UserInformation?.Country ?? "";
-            model.State = entity.User?.UserInformation?.State ?? "";
-            model.City = entity.User?.UserInformation?.City ?? "";
-            model.Address = entity.User?.UserInformation?.Address ?? "";
-            model.ZipCode = entity.User?.UserInformation?.ZipCode ?? "";
-            model.PhoneNumber = entity.User?.UserInformation?.PhoneNumber ?? "";
-            model.ShippingCost = entity.ShippingCost;
-            model.DeliveryMethod = entity.DeliveryMethod;
-            model.PaymentState = entity.PaymentState;
-            model.OrderState = entity.OrderState;
-            model.UserId = entity.UserId;
-            model.Coupon = entity.Coupon;
-            model.CouponId = entity.CouponId;
-
-            foreach (var item in entity.OrderItems)
-            {
-                model.OrderItems.Add(new OrderItemModel
-                {
-                    Id = item.Id,
-                    CartId = model.Id,
-                    ProductId = item.ProductId,
-                    ProductTitle = item.Product.Title,
-                    Discount = item.Discount,
-                    Tax = item.Tax,
-                    Price = item.Price,
-                    Quantity = item.Quantity,
-                    Total = item.Total,
-                });
-            }
         }
 
 

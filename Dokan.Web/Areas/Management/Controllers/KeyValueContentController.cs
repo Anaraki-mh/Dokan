@@ -24,10 +24,6 @@ namespace Dokan.Web.Areas.Management.Controllers
         private IKeyValueContentService _keyValueContentService { get; }
         private ILogService _logService { get; }
 
-        private List<KeyValueContent> _allEntities { get; set; }
-        private KeyValueContentModel _model;
-        private KeyValueContent _entity;
-
         #endregion
 
 
@@ -37,10 +33,6 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             _keyValueContentService = KeyValueContentService;
             _logService = logService;
-
-            _allEntities = new List<KeyValueContent>();
-            _model = new KeyValueContentModel();
-            _entity = new KeyValueContent();
         }
 
         #endregion
@@ -59,23 +51,22 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             List<KeyValueContentModel> convertedEntityList = new List<KeyValueContentModel>();
 
-            _allEntities = await _keyValueContentService.ListAsync();
+            var allEntities = await _keyValueContentService.ListAsync();
 
-            List<KeyValueContent> filteredList = _allEntities.Skip((page - 1) * numberOfResults).Take(numberOfResults).ToList();
+            List<KeyValueContent> filteredList = allEntities.Skip((page - 1) * numberOfResults).Take(numberOfResults).ToList();
 
             int index = (page - 1) * numberOfResults + 1;
 
             foreach (var entity in filteredList)
             {
-                _model = new KeyValueContentModel();
-                EntityToModel(entity, ref _model, index);
+                var model = KeyValueContentModel.EntityToModel(in entity, index);
 
-                convertedEntityList.Add(_model);
+                convertedEntityList.Add(model);
 
                 index++;
             }
 
-            ViewBag.NumberOfPages = Math.Ceiling((decimal)_allEntities.Count / (decimal)numberOfResults);
+            ViewBag.NumberOfPages = Math.Ceiling((decimal)allEntities.Count / (decimal)numberOfResults);
             ViewBag.ActivePage = page;
 
             return PartialView("_List", convertedEntityList);
@@ -84,19 +75,18 @@ namespace Dokan.Web.Areas.Management.Controllers
         [HttpGet]
         public async Task<ActionResult> Details(int id)
         {
-            _entity = await _keyValueContentService.FindByIdAsync(id);
+            var entity = await _keyValueContentService.FindByIdAsync(id);
 
-            EntityToModel(_entity, ref _model);
+            var model = KeyValueContentModel.EntityToModel(in entity);
 
-            return PartialView("_Details", _model);
+            return PartialView("_Details", model);
         }
 
         [HttpGet]
         public async Task<ActionResult> Create()
         {
-            EmptyModel(ref _model);
-
-            return View(_model);
+            var model = new KeyValueContentModel();
+            return View(model);
         }
 
         [HttpPost]
@@ -107,14 +97,14 @@ namespace Dokan.Web.Areas.Management.Controllers
 
             try
             {
-                ModelToEntity(model, ref _entity);
+                var entity = KeyValueContentModel.ModelToEntity(in model);
 
-                _entity.CreateDateTime = DateTime.UtcNow;
-                _entity.UpdateDateTime = DateTime.UtcNow;
+                entity.CreateDateTime = DateTime.UtcNow;
+                entity.UpdateDateTime = DateTime.UtcNow;
 
-                await _keyValueContentService.CreateAsync(_entity);
+                await _keyValueContentService.CreateAsync(entity);
 
-                await Log(LogType.ContentAdd, "Create", $"{_entity.Id}_ {_entity.ContentKey}");
+                await Log(LogType.ContentAdd, "Create", $"{entity.Id}_ {entity.ContentKey}");
             }
             catch (Exception ex)
             {
@@ -129,9 +119,10 @@ namespace Dokan.Web.Areas.Management.Controllers
         [HttpGet]
         public async Task<ActionResult> Update(int id)
         {
+            var entity = new KeyValueContent();
             try
             {
-                _entity = await _keyValueContentService.FindByIdAsync(id);
+                entity = await _keyValueContentService.FindByIdAsync(id);
             }
             catch (Exception ex)
             {
@@ -140,9 +131,9 @@ namespace Dokan.Web.Areas.Management.Controllers
                 return View("Error400");
             }
 
-            EntityToModel(_entity, ref _model);
+            var model = KeyValueContentModel.EntityToModel(in entity);
 
-            return View(_model);
+            return View(model);
         }
 
         [HttpPost]
@@ -153,13 +144,13 @@ namespace Dokan.Web.Areas.Management.Controllers
 
             try
             {
-                ModelToEntity(model, ref _entity);
+                var entity = KeyValueContentModel.ModelToEntity(in model);
 
-                _entity.UpdateDateTime = DateTime.UtcNow;
+                entity.UpdateDateTime = DateTime.UtcNow;
 
-                await _keyValueContentService.UpdateAsync(_entity);
+                await _keyValueContentService.UpdateAsync(entity);
 
-                await Log(LogType.ContentUpdate, "Update", $"{_entity.Id}_ {_entity.ContentKey}");
+                await Log(LogType.ContentUpdate, "Update", $"{entity.Id}_ {entity.ContentKey}");
             }
             catch (Exception ex)
             {
@@ -187,10 +178,9 @@ namespace Dokan.Web.Areas.Management.Controllers
 
             foreach (var entity in removedEntityList)
             {
-                _model = new KeyValueContentModel();
-                EntityToModel(entity, ref _model, index);
+                var model = KeyValueContentModel.EntityToModel(in entity, index);
 
-                convertedEntityList.Add(_model);
+                convertedEntityList.Add(model);
 
                 index++;
             }
@@ -273,66 +263,7 @@ namespace Dokan.Web.Areas.Management.Controllers
         #endregion
 
 
-        #region Conversion Methods
-
-        private void EntityToModel(KeyValueContent entity, ref KeyValueContentModel model)
-        {
-            EmptyModel(ref model);
-
-            model.Id = entity.Id;
-            model.ContentKey= entity.ContentKey;
-            model.ContentValue= entity.ContentValue;
-            model.Description= entity.Description;
-
-            model.UpdateDateTime = entity.UpdateDateTime;
-        }
-
-        private void EntityToModel(KeyValueContent entity, ref KeyValueContentModel model, int index)
-        {
-            EmptyModel(ref model);
-
-            model.Id = entity.Id;
-            model.Index = index;
-            model.ContentKey = entity.ContentKey;
-            model.ContentValue = entity.ContentValue;
-            model.Description = entity.Description;
-
-            model.UpdateDateTime = entity.UpdateDateTime;
-        }
-
-        private void ModelToEntity(KeyValueContentModel model, ref KeyValueContent entity)
-        {
-            EmptyEntity(ref entity);
-
-            entity.Id = model.Id;
-            entity.ContentKey = model.ContentKey;
-            entity.ContentValue = model.ContentValue;
-            entity.Description = model.Description;
-        }
-
-        private void EmptyEntity(ref KeyValueContent entity)
-        {
-            entity.Id = 0;
-            entity.ContentKey = "";
-            entity.ContentValue = "";
-            entity.Description = "";
-            entity.UpdateDateTime = DateTime.UtcNow;
-        }
-
-        private void EmptyModel(ref KeyValueContentModel model)
-        {
-            model.Id = 0;
-            model.Index = 0;
-            model.ContentKey = "";
-            model.ContentValue = "";
-            model.Description = "";
-            model.UpdateDateTime = DateTime.UtcNow;
-        }
-
-        #endregion
-
-
-        #region Log and Preperation Methods
+        #region Log Methods
 
         private async Task LogError(Exception ex)
         {

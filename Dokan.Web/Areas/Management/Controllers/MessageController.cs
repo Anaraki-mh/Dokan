@@ -25,10 +25,6 @@ namespace Dokan.Web.Areas.Management.Controllers
         private ILogService _logService { get; }
         private IEmailService _emailService { get; }
 
-        private List<Message> _allEntities { get; set; }
-        private MessageModel _model;
-        private Message _entity;
-
         #endregion
 
 
@@ -39,10 +35,6 @@ namespace Dokan.Web.Areas.Management.Controllers
             _messageService = MessageService;
             _logService = logService;
             _emailService = emailService;
-
-            _allEntities = new List<Message>();
-            _model = new MessageModel();
-            _entity = new Message();
         }
 
         #endregion
@@ -61,23 +53,22 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             List<MessageModel> convertedEntityList = new List<MessageModel>();
 
-            _allEntities = await _messageService.ListAsync();
+            var allEntities = await _messageService.ListAsync();
 
-            List<Message> filteredList = _allEntities.Skip((page - 1) * numberOfResults).Take(numberOfResults).ToList();
+            List<Message> filteredList = allEntities.Skip((page - 1) * numberOfResults).Take(numberOfResults).ToList();
 
             int index = (page - 1) * numberOfResults + 1;
 
             foreach (var entity in filteredList)
             {
-                _model = new MessageModel();
-                EntityToModel(entity, ref _model, index);
+                var model = MessageModel.EntityToModel(in entity, index);
 
-                convertedEntityList.Add(_model);
+                convertedEntityList.Add(model);
 
                 index++;
             }
 
-            ViewBag.NumberOfPages = Math.Ceiling((decimal)_allEntities.Count / (decimal)numberOfResults);
+            ViewBag.NumberOfPages = Math.Ceiling((decimal)allEntities.Count / (decimal)numberOfResults);
             ViewBag.ActivePage = page;
 
             return PartialView("_List", convertedEntityList);
@@ -86,19 +77,19 @@ namespace Dokan.Web.Areas.Management.Controllers
         [HttpGet]
         public async Task<ActionResult> Details(int id)
         {
-            _entity = await _messageService.FindByIdAsync(id);
+            var entity = await _messageService.FindByIdAsync(id);
+            var model = MessageModel.EntityToModel(in entity);
 
-            EntityToModel(_entity, ref _model);
-
-            return PartialView("_Details", _model);
+            return PartialView("_Details", model);
         }
 
         [HttpGet]
         public async Task<ActionResult> Reply(int id)
         {
+            var entity = new Message();
             try
             {
-                _entity = await _messageService.FindByIdAsync(id);
+                entity = await _messageService.FindByIdAsync(id);
             }
             catch (Exception ex)
             {
@@ -107,13 +98,12 @@ namespace Dokan.Web.Areas.Management.Controllers
                 return View("Error400");
             }
 
-            EmptyModel(ref _model);
+            var model = new MessageModel();
+            model.Id = entity.Id;
+            model.Email = entity.Email;
+            model.Subject = "WEBSITENAME - In reply to the message you left us!";
 
-            _model.Id = _entity.Id;
-            _model.Email = _entity.Email;
-            _model.Subject = "WEBSITENAME - In reply to the message you left us!";
-
-            return View(_model);
+            return View(model);
         }
 
         [HttpPost]
@@ -159,10 +149,8 @@ namespace Dokan.Web.Areas.Management.Controllers
 
             foreach (var entity in removedEntityList)
             {
-                _model = new MessageModel();
-                EntityToModel(entity, ref _model, index);
-
-                convertedEntityList.Add(_model);
+                var model = MessageModel.EntityToModel(in entity, index);
+                convertedEntityList.Add(model);
 
                 index++;
             }
@@ -245,70 +233,7 @@ namespace Dokan.Web.Areas.Management.Controllers
         #endregion
 
 
-        #region Conversion Methods
-
-        private void EntityToModel(Message entity, ref MessageModel model)
-        {
-            EmptyModel(ref model);
-
-            model.Id = entity.Id;
-            model.Name = entity.Name;
-            model.Email = entity.Email;
-            model.Subject = entity.Subject;
-            model.MessageBody = entity.MessageBody;
-            model.CreateDateTime = entity.CreateDateTime;
-        }
-
-        private void EntityToModel(Message entity, ref MessageModel model, int index)
-        {
-            EmptyModel(ref model);
-
-            model.Id = entity.Id;
-            model.Index = index;
-            model.Name = entity.Name;
-            model.Email = entity.Email;
-            model.Subject = entity.Subject;
-            model.MessageBody = entity.MessageBody;
-            model.CreateDateTime = entity.CreateDateTime;
-        }
-
-        private void ModelToEntity(MessageModel model, ref Message entity)
-        {
-            EmptyEntity(ref entity);
-
-            entity.Id = model.Id;
-            entity.Name = model.Name;
-            entity.Email = model.Email;
-            entity.Subject = model.Subject;
-            entity.MessageBody = model.MessageBody;
-            entity.CreateDateTime = model.CreateDateTime;
-        }
-
-        private void EmptyEntity(ref Message entity)
-        {
-            entity.Id = 0;
-            entity.Name = "";
-            entity.Email = "";
-            entity.Subject = "";
-            entity.MessageBody = "";
-            entity.CreateDateTime = DateTime.UtcNow;
-        }
-
-        private void EmptyModel(ref MessageModel model)
-        {
-            model.Id = 0;
-            model.Index = 0;
-            model.Name = "";
-            model.Subject = "";
-            model.MessageBody = "";
-            model.Email = "";
-            model.CreateDateTime = DateTime.UtcNow;
-        }
-
-        #endregion
-
-
-        #region Log and Preperation Methods
+        #region Log Methods
 
         private async Task LogError(Exception ex)
         {

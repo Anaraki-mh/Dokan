@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Dokan.Domain.Website;
+using Microsoft.Owin.Security.Provider;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -57,5 +59,69 @@ namespace Dokan.Web.Areas.Management.Models
         public List<SelectListItem> CategoryDropdown { get; set; }
 
         #endregion
+
+
+        #region Conversion Helpers
+
+        public static BlogPostModel EntityToModel(in BlogPost entity, int index = 0)
+        {
+            var model = new BlogPostModel()
+            {
+                Index = index,
+                Id = entity.Id,
+                Title = entity.Title,
+                ShortDescription = entity.ShortDescription,
+                Content = entity.Content,
+                Image = entity.Image,
+                CategoryId = entity.BlogCategoryId,
+                CategoryTitle = entity.BlogCategory?.Title ?? " - ",
+                UpdateDateTime = entity.UpdateDateTime,
+            };
+
+            return model;
+        }
+
+        public static BlogPost ModelToEntity(in BlogPostModel model)
+        {
+            var entity = new BlogPost()
+            {
+                Id = model.Id,
+                Title = model.Title,
+                ShortDescription = model.ShortDescription,
+                Content = model.Content,
+                Image = model.Image,
+                BlogCategoryId = model.CategoryId,
+                UpdateDateTime = model.UpdateDateTime,
+            };
+
+            return entity;
+        }
+
+        #endregion
+
+
+        #region Preparation Helpers
+
+        public static void PrepareDropdown(ref BlogPostModel model, List<BlogCategory> dropdownItemsList)
+        {
+            model.CategoryDropdown.Clear();
+
+            model.CategoryDropdown.Add(new SelectListItem()
+            {
+                Text = "Select an item...",
+                Value = "",
+            });
+
+            foreach (var entity in dropdownItemsList)
+            {
+                model.CategoryDropdown.Add(new SelectListItem()
+                {
+                    Text = entity.Title,
+                    Value = entity.Id.ToString(),
+                });
+            }
+        }
+
+        #endregion 
     }
 }

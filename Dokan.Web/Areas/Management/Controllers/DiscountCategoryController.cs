@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
@@ -20,10 +21,6 @@ namespace Dokan.Web.Areas.Management.Controllers
         private IProductCategoryService _productCategoryService { get; }
         private ILogService _logService { get; }
 
-        private List<DiscountCategory> _allEntities { get; set; }
-        private DiscountCategoryModel _model;
-        private DiscountCategory _entity;
-
         #endregion
 
 
@@ -35,10 +32,6 @@ namespace Dokan.Web.Areas.Management.Controllers
             _logService = logService;
             _productService = productService;
             _productCategoryService = productCategoryService;
-
-            _allEntities = new List<DiscountCategory>();
-            _model = new DiscountCategoryModel();
-            _entity = new DiscountCategory();
         }
 
         #endregion
@@ -57,23 +50,22 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             List<DiscountCategoryModel> convertedEntityList = new List<DiscountCategoryModel>();
 
-            _allEntities = await _discountCategoryService.ListAsync();
+            var allEntities = await _discountCategoryService.ListAsync();
 
-            List<DiscountCategory> filteredList = _allEntities.Skip((page - 1) * numberOfResults).Take(numberOfResults).ToList();
+            List<DiscountCategory> filteredList = allEntities.Skip((page - 1) * numberOfResults).Take(numberOfResults).ToList();
 
             int index = (page - 1) * numberOfResults + 1;
 
             foreach (var entity in filteredList)
             {
-                _model = new DiscountCategoryModel();
-                EntityToModel(entity, ref _model, index);
+                var model = DiscountCategoryModel.EntityToModel(in entity, index);
 
-                convertedEntityList.Add(_model);
+                convertedEntityList.Add(model);
 
                 index++;
             }
 
-            ViewBag.NumberOfPages = Math.Ceiling((decimal)_allEntities.Count / (decimal)numberOfResults);
+            ViewBag.NumberOfPages = Math.Ceiling((decimal)allEntities.Count / (decimal)numberOfResults);
             ViewBag.ActivePage = page;
 
             return PartialView("_List", convertedEntityList);
@@ -82,20 +74,20 @@ namespace Dokan.Web.Areas.Management.Controllers
         [HttpGet]
         public async Task<ActionResult> Details(int id)
         {
-            _entity = await _discountCategoryService.FindByIdAsync(id);
+            var entity = await _discountCategoryService.FindByIdAsync(id);
 
-            EntityToModel(_entity, ref _model);
+            var model = DiscountCategoryModel.EntityToModel(in entity);
 
-            return PartialView("_Details", _model);
+            return PartialView("_Details", model);
         }
 
         [HttpGet]
         public async Task<ActionResult> Create()
         {
-            EmptyModel(ref _model);
-            PrepareDropdown(ref _model, await _productService.ListAsync());
+            var model = new DiscountCategoryModel();
+            DiscountCategoryModel.PrepareDropdown(ref model, await _productService.ListAsync());
 
-            return View(_model);
+            return View(model);
         }
 
         [HttpPost]
@@ -103,20 +95,21 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             if (!ModelState.IsValid)
             {
-                PrepareDropdown(ref model, await _productService.ListAsync());
+                DiscountCategoryModel.PrepareDropdown(ref model, await _productService.ListAsync());
                 return View(model);
             }
 
+            var entity = new DiscountCategory();
             try
             {
-                ModelToEntity(model, ref _entity);
+                entity  = DiscountCategoryModel.ModelToEntity(in model, await _productService.ListAsync());
 
-                _entity.CreateDateTime = DateTime.UtcNow;
-                _entity.UpdateDateTime = DateTime.UtcNow;
+                entity.CreateDateTime = DateTime.UtcNow;
+                entity.UpdateDateTime = DateTime.UtcNow;
 
-                await _discountCategoryService.CreateAsync(_entity);
+                await _discountCategoryService.CreateAsync(entity);
 
-                await Log(LogType.ContentAdd, "Create", $"{_entity.Id}_ {_entity.Title}");
+                await Log(LogType.ContentAdd, "Create", $"{entity.Id}_ {entity.Title}");
             }
             catch (Exception ex)
             {
@@ -131,9 +124,10 @@ namespace Dokan.Web.Areas.Management.Controllers
         [HttpGet]
         public async Task<ActionResult> Update(int id)
         {
+            var entity = new DiscountCategory();
             try
             {
-                _entity = await _discountCategoryService.FindByIdAsync(id);
+                entity = await _discountCategoryService.FindByIdAsync(id);
             }
             catch (Exception ex)
             {
@@ -142,11 +136,11 @@ namespace Dokan.Web.Areas.Management.Controllers
                 return View("Error400");
             }
 
-            EntityToModel(_entity, ref _model);
+            var model = DiscountCategoryModel.EntityToModel(in entity);
 
-            PrepareDropdown(ref _model, await _productService.ListAsync());
+            DiscountCategoryModel.PrepareDropdown(ref model, await _productService.ListAsync());
 
-            return View(_model);
+            return View(model);
         }
 
         [HttpPost]
@@ -154,19 +148,20 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             if (!ModelState.IsValid)
             {
-                PrepareDropdown(ref model, await _productService.ListAsync());
+                DiscountCategoryModel.PrepareDropdown(ref model, await _productService.ListAsync());
                 return View(model);
             }
 
+            var entity = new DiscountCategory();
             try
             {
-                ModelToEntity(model, ref _entity);
+                entity = DiscountCategoryModel.ModelToEntity(in model, await _productService.ListAsync());
 
-                _entity.UpdateDateTime = DateTime.UtcNow;
+                entity.UpdateDateTime = DateTime.UtcNow;
 
-                await _discountCategoryService.UpdateAsync(_entity);
+                await _discountCategoryService.UpdateAsync(entity);
 
-                await Log(LogType.ContentUpdate, "Update", $"{_entity.Id}_ {_entity.Title}");
+                await Log(LogType.ContentUpdate, "Update", $"{entity.Id}_ {entity.Title}");
             }
             catch (Exception ex)
             {
@@ -194,10 +189,8 @@ namespace Dokan.Web.Areas.Management.Controllers
 
             foreach (var entity in removedEntityList)
             {
-                _model = new DiscountCategoryModel();
-                EntityToModel(entity, ref _model, index);
-
-                convertedEntityList.Add(_model);
+                var model = DiscountCategoryModel.EntityToModel(in entity, index);
+                convertedEntityList.Add(model);
 
                 index++;
             }
@@ -280,84 +273,7 @@ namespace Dokan.Web.Areas.Management.Controllers
         #endregion
 
 
-        #region Conversion Methods
-
-        private void EntityToModel(DiscountCategory entity, ref DiscountCategoryModel model)
-        {
-            EmptyModel(ref model);
-
-            model.Id = entity.Id;
-            model.Title = entity.Title;
-            model.Discount = entity.Discount;
-            model.IsActive= entity.IsActive;
-            model.ProductIds = entity.Products?.Select(c => c.Id).ToList();
-            model.UpdateDateTime = entity.UpdateDateTime;
-            model.ExpiryDateTime = entity.ExpiryDateTime;
-        }
-
-        private void EntityToModel(DiscountCategory entity, ref DiscountCategoryModel model, int index)
-        {
-            EmptyModel(ref model);
-
-            model.Index = index;
-            model.Id = entity.Id;
-            model.Title = entity.Title;
-            model.Discount = entity.Discount;
-            model.IsActive = entity.IsActive;
-            model.ProductIds = entity.Products?.Select(c => c.Id).ToList();
-            model.UpdateDateTime = entity.UpdateDateTime;
-            model.ExpiryDateTime = entity.ExpiryDateTime;
-        }
-
-        private void ModelToEntity(DiscountCategoryModel model, ref DiscountCategory entity)
-        {
-            EmptyEntity(ref entity);
-
-            entity.Id = model.Id;
-            entity.Title = model.Title;
-            entity.Discount = model.Discount;
-            entity.IsActive = model.IsActive;
-            entity.UpdateDateTime = model.UpdateDateTime;
-            entity.ExpiryDateTime = model.ExpiryDateTime;
-
-            foreach (var id in model.ProductIds)
-            {
-                var category = _productService.FindByIdAsync(id);
-                category.Wait();
-
-                entity.Products.Add(category.Result);
-            }
-        }
-
-        private void EmptyEntity(ref DiscountCategory entity)
-        {
-            entity.Id = 0;
-            entity.Title = "";
-            entity.Discount = 0;
-            entity.IsActive = false;
-            entity.Products.Clear();
-            entity.UpdateDateTime = DateTime.UtcNow;
-            entity.ExpiryDateTime = DateTime.UtcNow;
-
-        }
-
-        private void EmptyModel(ref DiscountCategoryModel model)
-        {
-            model.Id = 0;
-            model.Index = 0;
-            model.Title = "";
-            model.Discount = 0;
-            model.IsActive = false;
-            model.ProductIds.Clear();
-            model.ProductDropdown.Clear();
-            model.UpdateDateTime = DateTime.UtcNow;
-            model.ExpiryDateTime = DateTime.UtcNow;
-        }
-
-        #endregion
-
-
-        #region Log and Preperation Methods
+        #region Log Methods
 
         private async Task LogError(Exception ex)
         {
@@ -381,24 +297,6 @@ namespace Dokan.Web.Areas.Management.Controllers
                 Method = method,
                 Description = $"{logType} _ {description}",
             });
-        }
-
-        private void PrepareDropdown(ref DiscountCategoryModel model, List<Product> dropdownItemsList)
-        {
-            model.ProductDropdown.Clear();
-
-            foreach (var entity in dropdownItemsList)
-            {
-                model.ProductDropdown.Add(new SelectListItem()
-                {
-                    Text = entity.Title,
-                    Value = entity.Id.ToString(),
-                    Group = new SelectListGroup()
-                    {
-                        Name = entity.ProductCategory.Title
-                    }
-                });
-            }
         }
 
         #endregion

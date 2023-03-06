@@ -24,10 +24,6 @@ namespace Dokan.Web.Areas.Management.Controllers
         private IProductCategoryService _productCategoryService { get; }
         private ILogService _logService { get; }
 
-        private List<Coupon> _allEntities { get; set; }
-        private CouponModel _model;
-        private Coupon _entity;
-
         #endregion
 
 
@@ -38,10 +34,6 @@ namespace Dokan.Web.Areas.Management.Controllers
             _couponService = couponService;
             _logService = logService;
             _productCategoryService = productCategoryService;
-
-            _allEntities = new List<Coupon>();
-            _model = new CouponModel();
-            _entity = new Coupon();
         }
 
         #endregion
@@ -60,23 +52,22 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             List<CouponModel> convertedEntityList = new List<CouponModel>();
 
-            _allEntities = await _couponService.ListAsync();
+            var allEntities = await _couponService.ListAsync();
 
-            List<Coupon> filteredList = _allEntities.Skip((page - 1) * numberOfResults).Take(numberOfResults).ToList();
+            List<Coupon> filteredList = allEntities.Skip((page - 1) * numberOfResults).Take(numberOfResults).ToList();
 
             int index = (page - 1) * numberOfResults + 1;
 
             foreach (var entity in filteredList)
             {
-                _model = new CouponModel();
-                EntityToModel(entity, ref _model, index);
+                var model = CouponModel.EntityToModel(in entity, index);
 
-                convertedEntityList.Add(_model);
+                convertedEntityList.Add(model);
 
                 index++;
             }
 
-            ViewBag.NumberOfPages = Math.Ceiling((decimal)_allEntities.Count / (decimal)numberOfResults);
+            ViewBag.NumberOfPages = Math.Ceiling((decimal)allEntities.Count / (decimal)numberOfResults);
             ViewBag.ActivePage = page;
 
             return PartialView("_List", convertedEntityList);
@@ -85,20 +76,20 @@ namespace Dokan.Web.Areas.Management.Controllers
         [HttpGet]
         public async Task<ActionResult> Details(int id)
         {
-            _entity = await _couponService.FindByIdAsync(id);
+            var entity = await _couponService.FindByIdAsync(id);
 
-            EntityToModel(_entity, ref _model);
+            var model = CouponModel.EntityToModel(in entity);
 
-            return PartialView("_Details", _model);
+            return PartialView("_Details", model);
         }
 
         [HttpGet]
         public async Task<ActionResult> Create()
         {
-            EmptyModel(ref _model);
-            PrepareDropdown(ref _model, await _productCategoryService.ListAsync());
+            var model = new CouponModel();
+            CouponModel.PrepareDropdown(ref model, await _productCategoryService.ListAsync());
 
-            return View(_model);
+            return View(model);
         }
 
         [HttpPost]
@@ -106,7 +97,7 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             if (!ModelState.IsValid)
             {
-                PrepareDropdown(ref model, await _productCategoryService.ListAsync());
+                CouponModel.PrepareDropdown(ref model, await _productCategoryService.ListAsync());
                 return View(model);
             }
 
@@ -117,19 +108,20 @@ namespace Dokan.Web.Areas.Management.Controllers
                 return View(model);
             }
 
+            var entity = new Coupon();
             try
             {
-                ModelToEntity(model, ref _entity);
+                entity  = CouponModel.ModelToEntity(in model, await _productCategoryService.ListAsync());
 
-                _entity.CreateDateTime = DateTime.UtcNow;
-                _entity.UpdateDateTime = DateTime.UtcNow;
+                entity.CreateDateTime = DateTime.UtcNow;
+                entity.UpdateDateTime = DateTime.UtcNow;
 
-                if(_entity.ExpiryDateTime < _entity.UpdateDateTime)
-                    _entity.IsActive= false;
+                if(entity.ExpiryDateTime < entity.UpdateDateTime)
+                    entity.IsActive= false;
 
-                await _couponService.CreateAsync(_entity);
+                await _couponService.CreateAsync(entity);
 
-                await Log(LogType.ContentAdd, "Create", $"{_entity.Id}_ {_entity.Title}");
+                await Log(LogType.ContentAdd, "Create", $"{entity.Id}_ {entity.Title}");
             }
             catch (Exception ex)
             {
@@ -144,9 +136,10 @@ namespace Dokan.Web.Areas.Management.Controllers
         [HttpGet]
         public async Task<ActionResult> Update(int id)
         {
+            var entity = new Coupon();
             try
             {
-                _entity = await _couponService.FindByIdAsync(id);
+                entity = await _couponService.FindByIdAsync(id);
             }
             catch (Exception ex)
             {
@@ -155,11 +148,11 @@ namespace Dokan.Web.Areas.Management.Controllers
                 return View("Error400");
             }
 
-            EntityToModel(_entity, ref _model);
+            var model = CouponModel.EntityToModel(in entity);
 
-            PrepareDropdown(ref _model, await _productCategoryService.ListAsync());
+            CouponModel.PrepareDropdown(ref model, await _productCategoryService.ListAsync());
 
-            return View(_model);
+            return View(model);
         }
 
         [HttpPost]
@@ -167,22 +160,23 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             if (!ModelState.IsValid)
             {
-                PrepareDropdown(ref model, await _productCategoryService.ListAsync());
+                CouponModel.PrepareDropdown(ref model, await _productCategoryService.ListAsync());
                 return View(model);
             }
 
+            var entity = new Coupon();
             try
             {
-                ModelToEntity(model, ref _entity);
+                entity = CouponModel.ModelToEntity(in model, await _productCategoryService.ListAsync());
 
-                _entity.UpdateDateTime = DateTime.UtcNow;
+                entity.UpdateDateTime = DateTime.UtcNow;
 
-                if (_entity.ExpiryDateTime < _entity.UpdateDateTime)
-                    _entity.IsActive = false;
+                if (entity.ExpiryDateTime < entity.UpdateDateTime)
+                    entity.IsActive = false;
 
-                await _couponService.UpdateAsync(_entity);
+                await _couponService.UpdateAsync(entity);
 
-                await Log(LogType.ContentUpdate, "Update", $"{_entity.Id}_ {_entity.Title}");
+                await Log(LogType.ContentUpdate, "Update", $"{entity.Id}_ {entity.Title}");
             }
             catch (Exception ex)
             {
@@ -210,10 +204,9 @@ namespace Dokan.Web.Areas.Management.Controllers
 
             foreach (var entity in removedEntityList)
             {
-                _model = new CouponModel();
-                EntityToModel(entity, ref _model, index);
+                var model = CouponModel.EntityToModel(in entity, index);
 
-                convertedEntityList.Add(_model);
+                convertedEntityList.Add(model);
 
                 index++;
             }
@@ -296,101 +289,7 @@ namespace Dokan.Web.Areas.Management.Controllers
         #endregion
 
 
-        #region Conversion Methods
-
-        private void EntityToModel(Coupon entity, ref CouponModel model)
-        {
-            EmptyModel(ref model);
-
-            model.Id = entity.Id;
-            model.Title = entity.Title;
-            model.Code = entity.Code;
-            model.IsActive = entity.IsActive;
-            model.Discount = entity.Discount;
-            model.UsageLimit = entity.UsageLimit;
-            model.UsageCount = entity.UsageCount;
-            model.CategoryIds = entity.ProductCategories?.Select(c => c.Id).ToList();
-            model.CategoryTitles = String.Join(", ", entity.ProductCategories?.Select(c => c.Title).ToList());
-            model.ExpiryDateTime = entity.ExpiryDateTime;
-            model.UpdateDateTime = entity.UpdateDateTime;
-        }
-
-        private void EntityToModel(Coupon entity, ref CouponModel model, int index)
-        {
-            EmptyModel(ref model);
-
-            model.Index = index;
-            model.Id = entity.Id;
-            model.Title = entity.Title;
-            model.Code = entity.Code;
-            model.IsActive = entity.IsActive;
-            model.Discount = entity.Discount;
-            model.UsageLimit = entity.UsageLimit;
-            model.UsageCount = entity.UsageCount;
-            model.CategoryIds = entity.ProductCategories?.Select(c => c.Id).ToList();
-            model.CategoryTitles = String.Join(", ", entity.ProductCategories?.Select(c => c.Title).ToList());
-
-            model.ExpiryDateTime = entity.ExpiryDateTime;
-            model.UpdateDateTime = entity.UpdateDateTime;
-        }
-
-        private void ModelToEntity(CouponModel model, ref Coupon entity)
-        {
-            EmptyEntity(ref entity);
-
-            entity.Id = model.Id;
-            entity.Title = model.Title;
-            entity.Code = model.Code;
-            entity.IsActive = model.IsActive;
-            entity.Discount = model.Discount;
-            entity.UsageLimit = model.UsageLimit;
-            entity.UsageCount = model.UsageCount;
-            entity.ExpiryDateTime = model.ExpiryDateTime;
-            entity.UpdateDateTime = model.UpdateDateTime;
-            foreach (var id in model.CategoryIds)
-            {
-                ProductCategory category = Task.Run(() => _productCategoryService.FindByIdAsync(id)).Result;
-                //category.Wait();
-
-                entity.ProductCategories.Add(category);
-            }
-        }
-
-        private void EmptyEntity(ref Coupon entity)
-        {
-            entity.Id = 0;
-            entity.Title = "";
-            entity.Code = "";
-            entity.IsActive = false;
-            entity.Discount = 0;
-            entity.UsageLimit = 0;
-            entity.UsageCount = 0;
-            entity.ProductCategories.Clear();
-            entity.ExpiryDateTime = DateTime.UtcNow;
-            entity.UpdateDateTime = DateTime.UtcNow;
-        }
-
-        private void EmptyModel(ref CouponModel model)
-        {
-            model.Id = 0;
-            model.Index = 0;
-            model.Title = "";
-            model.Code = "";
-            model.IsActive = false;
-            model.Discount = 0;
-            model.UsageLimit = 0;
-            model.UsageCount = 0;
-            model.CategoryTitles = "";
-            model.CategoryIds.Clear();
-            model.CategoryDropdown.Clear();
-            model.ExpiryDateTime = DateTime.UtcNow;
-            model.UpdateDateTime = DateTime.UtcNow;
-        }
-
-        #endregion
-
-
-        #region Log and Preperation Methods
+        #region Log Methods
 
         private async Task LogError(Exception ex)
         {
@@ -414,20 +313,6 @@ namespace Dokan.Web.Areas.Management.Controllers
                 Method = method,
                 Description = $"{logType} _ {description}",
             });
-        }
-
-        private void PrepareDropdown(ref CouponModel model, List<ProductCategory> dropdownItemsList)
-        {
-            model.CategoryDropdown.Clear();
-
-            foreach (var entity in dropdownItemsList)
-            {
-                model.CategoryDropdown.Add(new SelectListItem()
-                {
-                    Text = entity.Title,
-                    Value = entity.Id.ToString(),
-                });
-            }
         }
 
         #endregion

@@ -82,7 +82,7 @@ namespace Dokan.Web.Models
         [Required(ErrorMessage = "{0} can not be empty")]
         [MaxLength(15, ErrorMessage = "{0} can not be longer than {1} characters")]
         public string PhoneNumber { get; set; }
-        
+
         public double ShippingCost { get; set; }
 
         public DeliveryMethod DeliveryMethod { get; set; }
@@ -103,6 +103,55 @@ namespace Dokan.Web.Models
         public virtual Coupon Coupon { get; set; }
 
         public virtual List<CartItemModel> CartItems { get; set; }
+
+        #endregion
+
+
+        #region Conversion Helpers
+
+        public static CartModel EntityToModel(in Order entity)
+        {
+            var model = new CartModel()
+            {
+                Id = entity.Id,
+                CreateDateTime = entity.CreateDateTime,
+                TrackingCode = entity.TrackingCode,
+                FirstName = entity.User?.UserInformation?.FirstName ?? "",
+                LastName = entity.User?.UserInformation?.LastName ?? "",
+                Country = entity.User?.UserInformation?.Country ?? "",
+                State = entity.User?.UserInformation?.State ?? "",
+                City = entity.User?.UserInformation?.City ?? "",
+                Address = entity.User?.UserInformation?.Address ?? "",
+                ZipCode = entity.User?.UserInformation?.ZipCode ?? "",
+                PhoneNumber = entity.User?.UserInformation?.PhoneNumber ?? "",
+                ShippingCost = entity.ShippingCost,
+                DeliveryMethod = entity.DeliveryMethod,
+                PaymentState = entity.PaymentState,
+                OrderState = entity.OrderState,
+                UserId = entity.UserId,
+                Coupon = entity.Coupon ?? new Coupon(),
+                CouponId = entity.CouponId,
+            };
+
+            foreach (var item in entity.OrderItems)
+            {
+                model.CartItems.Add(new CartItemModel
+                {
+                    Id = item.Id,
+                    CartId = model.Id,
+                    ProductId = item.ProductId,
+                    ProductImage = item.Product.Image1,
+                    ProductTitle = item.Product.Title,
+                    Discount = item.Discount,
+                    Tax = item.Tax,
+                    Price = $"{item.Total / (double)item.Quantity:0.00}",
+                    Quantity = item.Quantity,
+                    Total = item.Total,
+                });
+            }
+
+            return model;
+        }
 
         #endregion
     }

@@ -24,9 +24,6 @@ namespace Dokan.Web.Controllers
         private IDiscountCategoryService _discountCategoryService { get; }
         private IBlogPostService _blogPostService { get; }
 
-        private MessageModel _model;
-        private Message _entity;
-
         #endregion
 
 
@@ -40,9 +37,6 @@ namespace Dokan.Web.Controllers
             _productCategoryService = productCategoryService;
             _discountCategoryService = discountCategoryService;
             _blogPostService = blogPostService;
-
-            _model = new MessageModel();
-            _entity = new Message();
 
             LayoutHelper.PrepareLayout();
         }
@@ -96,12 +90,10 @@ namespace Dokan.Web.Controllers
                 .ToList();
 
             List<ProductModel> productModels = new List<ProductModel>();
-            ProductModel model;
 
             foreach (var product in productEntities)
             {
-                model = new ProductModel();
-                ProductEntityToModel(product, ref model);
+                var model = ProductModel.EntityToModel(in product);
                 productModels.Add(model);
             }
 
@@ -122,7 +114,7 @@ namespace Dokan.Web.Controllers
                     .Where(x => x.IsActive == true && x.ExpiryDateTime > DateTime.UtcNow)
                     .OrderBy(x => x.Discount)
                     .First();
-                DiscountCategoryEntityToModel(discountEntity, ref model);
+                model = DiscountCategoryModel.EntityToModel(in discountEntity);
             }
 
             ViewBag.DealsBanner = Task.Run(() => _kvContentService.GetValueByKeyAsync("@deals-banner")).Result;
@@ -140,12 +132,10 @@ namespace Dokan.Web.Controllers
                 .ToList();
 
             List<ProductModel> productModels = new List<ProductModel>();
-            ProductModel model;
 
             foreach (var product in productEntities)
             {
-                model = new ProductModel();
-                ProductEntityToModel(product, ref model);
+                var model = ProductModel.EntityToModel(in product);
                 productModels.Add(model);
             }
 
@@ -166,8 +156,7 @@ namespace Dokan.Web.Controllers
 
             foreach (var blog in blogPostEntities)
             {
-                model = new BlogPostModel();
-                BlogPostEntityToModel(blog, ref model);
+                model = BlogPostModel.EntityToModel(in blog);
                 blogPostModels.Add(model);
             }
 
@@ -195,11 +184,8 @@ namespace Dokan.Web.Controllers
             ViewBag.Phone = await _kvContentService.GetValueByKeyAsync("@phone");
             ViewBag.Email = await _kvContentService.GetValueByKeyAsync("@email");
 
-            _model.Email = "";
-            _model.Name = "";
-            _model.MessageBody = "";
-
-            return View(_model);
+            var model = new MessageModel();
+            return View(model);
         }
 
         [HttpPost]
@@ -217,8 +203,8 @@ namespace Dokan.Web.Controllers
                 return View(model);
             }
 
-            MessageModelToEntity(model, ref _entity);
-            await _messageService.CreateAsync(_entity);
+            var entity = MessageModel.ModelToEntity(in model);
+            await _messageService.CreateAsync(entity);
 
             return RedirectToAction("Index");
         }
@@ -243,65 +229,6 @@ namespace Dokan.Web.Controllers
 
             return View();
         }
-
-        #endregion
-
-
-        #region Conversion
-
-        private void MessageModelToEntity(MessageModel model, ref Message entity)
-        {
-            entity.Name = model.Name;
-            entity.Email = model.Email;
-            entity.Subject = $"Contact us Message - {System.Web.HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"] ?? "UNKNOWN IP"}";
-            entity.MessageBody = model.MessageBody;
-            entity.CreateDateTime = DateTime.UtcNow;
-        }
-
-        private void ProductEntityToModel(Product entity, ref ProductModel model)
-        {
-            model.Id = entity.Id;
-            model.Title = entity.Title;
-            model.ShortDescription = entity.ShortDescription;
-            model.Description = entity.Description;
-            model.NoDiscountPrice = $"{entity.Price:0.00}";
-            model.Price = model.NoDiscountPrice;
-
-            if (entity.DiscountCategory != null)
-                model.Price = $"{(entity.Price - entity.Price * (double)entity.DiscountCategory?.Discount):0.00}";
-
-            model.Stock = entity.Stock;
-            model.Images.Clear();
-            model.Images.Add(entity.Image1);
-            model.Images.Add(entity.Image2);
-            model.Images.Add(entity.Image3);
-            model.Images.Add(entity.Image4);
-            model.Images.Add(entity.Image5);
-            model.CategoryId = entity.ProductCategoryId;
-            model.CategoryTitle = entity.ProductCategory?.Title ?? " - ";
-            model.CreateDateTime = entity.CreateDateTime;
-        }
-
-        private void DiscountCategoryEntityToModel(DiscountCategory entity, ref DiscountCategoryModel model)
-        {
-            model.Id = entity.Id;
-            model.Title = entity.Title;
-            model.Discount = entity.Discount;
-            model.UntilExpiration = DateTime.UtcNow - entity.ExpiryDateTime;
-        }
-
-        private void BlogPostEntityToModel(BlogPost entity, ref BlogPostModel model)
-        {
-            model.Id = entity.Id;
-            model.Title = entity.Title;
-            model.ShortDescription = entity.ShortDescription;
-            model.Content = entity.Content;
-            model.Image = entity.Image;
-            model.CategoryId = entity.BlogCategoryId;
-            model.CategoryTitle = entity.BlogCategory?.Title ?? " - ";
-            model.CreateDateTime = $"{entity.CreateDateTime:MMM d - yyyy}";
-        }
-
 
         #endregion
 

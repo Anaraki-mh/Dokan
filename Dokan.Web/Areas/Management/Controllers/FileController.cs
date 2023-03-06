@@ -26,10 +26,6 @@ namespace Dokan.Web.Areas.Management.Controllers
         private IFileService _fileService { get; }
         private ILogService _logService { get; }
 
-        private List<File> _allEntities { get; set; }
-        private FileModel _model;
-        private File _entity;
-
         #endregion
 
 
@@ -39,10 +35,6 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             _fileService = FileService;
             _logService = logService;
-
-            _allEntities = new List<File>();
-            _model = new FileModel();
-            _entity = new File();
         }
 
         #endregion
@@ -61,25 +53,24 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             List<FileModel> convertedEntityList = new List<FileModel>();
 
-            _allEntities = await _fileService.ListAsync();
+            var allEntities = await _fileService.ListAsync();
 
-            List<File> filteredList = _allEntities.Skip((page - 1) * numberOfResults).Take(numberOfResults).ToList();
+            List<File> filteredList = allEntities.Skip((page - 1) * numberOfResults).Take(numberOfResults).ToList();
 
             int index = (page - 1) * numberOfResults + 1;
 
             foreach (var entity in filteredList)
             {
-                _model = new FileModel();
-                EntityToModel(entity, ref _model, index);
+                var model = FileModel.EntityToModel(in entity, index);
 
-                convertedEntityList.Add(_model);
+                convertedEntityList.Add(model);
 
                 index++;
             }
 
             convertedEntityList = convertedEntityList.OrderBy(x => x.FileType).ThenBy(x => x.CreateDateTime).ToList();
 
-            ViewBag.NumberOfPages = Math.Ceiling((decimal)_allEntities.Count / (decimal)numberOfResults);
+            ViewBag.NumberOfPages = Math.Ceiling((decimal)allEntities.Count / (decimal)numberOfResults);
             ViewBag.ActivePage = page;
 
             return PartialView("_List", convertedEntityList);
@@ -88,19 +79,18 @@ namespace Dokan.Web.Areas.Management.Controllers
         [HttpGet]
         public async Task<ActionResult> Details(int id)
         {
-            _entity = await _fileService.FindByIdAsync(id);
+            var entity = await _fileService.FindByIdAsync(id);
 
-            EntityToModel(_entity, ref _model);
+            var model = FileModel.EntityToModel(in entity);
 
-            return PartialView("_Details", _model);
+            return PartialView("_Details", model);
         }
 
         [HttpGet]
         public ActionResult Create()
         {
-            EmptyModel(ref _model);
-
-            return View(_model);
+            var model = new FileModel();
+            return View(model);
         }
 
         [HttpPost]
@@ -111,22 +101,22 @@ namespace Dokan.Web.Areas.Management.Controllers
 
             try
             {
-                ModelToEntity(model, ref _entity);
+                var entity = FileModel.ModelToEntity(in model);
 
                 string fileFormat = uploadedFile.FileName.Substring(uploadedFile.FileName.LastIndexOf('.'));
 
-                _entity.Title += fileFormat;
+                entity.Title += fileFormat;
 
                 //model.Title = Path.GetFileName(uploadedFile.FileName);
 
-                _entity.CreateDateTime = DateTime.UtcNow;
+                entity.CreateDateTime = DateTime.UtcNow;
 
-                await _fileService.CreateAsync(_entity);
+                await _fileService.CreateAsync(entity);
 
-                string path = Path.Combine(Server.MapPath("~/Files"), _entity.Title);
+                string path = Path.Combine(Server.MapPath("~/Files"), entity.Title);
                 uploadedFile.SaveAs(path);
 
-                await Log(LogType.ContentAdd, "Create", $"{_entity.Id}_ {_entity.Title}");
+                await Log(LogType.ContentAdd, "Create", $"{entity.Id}_ {entity.Title}");
             }
             catch (Exception ex)
             {
@@ -141,9 +131,10 @@ namespace Dokan.Web.Areas.Management.Controllers
         [HttpGet]
         public async Task<ActionResult> Update(int id)
         {
+            var entity = new File();
             try
             {
-                _entity = await _fileService.FindByIdAsync(id);
+                entity = await _fileService.FindByIdAsync(id);
             }
             catch (Exception ex)
             {
@@ -152,9 +143,9 @@ namespace Dokan.Web.Areas.Management.Controllers
                 return View("Error400");
             }
 
-            EntityToModel(_entity, ref _model);
+            var model = FileModel.EntityToModel(in entity);
 
-            return View(_model);
+            return View(model);
         }
 
         [HttpPost]
@@ -165,20 +156,20 @@ namespace Dokan.Web.Areas.Management.Controllers
 
             try
             {
-                _entity = await _fileService.FindByIdAsync(model.Id);
+                var entity = await _fileService.FindByIdAsync(model.Id);
 
                 // Change the name of the saved file if title was edited
-                if (_entity.Title != model.Title)
+                if (entity.Title != model.Title)
                 {
-                    string oldPath = Path.Combine(Server.MapPath("~/Files"), _entity.Title);
+                    string oldPath = Path.Combine(Server.MapPath("~/Files"), entity.Title);
                     string newPath = Path.Combine(Server.MapPath("~/Files"), model.Title);
                     System.IO.File.Move(oldPath, newPath);
                 }
 
-                ModelToEntity(model, ref _entity);
-                await _fileService.UpdateAsync(_entity);
+                entity = FileModel.ModelToEntity(in model);
+                await _fileService.UpdateAsync(entity);
 
-                await Log(LogType.ContentUpdate, "Update", $"{_entity.Id}_ {_entity.Title}");
+                await Log(LogType.ContentUpdate, "Update", $"{entity.Id}_ {entity.Title}");
             }
             catch (Exception ex)
             {
@@ -195,13 +186,13 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             try
             {
-                _entity = await _fileService.FindByIdAsync(id);
+                var entity = await _fileService.FindByIdAsync(id);
                 await _fileService.DeleteAsync(id);
 
-                string path = Path.Combine(Server.MapPath("~/Files"), _entity.Title);
+                string path = Path.Combine(Server.MapPath("~/Files"), entity.Title);
                 System.IO.File.Delete(path);
 
-                await Log(LogType.ContentDelete, "Delete", $"{_entity.Id}_ {_entity.Title}");
+                await Log(LogType.ContentDelete, "Delete", $"{entity.Id}_ {entity.Title}");
             }
             catch (Exception ex)
             {
@@ -216,62 +207,7 @@ namespace Dokan.Web.Areas.Management.Controllers
         #endregion
 
 
-        #region Conversion Methods
-
-        private void EntityToModel(File entity, ref FileModel model)
-        {
-            EmptyModel(ref model);
-
-            model.Id = entity.Id;
-            model.Title = entity.Title;
-            model.FileType= entity.FileType;
-
-            model.CreateDateTime = entity.CreateDateTime;
-        }
-
-        private void EntityToModel(File entity, ref FileModel model, int index)
-        {
-            EmptyModel(ref model);
-
-            model.Id = entity.Id;
-            model.Index = index;
-            model.Title = entity.Title;
-            model.FileType = entity.FileType;
-
-            model.CreateDateTime = entity.CreateDateTime;
-        }
-
-        private void ModelToEntity(FileModel model, ref File entity)
-        {
-            EmptyEntity(ref entity);
-
-            entity.Id = model.Id;
-            entity.Title= model.Title;
-            entity.FileType = model.FileType;
-            entity.CreateDateTime = model.CreateDateTime;
-        }
-
-        private void EmptyEntity(ref File entity)
-        {
-            entity.Id = 0;
-            entity.Title = "";
-            entity.FileType = FileType.Other;
-            entity.CreateDateTime = DateTime.UtcNow;
-        }
-
-        private void EmptyModel(ref FileModel model)
-        {
-            model.Id = 0;
-            model.Index = 0;
-            model.Title = "";
-            model.FileType = FileType.Other;
-            model.CreateDateTime = DateTime.UtcNow;
-        }
-
-        #endregion
-
-
-        #region Log and Preperation Methods
+        #region Log Methods
 
         private async Task LogError(Exception ex)
         {

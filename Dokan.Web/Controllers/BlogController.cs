@@ -20,10 +20,6 @@ namespace Dokan.Web.Controllers
         private IBlogPostService _blogPostService { get; }
         private IBlogCategoryService _blogCategoryService { get; }
 
-        private BlogPostModel _model;
-        private BlogPost _entity;
-        private List<BlogPost> _allEntities { get; set; }
-
         #endregion
 
 
@@ -33,10 +29,6 @@ namespace Dokan.Web.Controllers
         {
             _blogPostService = blogService;
             _blogCategoryService = blogCategoryService;
-
-            _allEntities = new List<BlogPost>();
-            _model = new BlogPostModel();
-            _entity = new BlogPost();
 
             LayoutHelper.PrepareLayout();
         }
@@ -85,28 +77,26 @@ namespace Dokan.Web.Controllers
             List<BlogPostModel> convertedEntityList = new List<BlogPostModel>();
 
             // A list of all the blogs
-            _allEntities = await _blogPostService.ListAsync();
+            var allEntities = await _blogPostService.ListAsync();
 
             // If a category is selected...
             if (blogCategoryId > 0)
                 // Only keep the entities with that category in the list
-                _allEntities = _allEntities.Where(x => x.BlogCategoryId == blogCategoryId).ToList();
+                allEntities = allEntities.Where(x => x.BlogCategoryId == blogCategoryId).ToList();
 
             // Based on the numberOfResults and the page number, skip an appropriate number of entities and keep 
             // as many as numberOfResults (pagination)
-            _allEntities = _allEntities.Skip((page - 1) * numberOfResults).Take(numberOfResults).ToList();
+            allEntities = allEntities.Skip((page - 1) * numberOfResults).Take(numberOfResults).ToList();
 
             // Convert all the filtered entities into BlogPostModels and add them to convertedEntityList.
-            foreach (var entity in _allEntities)
+            foreach (var entity in allEntities)
             {
-                _model = new BlogPostModel();
-                EntityToModel(entity, ref _model);
-
-                convertedEntityList.Add(_model);
+                var model = BlogPostModel.EntityToModel(in entity);
+                convertedEntityList.Add(model);
             }
 
             // Pass the number of pages and the active page to the view to display
-            ViewBag.NumberOfPages = Math.Ceiling((decimal)_allEntities.Count / (decimal)numberOfResults);
+            ViewBag.NumberOfPages = Math.Ceiling((decimal)allEntities.Count / (decimal)numberOfResults);
             ViewBag.ActivePage = page;
 
             return PartialView("_List", convertedEntityList);
@@ -128,28 +118,25 @@ namespace Dokan.Web.Controllers
             if (entity.Id != id)
                 return RedirectToAction("Index");
 
-            EntityToModel(entity, ref _model);
+            var model = BlogPostModel.EntityToModel(in entity);
 
             ViewBag.Title = entity.Title;
 
-            return View(_model);
+            return View(model);
         }
 
         [HttpGet]
         public async Task<ActionResult> Search(string searchString)
         {
-            _allEntities.Clear();
-            _allEntities = await _blogPostService.SearchAsync(searchString);
+            var allEntities = await _blogPostService.SearchAsync(searchString);
 
             List<BlogPostModel> searchResults = new List<BlogPostModel>();
 
 
-            foreach (var entity in _allEntities)
+            foreach (var entity in allEntities)
             {
-                _model = new BlogPostModel();
-                EntityToModel(entity, ref _model);
-
-                searchResults.Add(_model);
+                var model = BlogPostModel.EntityToModel(in entity);
+                searchResults.Add(model);
             }
 
             return PartialView("_List", searchResults);
@@ -157,22 +144,5 @@ namespace Dokan.Web.Controllers
 
         #endregion
 
-
-        #region Conversion methods
-
-        private void EntityToModel(BlogPost entity, ref BlogPostModel model)
-        {
-            model.Id = entity.Id;
-            model.Title = entity.Title;
-            model.ShortDescription = entity.ShortDescription;
-            model.Content = entity.Content;
-            model.Image = entity.Image;
-            model.CategoryId = entity.BlogCategoryId;
-            model.CategoryTitle = entity.BlogCategory?.Title ?? " - ";
-            model.CreateDateTime = $"{entity.CreateDateTime:MMM d - yyyy}";
-        }
-
-
-        #endregion
     }
 }

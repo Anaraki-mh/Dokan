@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dokan.Domain.Website;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -54,7 +55,7 @@ namespace Dokan.Web.Areas.Management.Models
         public string Description { get; set; }
 
         [Display(Name = "Button One")]
-        [MaxLength(30, ErrorMessage = "{0} can not be longer than {1} characters")] 
+        [MaxLength(30, ErrorMessage = "{0} can not be longer than {1} characters")]
         public string ButtonOne { get; set; }
 
         [Display(Name = "Button One Link")]
@@ -92,6 +93,67 @@ namespace Dokan.Web.Areas.Management.Models
         [Display(Name = "Button Two Text Color")]
         [MaxLength(9, ErrorMessage = "{0} can not be longer than {1} characters")]
         public string ButtonTwoFgColor { get; set; }
+
+
+        #endregion
+
+
+        #region Conversion Helpers
+
+        public static CarouselModel EntityToModel(in Carousel entity, int index = 0)
+        {
+            var model = new CarouselModel()
+            {
+                Id = entity.Id,
+                Index = index,
+                Title = entity.Title,
+                Description = entity.Description,
+                IsDisplayed = entity.IsDisplayed,
+                Priority = entity.Priority,
+                Image = entity.Image,
+                ButtonOne = entity.ButtonOne,
+                ButtonTwo = entity.ButtonTwo,
+                LinkOne = entity.LinkOne,
+                LinkTwo = entity.LinkTwo,
+
+                TitleColor = entity.TitleColor,
+                DescriptionColor = entity.DescriptionColor,
+                ButtonOneBgColor = entity.ButtonOneBgColor,
+                ButtonTwoBgColor = entity.ButtonTwoBgColor,
+                ButtonOneFgColor = entity.ButtonOneFgColor,
+                ButtonTwoFgColor = entity.ButtonTwoFgColor,
+                UpdateDateTime = entity.UpdateDateTime,
+            };
+
+            return model;
+        }
+
+        public static Carousel ModelToEntity(in CarouselModel model)
+        {
+            var entity = new Carousel()
+            {
+                Id = model.Id,
+                Title = model.Title,
+                Description = model.Description,
+                IsDisplayed = model.IsDisplayed,
+                Priority = model.Priority,
+                Image = model.Image,
+                ButtonOne = model.ButtonOne,
+                ButtonTwo = model.ButtonTwo,
+                LinkOne = model.LinkOne,
+                LinkTwo = model.LinkTwo,
+
+                TitleColor = model.TitleColor,
+                DescriptionColor = model.DescriptionColor,
+                ButtonOneBgColor = model.ButtonOneBgColor,
+                ButtonTwoBgColor = model.ButtonTwoBgColor,
+                ButtonOneFgColor = model.ButtonOneFgColor,
+                ButtonTwoFgColor = model.ButtonTwoFgColor,
+                UpdateDateTime = DateTime.UtcNow,
+            };
+
+            return entity;
+        }
 
 
         #endregion

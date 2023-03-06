@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dokan.Domain.Website;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -43,6 +44,25 @@ namespace Dokan.Web.Models
         [Required(ErrorMessage = "{0} can not be empty")]
         [MaxLength(400, ErrorMessage = "{0} can not be longer than {1} characters")]
         public string MessageBody { get; set; }
+
+        #endregion
+
+
+        #region Conversion Helpers
+
+        public static Message ModelToEntity(in MessageModel model)
+        {
+            var entity = new Message()
+            {
+                Name = model.Name,
+                Email = model.Email,
+                Subject = $"Contact us Message - {System.Web.HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"] ?? "UNKNOWN IP"}",
+                MessageBody = model.MessageBody,
+                CreateDateTime = DateTime.UtcNow,
+            };
+
+            return entity;
+        }
 
         #endregion
     }

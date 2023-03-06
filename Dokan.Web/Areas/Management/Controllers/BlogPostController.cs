@@ -24,10 +24,6 @@ namespace Dokan.Web.Areas.Management.Controllers
         private IBlogCategoryService _blogCategoryService { get; }
         private ILogService _logService { get; }
 
-        private List<BlogPost> _allEntities { get; set; }
-        private BlogPostModel _model;
-        private BlogPost _entity;
-
         #endregion
 
 
@@ -38,10 +34,6 @@ namespace Dokan.Web.Areas.Management.Controllers
             _blogPostService = blogPostService;
             _logService = logService;
             _blogCategoryService = blogCategoryService;
-
-            _allEntities = new List<BlogPost>();
-            _model = new BlogPostModel();
-            _entity = new BlogPost();
         }
 
         #endregion
@@ -60,23 +52,22 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             List<BlogPostModel> convertedEntityList = new List<BlogPostModel>();
 
-            _allEntities = await _blogPostService.ListAsync();
+            var allEntities = await _blogPostService.ListAsync();
 
-            List<BlogPost> filteredList = _allEntities.Skip((page - 1) * numberOfResults).Take(numberOfResults).ToList();
+            List<BlogPost> filteredList = allEntities.Skip((page - 1) * numberOfResults).Take(numberOfResults).ToList();
 
             int index = (page - 1) * numberOfResults + 1;
 
             foreach (var entity in filteredList)
             {
-                _model = new BlogPostModel();
-                EntityToModel(entity, ref _model, index);
+                var model = BlogPostModel.EntityToModel(in entity, index);
 
-                convertedEntityList.Add(_model);
+                convertedEntityList.Add(model);
 
                 index++;
             }
 
-            ViewBag.NumberOfPages = Math.Ceiling((decimal)_allEntities.Count / (decimal)numberOfResults);
+            ViewBag.NumberOfPages = Math.Ceiling((decimal)allEntities.Count / (decimal)numberOfResults);
             ViewBag.ActivePage = page;
 
             return PartialView("_List", convertedEntityList);
@@ -85,20 +76,20 @@ namespace Dokan.Web.Areas.Management.Controllers
         [HttpGet]
         public async Task<ActionResult> Details(int id)
         {
-            _entity = await _blogPostService.FindByIdAsync(id);
+            var entity = await _blogPostService.FindByIdAsync(id);
 
-            EntityToModel(_entity, ref _model);
+            var model = BlogPostModel.EntityToModel(in entity);
 
-            return PartialView("_Details", _model);
+            return PartialView("_Details", model);
         }
 
         [HttpGet]
         public async Task<ActionResult> Create()
         {
-            EmptyModel(ref _model);
-            PrepareDropdown(ref _model, await _blogCategoryService.ListAsync());
+            var model = new BlogPostModel();
+            BlogPostModel.PrepareDropdown(ref model, await _blogCategoryService.ListAsync());
 
-            return View(_model);
+            return View(model);
         }
 
         [HttpPost]
@@ -106,20 +97,20 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             if (!ModelState.IsValid)
             {
-                PrepareDropdown(ref model, await _blogCategoryService.ListAsync());
+                BlogPostModel.PrepareDropdown(ref model, await _blogCategoryService.ListAsync());
                 return View(model);
             }
 
             try
             {
-                ModelToEntity(model, ref _entity);
+                var entity = BlogPostModel.ModelToEntity(in model);
 
-                _entity.CreateDateTime = DateTime.UtcNow;
-                _entity.UpdateDateTime = DateTime.UtcNow;
+                entity.CreateDateTime = DateTime.UtcNow;
+                entity.UpdateDateTime = DateTime.UtcNow;
 
-                await _blogPostService.CreateAsync(_entity);
+                await _blogPostService.CreateAsync(entity);
 
-                await Log(LogType.ContentAdd, "Create", $"{_entity.Id}_ {_entity.Title}");
+                await Log(LogType.ContentAdd, "Create", $"{entity.Id}_ {entity.Title}");
             }
             catch (Exception ex)
             {
@@ -134,9 +125,10 @@ namespace Dokan.Web.Areas.Management.Controllers
         [HttpGet]
         public async Task<ActionResult> Update(int id)
         {
+            var entity = new BlogPost();
             try
             {
-                _entity = await _blogPostService.FindByIdAsync(id);
+                entity = await _blogPostService.FindByIdAsync(id);
             }
             catch (Exception ex)
             {
@@ -145,11 +137,11 @@ namespace Dokan.Web.Areas.Management.Controllers
                 return View("Error400");
             }
 
-            EntityToModel(_entity, ref _model);
+            var model = BlogPostModel.EntityToModel(in entity);
 
-            PrepareDropdown(ref _model, await _blogCategoryService.ListAsync());
+            BlogPostModel.PrepareDropdown(ref model, await _blogCategoryService.ListAsync());
 
-            return View(_model);
+            return View(model);
         }
 
         [HttpPost]
@@ -157,19 +149,19 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             if (!ModelState.IsValid)
             {
-                PrepareDropdown(ref model, await _blogCategoryService.ListAsync());
+                BlogPostModel.PrepareDropdown(ref model, await _blogCategoryService.ListAsync());
                 return View(model);
             }
 
             try
             {
-                ModelToEntity(model, ref _entity);
+                var entity = BlogPostModel.ModelToEntity(in model);
 
-                _entity.UpdateDateTime = DateTime.UtcNow;
+                entity.UpdateDateTime = DateTime.UtcNow;
 
-                await _blogPostService.UpdateAsync(_entity);
+                await _blogPostService.UpdateAsync(entity);
 
-                await Log(LogType.ContentUpdate, "Update", $"{_entity.Id}_ {_entity.Title}");
+                await Log(LogType.ContentUpdate, "Update", $"{entity.Id}_ {entity.Title}");
             }
             catch (Exception ex)
             {
@@ -197,10 +189,9 @@ namespace Dokan.Web.Areas.Management.Controllers
 
             foreach (var entity in removedEntityList)
             {
-                _model = new BlogPostModel();
-                EntityToModel(entity, ref _model, index);
+                var model = BlogPostModel.EntityToModel(entity, index);
 
-                convertedEntityList.Add(_model);
+                convertedEntityList.Add(model);
 
                 index++;
             }
@@ -283,79 +274,7 @@ namespace Dokan.Web.Areas.Management.Controllers
         #endregion
 
 
-        #region Conversion Methods
-
-        private void EntityToModel(BlogPost entity, ref BlogPostModel model)
-        {
-            EmptyModel(ref model);
-
-            model.Id = entity.Id;
-            model.Title = entity.Title;
-            model.ShortDescription = entity.ShortDescription;
-            model.Content = entity.Content;
-            model.Image = entity.Image;
-            model.CategoryId = entity.BlogCategoryId;
-            model.CategoryTitle = entity.BlogCategory?.Title ?? " - ";
-            model.UpdateDateTime = entity.UpdateDateTime;
-        }
-
-        private void EntityToModel(BlogPost entity, ref BlogPostModel model, int index)
-        {
-            EmptyModel(ref model);
-
-            model.Index = index;
-            model.Id = entity.Id;
-            model.Title = entity.Title;
-            model.ShortDescription = entity.ShortDescription;
-            model.Content = entity.Content;
-            model.Image = entity.Image;
-            model.CategoryId = entity.BlogCategoryId;
-            model.CategoryTitle = entity.BlogCategory?.Title ?? " - ";
-            model.UpdateDateTime = entity.UpdateDateTime;
-        }
-
-        private void ModelToEntity(BlogPostModel model, ref BlogPost entity)
-        {
-            EmptyEntity(ref entity);
-
-            entity.Id = model.Id;
-            entity.Title = model.Title;
-            entity.ShortDescription = model.ShortDescription;
-            entity.Content = model.Content;
-            entity.Image = model.Image;
-            entity.BlogCategoryId = model.CategoryId;
-            entity.UpdateDateTime = model.UpdateDateTime;
-        }
-
-        private void EmptyEntity(ref BlogPost entity)
-        {
-            entity.Id = 0;
-            entity.Title = "";
-            entity.ShortDescription = "";
-            entity.Content = "";
-            entity.Image = "";
-            entity.BlogCategoryId = 0;
-            entity.UpdateDateTime = DateTime.UtcNow;
-        }
-
-        private void EmptyModel(ref BlogPostModel model)
-        {
-            model.Id = 0;
-            model.Index = 0;
-            model.Title = "";
-            model.ShortDescription = "";
-            model.Content = "";
-            model.Image = "";
-            model.CategoryId = 0;
-            model.CategoryTitle = "";
-            model.UpdateDateTime = DateTime.UtcNow;
-            model.CategoryDropdown.Clear();
-        }
-
-        #endregion
-
-
-        #region Log and Preperation Methods
+        #region Log Methods
 
         private async Task LogError(Exception ex)
         {
@@ -379,26 +298,6 @@ namespace Dokan.Web.Areas.Management.Controllers
                 Method = method,
                 Description = $"{logType} _ {description}",
             });
-        }
-
-        private void PrepareDropdown(ref BlogPostModel model, List<BlogCategory> dropdownItemsList)
-        {
-            model.CategoryDropdown.Clear();
-
-            model.CategoryDropdown.Add(new SelectListItem()
-            {
-                Text = "Select an item...",
-                Value = "",
-            });
-
-            foreach (var entity in dropdownItemsList)
-            {
-                model.CategoryDropdown.Add(new SelectListItem()
-                {
-                    Text = entity.Title,
-                    Value = entity.Id.ToString(),
-                });
-            }
         }
         
         #endregion

@@ -21,10 +21,6 @@ namespace Dokan.Web.Controllers
         private IBlogCommentService _blogCommentService { get; }
         private IEmailService _emailService { get; }
 
-        private BlogCommentModel _model;
-        private BlogComment _entity;
-        private List<BlogComment> _allEntities { get; set; }
-
         #endregion
 
 
@@ -48,23 +44,22 @@ namespace Dokan.Web.Controllers
 
             List<BlogCommentModel> convertedEntityList = new List<BlogCommentModel>();
 
-            _allEntities = await _blogCommentService.ListAsync();
+            var allEntities = await _blogCommentService.ListAsync();
 
-            _allEntities = _allEntities.Skip((page - 1) * numberOfResults).Take(numberOfResults).ToList();
+            allEntities = allEntities.Skip((page - 1) * numberOfResults).Take(numberOfResults).ToList();
 
             int index = (page - 1) * numberOfResults + 1;
 
-            foreach (var entity in _allEntities)
+            foreach (var entity in allEntities)
             {
-                _model = new BlogCommentModel();
-                EntityToModel(entity, ref _model);
+                var model = BlogCommentModel.EntityToModel(in entity);
 
-                convertedEntityList.Add(_model);
+                convertedEntityList.Add(model);
 
                 index++;
             }
 
-            ViewBag.NumberOfPages = Math.Ceiling((decimal)_allEntities.Count / (decimal)numberOfResults);
+            ViewBag.NumberOfPages = Math.Ceiling((decimal)allEntities.Count / (decimal)numberOfResults);
             ViewBag.ActivePage = page;
             ViewBag.UserId = User.Identity.GetUserId();
 
@@ -74,10 +69,10 @@ namespace Dokan.Web.Controllers
         [AllowAnonymous]
         public ActionResult Create()
         {
-            _model = new BlogCommentModel();
-            _model.UserId = User.Identity.GetUserId();
+            var model = new BlogCommentModel();
+            model.UserId = User.Identity.GetUserId();
 
-            return PartialView("_Create", _model);
+            return PartialView("_Create", model);
         }
 
         [HttpPost]
@@ -86,18 +81,18 @@ namespace Dokan.Web.Controllers
             if (!ModelState.IsValid)
                 return PartialView("_Create");
 
-            ModelToEntity(model, ref _entity);
+            var entity = BlogCommentModel.ModelToEntity(in model);
 
-            await _blogCommentService.CreateAsync(_entity);
+            await _blogCommentService.CreateAsync(entity);
 
             return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
 
         public async Task<ActionResult> Delete(int id)
         {
-            _entity = await _blogCommentService.FindByIdAsync(id);
+            var entity = await _blogCommentService.FindByIdAsync(id);
 
-            if (HttpContext.User.Identity.GetUserId() == _entity.UserId)
+            if (HttpContext.User.Identity.GetUserId() == entity.UserId)
                 await _blogCommentService.DeleteAsync(id);
 
             return new HttpStatusCodeResult(HttpStatusCode.OK);
@@ -105,13 +100,13 @@ namespace Dokan.Web.Controllers
 
         public async Task<ActionResult> Reply(int id)
         {
-            _entity = await _blogCommentService.FindByIdAsync(id);
+            var entity = await _blogCommentService.FindByIdAsync(id);
 
-            if (_entity.Id == id)
+            if (entity.Id == id)
             {
                 BlogCommentModel model = new BlogCommentModel();
                 model.ParentId = id;
-                model.BlogPostId = _entity.BlogPostId;
+                model.BlogPostId = entity.BlogPostId;
                 model.UserId = HttpContext.User.Identity.GetUserId();
 
                 return PartialView(model);
@@ -122,33 +117,5 @@ namespace Dokan.Web.Controllers
 
         #endregion
 
-
-        #region Conversion Methods
-
-        private void EntityToModel(BlogComment entity, ref BlogCommentModel model)
-        {
-            model.Id = entity.Id;
-            model.Username = entity.User?.UserName;
-            model.UserId = entity.UserId;
-            model.UserProfilePic = entity.User?.UserInformation?.ProfilePicture;
-            model.BlogPostId = entity.BlogPostId;
-            model.Body = entity.Body;
-            model.Rating = entity.Rating;
-            model.CreateDateTime = $"{entity.CreateDateTime:MMM d yyyy}";
-        }
-
-        private void ModelToEntity(BlogCommentModel model, ref BlogComment entity)
-        {
-            entity.Id = model.Id;
-            entity.UserId = model.UserId;
-            entity.BlogPostId = model.BlogPostId;
-            entity.Body = model.Body;
-            entity.Rating = model.Rating;
-            entity.CreateDateTime = DateTime.UtcNow;
-            entity.UpdateDateTime = DateTime.UtcNow;
-        }
-
-
-        #endregion
     }
 }

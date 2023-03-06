@@ -23,10 +23,6 @@ namespace Dokan.Web.Areas.Management.Controllers
         private ICarouselService _carouselService { get; }
         private ILogService _logService { get; }
 
-        private List<Carousel> _allEntities { get; set; }
-        private CarouselModel _model;
-        private Carousel _entity;
-
         #endregion
 
 
@@ -36,10 +32,6 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             _carouselService = CarouselService;
             _logService = logService;
-
-            _allEntities = new List<Carousel>();
-            _model = new CarouselModel();
-            _entity = new Carousel();
         }
 
         #endregion
@@ -58,23 +50,22 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             List<CarouselModel> convertedEntityList = new List<CarouselModel>();
 
-            _allEntities = await _carouselService.ListAsync();
+            var allEntities = await _carouselService.ListAsync();
 
-            List<Carousel> filteredList = _allEntities.Skip((page - 1) * numberOfResults).Take(numberOfResults).ToList();
+            List<Carousel> filteredList = allEntities.Skip((page - 1) * numberOfResults).Take(numberOfResults).ToList();
 
             int index = (page - 1) * numberOfResults + 1;
 
             foreach (var entity in filteredList)
             {
-                _model = new CarouselModel();
-                EntityToModel(entity, ref _model, index);
+                var model = CarouselModel.EntityToModel(in entity, index);
 
-                convertedEntityList.Add(_model);
+                convertedEntityList.Add(model);
 
                 index++;
             }
 
-            ViewBag.NumberOfPages = Math.Ceiling((decimal)_allEntities.Count / (decimal)numberOfResults);
+            ViewBag.NumberOfPages = Math.Ceiling((decimal)allEntities.Count / (decimal)numberOfResults);
             ViewBag.ActivePage = page;
 
             return PartialView("_List", convertedEntityList);
@@ -83,19 +74,18 @@ namespace Dokan.Web.Areas.Management.Controllers
         [HttpGet]
         public async Task<ActionResult> Details(int id)
         {
-            _entity = await _carouselService.FindByIdAsync(id);
+            var entity = await _carouselService.FindByIdAsync(id);
 
-            EntityToModel(_entity, ref _model);
+            var model = CarouselModel.EntityToModel(in entity);
 
-            return PartialView("_Details", _model);
+            return PartialView("_Details", model);
         }
 
         [HttpGet]
         public async Task<ActionResult> Create()
         {
-            EmptyModel(ref _model);
-
-            return View(_model);
+            var model = new CarouselModel();
+            return View(model);
         }
 
         [HttpPost]
@@ -106,14 +96,14 @@ namespace Dokan.Web.Areas.Management.Controllers
 
             try
             {
-                ModelToEntity(model, ref _entity);
+                var entity = CarouselModel.ModelToEntity(in model);
 
-                _entity.CreateDateTime = DateTime.UtcNow;
-                _entity.UpdateDateTime = DateTime.UtcNow;
+                entity.CreateDateTime = DateTime.UtcNow;
+                entity.UpdateDateTime = DateTime.UtcNow;
 
-                await _carouselService.CreateAsync(_entity);
+                await _carouselService.CreateAsync(entity);
 
-                await Log(LogType.ContentAdd, "Create", $"{_entity.Id}_ {_entity.Title}");
+                await Log(LogType.ContentAdd, "Create", $"{entity.Id}_ {entity.Title}");
             }
             catch (Exception ex)
             {
@@ -128,9 +118,10 @@ namespace Dokan.Web.Areas.Management.Controllers
         [HttpGet]
         public async Task<ActionResult> Update(int id)
         {
+            var entity = new Carousel();
             try
             {
-                _entity = await _carouselService.FindByIdAsync(id);
+                entity = await _carouselService.FindByIdAsync(id);
             }
             catch (Exception ex)
             {
@@ -139,9 +130,9 @@ namespace Dokan.Web.Areas.Management.Controllers
                 return View("Error400");
             }
 
-            EntityToModel(_entity, ref _model);
+            var model = CarouselModel.EntityToModel(in entity);
 
-            return View(_model);
+            return View(model);
         }
 
         [HttpPost]
@@ -152,13 +143,13 @@ namespace Dokan.Web.Areas.Management.Controllers
 
             try
             {
-                ModelToEntity(model, ref _entity);
+                var entity = CarouselModel.ModelToEntity(in model);
 
-                _entity.UpdateDateTime = DateTime.UtcNow;
+                entity.UpdateDateTime = DateTime.UtcNow;
 
-                await _carouselService.UpdateAsync(_entity);
+                await _carouselService.UpdateAsync(entity);
 
-                await Log(LogType.ContentUpdate, "Update", $"{_entity.Id}_ {_entity.Title}");
+                await Log(LogType.ContentUpdate, "Update", $"{entity.Id}_ {entity.Title}");
             }
             catch (Exception ex)
             {
@@ -186,10 +177,9 @@ namespace Dokan.Web.Areas.Management.Controllers
 
             foreach (var entity in removedEntityList)
             {
-                _model = new CarouselModel();
-                EntityToModel(entity, ref _model, index);
+                var model = CarouselModel.EntityToModel(in entity, index);
 
-                convertedEntityList.Add(_model);
+                convertedEntityList.Add(model);
 
                 index++;
             }
@@ -272,132 +262,7 @@ namespace Dokan.Web.Areas.Management.Controllers
         #endregion
 
 
-        #region Conversion Methods
-
-        private void EntityToModel(Carousel entity, ref CarouselModel model)
-        {
-            EmptyModel(ref model);
-
-            model.Id = entity.Id;
-            model.Title = entity.Title;
-            model.Description = entity.Description;
-            model.Priority= entity.Priority;
-            model.IsDisplayed = entity.IsDisplayed;
-            model.Image= entity.Image;
-            model.ButtonOne= entity.ButtonOne;
-            model.ButtonTwo= entity.ButtonTwo;
-            model.LinkOne= entity.LinkOne;
-            model.LinkTwo= entity.LinkTwo;
-
-            model.TitleColor= entity.TitleColor;
-            model.DescriptionColor= entity.DescriptionColor;
-            model.ButtonOneBgColor= entity.ButtonOneBgColor;
-            model.ButtonTwoBgColor = entity.ButtonTwoBgColor;
-            model.ButtonOneFgColor= entity.ButtonOneFgColor;
-            model.ButtonTwoFgColor = entity.ButtonTwoFgColor;
-
-            model.UpdateDateTime = entity.UpdateDateTime;
-        }
-
-        private void EntityToModel(Carousel entity, ref CarouselModel model, int index)
-        {
-            EmptyModel(ref model);
-
-            model.Id = entity.Id;
-            model.Index = index;
-            model.Title = entity.Title;
-            model.Description = entity.Description;
-            model.IsDisplayed = entity.IsDisplayed;
-            model.Priority = entity.Priority;
-            model.Image = entity.Image;
-            model.ButtonOne = entity.ButtonOne;
-            model.ButtonTwo = entity.ButtonTwo;
-            model.LinkOne = entity.LinkOne;
-            model.LinkTwo = entity.LinkTwo;
-
-            model.TitleColor = entity.TitleColor;
-            model.DescriptionColor = entity.DescriptionColor;
-            model.ButtonOneBgColor = entity.ButtonOneBgColor;
-            model.ButtonTwoBgColor = entity.ButtonTwoBgColor;
-            model.ButtonOneFgColor = entity.ButtonOneFgColor;
-            model.ButtonTwoFgColor = entity.ButtonTwoFgColor;
-            model.UpdateDateTime = entity.UpdateDateTime;
-        }
-
-        private void ModelToEntity(CarouselModel model, ref Carousel entity)
-        {
-            EmptyEntity(ref entity);
-
-            entity.Id = model.Id;
-            entity.Title = model.Title;
-            entity.Description = model.Description;
-            entity.IsDisplayed = model.IsDisplayed;
-            entity.Priority= model.Priority;
-            entity.Image = model.Image;
-            entity.ButtonOne = model.ButtonOne;
-            entity.ButtonTwo = model.ButtonTwo;
-            entity.LinkOne = model.LinkOne;
-            entity.LinkTwo = model.LinkTwo;
-
-            entity.TitleColor = model.TitleColor;
-            entity.DescriptionColor = model.DescriptionColor;
-            entity.ButtonOneBgColor = model.ButtonOneBgColor;
-            entity.ButtonTwoBgColor = model.ButtonTwoBgColor;
-            entity.ButtonOneFgColor = model.ButtonOneFgColor;
-            entity.ButtonTwoFgColor = model.ButtonTwoFgColor;
-            entity.UpdateDateTime = DateTime.UtcNow;
-
-        }
-
-        private void EmptyEntity(ref Carousel entity)
-        {
-            entity.Id = 0;
-            entity.Title = "";
-            entity.Description = "";
-            entity.IsDisplayed = false;
-            entity.Priority = 0;
-            entity.Image = "";
-            entity.ButtonOne = "";
-            entity.ButtonTwo = "";
-            entity.LinkOne = "";
-            entity.LinkTwo = "";
-
-            entity.TitleColor = "#ffffff";
-            entity.DescriptionColor = "#ffffff";
-            entity.ButtonOneBgColor = "#000000";
-            entity.ButtonTwoBgColor = "#000000";
-            entity.ButtonOneFgColor = "#ffffff";
-            entity.ButtonTwoFgColor = "#ffffff";
-            entity.UpdateDateTime = DateTime.UtcNow;
-        }
-
-        private void EmptyModel(ref CarouselModel model)
-        {
-            model.Id = 0;
-            model.Index = 0;
-            model.Title = "";
-            model.Description = "";
-            model.IsDisplayed = false;
-            model.Priority = 0;
-            model.Image = "";
-            model.ButtonOne = "";
-            model.ButtonTwo = "";
-            model.LinkOne = "";
-            model.LinkTwo = "";
-
-            model.TitleColor = "#ffffff";
-            model.DescriptionColor = "#ffffff";
-            model.ButtonOneBgColor = "#000000";
-            model.ButtonTwoBgColor = "#000000";
-            model.ButtonOneFgColor = "#ffffff";
-            model.ButtonTwoFgColor = "#ffffff";
-            model.UpdateDateTime = DateTime.UtcNow;
-        }
-
-        #endregion
-
-
-        #region Log and Preperation Methods
+        #region Log Methods
 
         private async Task LogError(Exception ex)
         {

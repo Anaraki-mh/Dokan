@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dokan.Domain.Website;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -43,7 +44,7 @@ namespace Dokan.Web.Areas.Management.Models
 
         [Display(Name = "Display priority")]
         public int? Priority { get; set; }
-        
+
 
         [Display(Name = "Parent")]
         public int? ParentId { get; set; }
@@ -51,6 +52,74 @@ namespace Dokan.Web.Areas.Management.Models
         public string ParentTitle { get; set; }
 
         public List<SelectListItem> ParentDropdown { get; set; }
+
+        #endregion
+
+
+        #region Conversion Helpers
+
+
+        public static MenuModel EntityToModel(in Menu entity, int index = 0)
+        {
+            var mode = new MenuModel()
+            {
+                Id = entity.Id,
+                Index = index,
+                Title = entity.Title,
+                IsDisplayed = entity.IsDisplayed,
+                Link = entity.Link,
+                Priority = entity.Priority,
+                ParentId = entity.ParentId,
+                ParentTitle = entity.Parent?.Title ?? " - ",
+                UpdateDateTime = entity.UpdateDateTime,
+            };
+
+            return mode;
+        }
+
+        public static Menu ModelToEntity(in MenuModel model)
+        {
+            var entity = new Menu()
+            {
+                Id = model.Id,
+                Title = model.Title,
+                IsDisplayed = model.IsDisplayed,
+                Link = model.Link,
+                Priority = model.Priority ?? 0,
+                ParentId = model.ParentId,
+            };
+
+            return entity;
+        }
+
+        #endregion
+
+
+        #region Preparation Helpers
+
+        public static void PrepareDropdown(ref MenuModel model, List<Menu> dropdownItemsList)
+        {
+            model.ParentDropdown.Clear();
+
+            model.ParentDropdown.Add(new SelectListItem()
+            {
+                Text = "Select an item...",
+                Value = "",
+            });
+
+            int modelId = model.Id;
+            dropdownItemsList.Remove(dropdownItemsList.FirstOrDefault(x => x.Id == modelId));
+
+            foreach (var entity in dropdownItemsList)
+            {
+                model.ParentDropdown.Add(new SelectListItem()
+                {
+                    Text = entity.Title,
+                    Value = entity.Id.ToString(),
+                });
+            }
+        }
+
 
         #endregion
     }

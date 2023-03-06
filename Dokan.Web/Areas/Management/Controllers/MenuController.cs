@@ -22,10 +22,6 @@ namespace Dokan.Web.Areas.Management.Controllers
         private IMenuService _menuService { get; }
         private ILogService _logService { get; }
 
-        private List<Menu> _allEntities { get; set; }
-        private MenuModel _model;
-        private Menu _entity;
-
         #endregion
 
 
@@ -35,10 +31,6 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             _menuService = MenuService;
             _logService = logService;
-
-            _allEntities = new List<Menu>();
-            _model = new MenuModel();
-            _entity = new Menu();
         }
 
         #endregion
@@ -57,23 +49,22 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             List<MenuModel> convertedEntityList = new List<MenuModel>();
 
-            _allEntities = await _menuService.ListAsync();
+            var allEntities = await _menuService.ListAsync();
 
-            List<Menu> filteredList = _allEntities.Skip((page - 1) * numberOfResults).Take(numberOfResults).ToList();
+            List<Menu> filteredList = allEntities.Skip((page - 1) * numberOfResults).Take(numberOfResults).ToList();
 
             int index = (page - 1) * numberOfResults + 1;
 
             foreach (var entity in filteredList)
             {
-                _model = new MenuModel();
-                EntityToModel(entity, ref _model, index);
+                var model = MenuModel.EntityToModel(in entity, index);
 
-                convertedEntityList.Add(_model);
+                convertedEntityList.Add(model);
 
                 index++;
             }
 
-            ViewBag.NumberOfPages = Math.Ceiling((decimal)_allEntities.Count / (decimal)numberOfResults);
+            ViewBag.NumberOfPages = Math.Ceiling((decimal)allEntities.Count / (decimal)numberOfResults);
             ViewBag.ActivePage = page;
 
             return PartialView("_List", convertedEntityList);
@@ -82,20 +73,17 @@ namespace Dokan.Web.Areas.Management.Controllers
         [HttpGet]
         public async Task<ActionResult> Details(int id)
         {
-            _entity = await _menuService.FindByIdAsync(id);
+            var entity = await _menuService.FindByIdAsync(id);
+            var model = MenuModel.EntityToModel(in entity);
 
-            EntityToModel(_entity, ref _model);
-
-            return PartialView("_Details", _model);
+            return PartialView("_Details", model);
         }
 
         [HttpGet]
         public async Task<ActionResult> Create()
         {
-            EmptyModel(ref _model);
-            PrepareDropdown(ref _model, await _menuService.ListAsync());
-
-            return View(_model);
+            var model = new MenuModel();
+            return View(model);
         }
 
         [HttpPost]
@@ -103,20 +91,20 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             if (!ModelState.IsValid)
             {
-                PrepareDropdown(ref model, await _menuService.ListAsync());
+                MenuModel.PrepareDropdown(ref model, await _menuService.ListAsync());
                 return View(model);
             }
 
             try
             {
-                ModelToEntity(model, ref _entity);
+                var entity = MenuModel.ModelToEntity(in model);
 
-                _entity.CreateDateTime = DateTime.UtcNow;
-                _entity.UpdateDateTime = DateTime.UtcNow;
+                entity.CreateDateTime = DateTime.UtcNow;
+                entity.UpdateDateTime = DateTime.UtcNow;
 
-                await _menuService.CreateAsync(_entity);
+                await _menuService.CreateAsync(entity);
 
-                await Log(LogType.ContentAdd, "Create", $"{_entity.Id}_ {_entity.Title}");
+                await Log(LogType.ContentAdd, "Create", $"{entity.Id}_ {entity.Title}");
             }
             catch (Exception ex)
             {
@@ -131,9 +119,10 @@ namespace Dokan.Web.Areas.Management.Controllers
         [HttpGet]
         public async Task<ActionResult> Update(int id)
         {
+            var entity = new Menu();
             try
             {
-                _entity = await _menuService.FindByIdAsync(id);
+                entity = await _menuService.FindByIdAsync(id);
             }
             catch (Exception ex)
             {
@@ -142,11 +131,11 @@ namespace Dokan.Web.Areas.Management.Controllers
                 return View("Error400");
             }
 
-            EntityToModel(_entity, ref _model);
+            var model = MenuModel.EntityToModel(in entity);
 
-            PrepareDropdown(ref _model, await _menuService.ListAsync());
+            MenuModel.PrepareDropdown(ref model, await _menuService.ListAsync());
 
-            return View(_model);
+            return View(model);
         }
 
         [HttpPost]
@@ -154,19 +143,19 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             if (!ModelState.IsValid)
             {
-                PrepareDropdown(ref model, await _menuService.ListAsync());
+                MenuModel.PrepareDropdown(ref model, await _menuService.ListAsync());
                 return View(model);
             }
 
             try
             {
-                ModelToEntity(model, ref _entity);
+                var entity = MenuModel.ModelToEntity(in model);
 
-                _entity.UpdateDateTime = DateTime.UtcNow;
+                entity.UpdateDateTime = DateTime.UtcNow;
 
-                await _menuService.UpdateAsync(_entity);
+                await _menuService.UpdateAsync(entity);
 
-                await Log(LogType.ContentUpdate, "Update", $"{_entity.Id}_ {_entity.Title}");
+                await Log(LogType.ContentUpdate, "Update", $"{entity.Id}_ {entity.Title}");
             }
             catch (Exception ex)
             {
@@ -194,10 +183,8 @@ namespace Dokan.Web.Areas.Management.Controllers
 
             foreach (var entity in removedEntityList)
             {
-                _model = new MenuModel();
-                EntityToModel(entity, ref _model, index);
-
-                convertedEntityList.Add(_model);
+                var model = MenuModel.EntityToModel(in entity, index);
+                convertedEntityList.Add(model);
 
                 index++;
             }
@@ -280,76 +267,7 @@ namespace Dokan.Web.Areas.Management.Controllers
         #endregion
 
 
-        #region Conversion Methods
-
-        private void EntityToModel(Menu entity, ref MenuModel model)
-        {
-            EmptyModel(ref model);
-
-            model.Id = entity.Id;
-            model.Title = entity.Title;
-            model.IsDisplayed= entity.IsDisplayed;
-            model.Link = entity.Link;
-            model.Priority = entity.Priority;
-            model.ParentId = entity.ParentId;
-            model.ParentTitle = entity.Parent?.Title ?? " - ";
-            model.UpdateDateTime = entity.UpdateDateTime;
-        }
-
-        private void EntityToModel(Menu entity, ref MenuModel model, int index)
-        {
-            EmptyModel(ref model);
-
-            model.Id = entity.Id;
-            model.Index = index;
-            model.Title = entity.Title;
-            model.IsDisplayed = entity.IsDisplayed;
-            model.Link = entity.Link;
-            model.Priority = entity.Priority;
-            model.ParentId = entity.ParentId;
-            model.ParentTitle = entity.Parent?.Title ?? " - ";
-            model.UpdateDateTime = entity.UpdateDateTime;
-        }
-
-        private void ModelToEntity(MenuModel model, ref Menu entity)
-        {
-            EmptyEntity(ref entity);
-
-            entity.Id = model.Id;
-            entity.Title = model.Title;
-            entity.IsDisplayed = model.IsDisplayed;
-            entity.Link = model.Link;
-            entity.Priority = model.Priority ?? 0;
-            entity.ParentId = model.ParentId;
-        }
-
-        private void EmptyEntity(ref Menu entity)
-        {
-            entity.Id = 0;
-            entity.Title = "";
-            entity.IsDisplayed = false;
-            entity.Link = "";
-            entity.Priority = 0;
-            entity.ParentId = 0;
-        }
-
-        private void EmptyModel(ref MenuModel model)
-        {
-            model.Id = 0;
-            model.Index = 0;
-            model.Title = "";
-            model.IsDisplayed = false;
-            model.Link = "";
-            model.Priority = 0;
-            model.ParentId = 0;
-            model.ParentTitle = "";
-            model.ParentDropdown.Clear();
-        }
-
-        #endregion
-
-
-        #region Log and Preperation Methods
+        #region Log Methods
 
         private async Task LogError(Exception ex)
         {
@@ -375,29 +293,6 @@ namespace Dokan.Web.Areas.Management.Controllers
             });
         }
 
-        private void PrepareDropdown(ref MenuModel model, List<Menu> dropdownItemsList)
-        {
-            model.ParentDropdown.Clear();
-
-            model.ParentDropdown.Add(new SelectListItem()
-            {
-                Text = "Select an item...",
-                Value = "",
-            });
-
-            int  modelId = model.Id;
-            dropdownItemsList.Remove(dropdownItemsList.FirstOrDefault(x => x.Id == modelId));
-
-            foreach (var entity in dropdownItemsList)
-            {
-                model.ParentDropdown.Add(new SelectListItem()
-                {
-                    Text = entity.Title,
-                    Value = entity.Id.ToString(),
-                });
-            }
-        }
-        
         #endregion
     }
 }

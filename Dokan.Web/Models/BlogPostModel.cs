@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dokan.Domain.Website;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -47,6 +48,28 @@ namespace Dokan.Web.Models
         public int CategoryId { get; set; }
 
         public string CategoryTitle { get; set; }
+
+        #endregion
+
+
+        #region Conversion Helpers
+
+        public static BlogPostModel EntityToModel(in BlogPost entity)
+        {
+            var model = new BlogPostModel()
+            {
+                Id = entity.Id,
+                Title = entity.Title,
+                ShortDescription = entity.ShortDescription,
+                Content = entity.Content,
+                Image = entity.Image,
+                CategoryId = entity.BlogCategoryId,
+                CategoryTitle = entity.BlogCategory?.Title ?? " - ",
+                CreateDateTime = $"{entity.CreateDateTime:MMM d - yyyy}",
+            };
+
+            return model;
+        }
 
         #endregion
     }

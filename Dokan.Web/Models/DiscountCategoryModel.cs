@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dokan.Domain.Website;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -35,8 +36,26 @@ namespace Dokan.Web.Models
 
         [Display(Name = "Discount")]
         [Required(ErrorMessage = "{0} can not be empty")]
-        [Range(0,100, ErrorMessage = "{0} can not be less than {1} and greater {2}")]
+        [Range(0, 100, ErrorMessage = "{0} can not be less than {1} and greater {2}")]
         public int Discount { get; set; }
+
+        #endregion
+
+
+        #region Conversion Helpers
+
+        public static DiscountCategoryModel EntityToModel(in DiscountCategory entity)
+        {
+            var model = new DiscountCategoryModel()
+            {
+                Id = entity.Id,
+                Title = entity.Title,
+                Discount = entity.Discount,
+                UntilExpiration = DateTime.UtcNow - entity.ExpiryDateTime,
+            };
+
+            return model;
+        }
 
         #endregion
     }

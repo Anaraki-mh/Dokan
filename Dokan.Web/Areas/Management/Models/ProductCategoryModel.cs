@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dokan.Domain.Website;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -51,6 +52,69 @@ namespace Dokan.Web.Areas.Management.Models
         public string ParentTitle { get; set; }
 
         public List<SelectListItem> ParentDropdown { get; set; }
+
+        #endregion
+
+
+        #region Conversion Helpers
+
+        public static ProductCategoryModel EntityToModel(in ProductCategory entity, int index = 0)
+        {
+            var model = new ProductCategoryModel()
+            {
+                Id = entity.Id,
+                Index = index,
+                Title = entity.Title,
+                Priority = entity.Priority,
+                ParentId = entity.ParentId,
+                ParentTitle = entity.Parent?.Title ?? " - ",
+                UpdateDateTime = entity.UpdateDateTime,
+            };
+
+            return model;
+        }
+
+        public static ProductCategory ModelToEntity(in ProductCategoryModel model)
+        {
+            var entity = new ProductCategory()
+            {
+                Id = model.Id,
+                Title = model.Title,
+                Priority = model.Priority ?? 0,
+                ParentId = model.ParentId,
+            };
+
+            return entity;
+        }
+
+        #endregion
+
+
+        #region Preparation Helpers
+
+        public static void PrepareDropdown(ref ProductCategoryModel model, List<ProductCategory> dropdownItemsList)
+        {
+            model.ParentDropdown.Clear();
+
+            model.ParentDropdown.Add(new SelectListItem()
+            {
+                Text = "Select an item...",
+                Value = "",
+            });
+
+            int modelId = model.Id;
+            dropdownItemsList.Remove(dropdownItemsList.FirstOrDefault(x => x.Id == modelId));
+
+            foreach (var entity in dropdownItemsList)
+            {
+                model.ParentDropdown.Add(new SelectListItem()
+                {
+                    Text = entity.Title,
+                    Value = entity.Id.ToString(),
+                });
+            }
+        }
+
 
         #endregion
     }

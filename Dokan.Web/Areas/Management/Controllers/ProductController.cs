@@ -24,10 +24,6 @@ namespace Dokan.Web.Areas.Management.Controllers
         private IProductCategoryService _productCategoryService { get; }
         private ILogService _logService { get; }
 
-        private List<Product> _allEntities { get; set; }
-        private ProductModel _model;
-        private Product _entity;
-
         #endregion
 
 
@@ -38,10 +34,6 @@ namespace Dokan.Web.Areas.Management.Controllers
             _productService = productService;
             _logService = logService;
             _productCategoryService = productCategoryService;
-
-            _allEntities = new List<Product>();
-            _model = new ProductModel();
-            _entity = new Product();
         }
 
         #endregion
@@ -60,23 +52,22 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             List<ProductModel> convertedEntityList = new List<ProductModel>();
 
-            _allEntities = await _productService.ListAsync();
+            var allEntities = await _productService.ListAsync();
 
-            List<Product> filteredList = _allEntities.Skip((page - 1) * numberOfResults).Take(numberOfResults).ToList();
+            List<Product> filteredList = allEntities.Skip((page - 1) * numberOfResults).Take(numberOfResults).ToList();
 
             int index = (page - 1) * numberOfResults + 1;
 
             foreach (var entity in filteredList)
             {
-                _model = new ProductModel();
-                EntityToModel(entity, ref _model, index);
+                var model = ProductModel.EntityToModel(in entity, index);
 
-                convertedEntityList.Add(_model);
+                convertedEntityList.Add(model);
 
                 index++;
             }
 
-            ViewBag.NumberOfPages = Math.Ceiling((decimal)_allEntities.Count / (decimal)numberOfResults);
+            ViewBag.NumberOfPages = Math.Ceiling((decimal)allEntities.Count / (decimal)numberOfResults);
             ViewBag.ActivePage = page;
 
             return PartialView("_List", convertedEntityList);
@@ -85,20 +76,18 @@ namespace Dokan.Web.Areas.Management.Controllers
         [HttpGet]
         public async Task<ActionResult> Details(int id)
         {
-            _entity = await _productService.FindByIdAsync(id);
+            var entity = await _productService.FindByIdAsync(id);
+            var model = ProductModel.EntityToModel(in entity);
 
-            EntityToModel(_entity, ref _model);
-
-            return PartialView("_Details", _model);
+            return PartialView("_Details", model);
         }
 
         [HttpGet]
         public async Task<ActionResult> Create()
         {
-            EmptyModel(ref _model);
-            PrepareDropdown(ref _model, await _productCategoryService.ListAsync());
-
-            return View(_model);
+            var model = new ProductModel();
+            ProductModel.PrepareDropdown(ref model, await _productCategoryService.ListAsync());
+            return View(model);
         }
 
         [HttpPost]
@@ -106,20 +95,20 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             if (!ModelState.IsValid)
             {
-                PrepareDropdown(ref model, await _productCategoryService.ListAsync());
+                ProductModel.PrepareDropdown(ref model, await _productCategoryService.ListAsync());
                 return View(model);
             }
 
             try
             {
-                ModelToEntity(model, ref _entity);
+                var entity = ProductModel.ModelToEntity(in model);
 
-                _entity.CreateDateTime = DateTime.UtcNow;
-                _entity.UpdateDateTime = DateTime.UtcNow;
+                entity.CreateDateTime = DateTime.UtcNow;
+                entity.UpdateDateTime = DateTime.UtcNow;
 
-                await _productService.CreateAsync(_entity);
+                await _productService.CreateAsync(entity);
 
-                await Log(LogType.ContentAdd, "Create", $"{_entity.Id}_ {_entity.Title}");
+                await Log(LogType.ContentAdd, "Create", $"{entity.Id}_ {entity.Title}");
             }
             catch (Exception ex)
             {
@@ -134,9 +123,10 @@ namespace Dokan.Web.Areas.Management.Controllers
         [HttpGet]
         public async Task<ActionResult> Update(int id)
         {
+            var entity = new Product();
             try
             {
-                _entity = await _productService.FindByIdAsync(id);
+                entity = await _productService.FindByIdAsync(id);
             }
             catch (Exception ex)
             {
@@ -145,11 +135,11 @@ namespace Dokan.Web.Areas.Management.Controllers
                 return View("Error400");
             }
 
-            EntityToModel(_entity, ref _model);
+            var model = ProductModel.EntityToModel(in entity);
 
-            PrepareDropdown(ref _model, await _productCategoryService.ListAsync());
+            ProductModel.PrepareDropdown(ref model, await _productCategoryService.ListAsync());
 
-            return View(_model);
+            return View(model);
         }
 
         [HttpPost]
@@ -157,19 +147,19 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             if (!ModelState.IsValid)
             {
-                PrepareDropdown(ref model, await _productCategoryService.ListAsync());
+                ProductModel.PrepareDropdown(ref model, await _productCategoryService.ListAsync());
                 return View(model);
             }
 
             try
             {
-                ModelToEntity(model, ref _entity);
+                var entity = ProductModel.ModelToEntity(in model);
 
-                _entity.UpdateDateTime = DateTime.UtcNow;
+                entity.UpdateDateTime = DateTime.UtcNow;
 
-                await _productService.UpdateAsync(_entity);
+                await _productService.UpdateAsync(entity);
 
-                await Log(LogType.ContentUpdate, "Update", $"{_entity.Id}_ {_entity.Title}");
+                await Log(LogType.ContentUpdate, "Update", $"{entity.Id}_ {entity.Title}");
             }
             catch (Exception ex)
             {
@@ -197,16 +187,15 @@ namespace Dokan.Web.Areas.Management.Controllers
 
             foreach (var entity in removedEntityList)
             {
-                _model = new ProductModel();
-                EntityToModel(entity, ref _model, index);
+                var model = ProductModel.EntityToModel(in entity, index);
 
-                convertedEntityList.Add(_model);
+                convertedEntityList.Add(model);
 
                 index++;
             }
 
 
-            return PartialView("_TrashList" ,convertedEntityList);
+            return PartialView("_TrashList", convertedEntityList);
         }
 
         [HttpGet]
@@ -283,109 +272,7 @@ namespace Dokan.Web.Areas.Management.Controllers
         #endregion
 
 
-        #region Conversion Methods
-
-        private void EntityToModel(Product entity, ref ProductModel model)
-        {
-            EmptyModel(ref model);
-
-            model.Id = entity.Id;
-            model.Title = entity.Title;
-            model.ShortDescription = entity.ShortDescription;
-            model.Description = entity.Description;
-            model.Price= entity.Price;
-            model.Stock= entity.Stock;
-            model.Image1 = entity.Image1;
-            model.Image2 = entity.Image2;
-            model.Image3 = entity.Image3;
-            model.Image4 = entity.Image4;
-            model.Image5 = entity.Image5;
-            model.CategoryId = entity.ProductCategoryId;
-            model.CategoryTitle = entity.ProductCategory?.Title ?? " - ";
-            model.UpdateDateTime = entity.UpdateDateTime;
-        }
-
-        private void EntityToModel(Product entity, ref ProductModel model, int index)
-        {
-            EmptyModel(ref model);
-
-            model.Index = index;
-            model.Id = entity.Id;
-            model.Title = entity.Title;
-            model.ShortDescription = entity.ShortDescription;
-            model.Description = entity.Description;
-            model.Price = entity.Price;
-            model.Stock = entity.Stock;
-            model.Image1 = entity.Image1;
-            model.Image2 = entity.Image2;
-            model.Image3 = entity.Image3;
-            model.Image4 = entity.Image4;
-            model.Image5 = entity.Image5;
-            model.CategoryId = entity.ProductCategoryId;
-            model.CategoryTitle = entity.ProductCategory?.Title ?? " - ";
-            model.UpdateDateTime = entity.UpdateDateTime;
-        }
-
-        private void ModelToEntity(ProductModel model, ref Product entity)
-        {
-            EmptyEntity(ref entity);
-
-            entity.Id = model.Id;
-            entity.Title = model.Title;
-            entity.ShortDescription = model.ShortDescription;
-            entity.Description = model.Description;
-            entity.Price = model.Price;
-            entity.Stock = model.Stock;
-            entity.Image1 = model.Image1;
-            entity.Image2 = model.Image2;
-            entity.Image3 = model.Image3;
-            entity.Image4 = model.Image4;
-            entity.Image5 = model.Image5;
-            entity.ProductCategoryId = model.CategoryId;
-            entity.UpdateDateTime = model.UpdateDateTime;
-        }
-
-        private void EmptyEntity(ref Product entity)
-        {
-            entity.Id = 0;
-            entity.Title = "";
-            entity.ShortDescription = "";
-            entity.Description = "";
-            entity.Price = 0;
-            entity.Stock = 0;
-            entity.Image1 = "";
-            entity.Image2 = "";
-            entity.Image3 = "";
-            entity.Image4 = "";
-            entity.Image5 = "";
-            entity.ProductCategoryId = 0;
-            entity.UpdateDateTime = DateTime.UtcNow;
-        }
-
-        private void EmptyModel(ref ProductModel model)
-        {
-            model.Id = 0;
-            model.Index = 0;
-            model.Title = "";
-            model.ShortDescription = "";
-            model.Description = "";
-            model.Price = 0;
-            model.Stock = 0;
-            model.Image1 = "";
-            model.Image2 = "";
-            model.Image3 = "";
-            model.Image4 = "";
-            model.Image5 = "";
-            model.CategoryId = 0;
-            model.CategoryTitle = "";
-            model.UpdateDateTime = DateTime.UtcNow;
-            model.CategoryDropdown.Clear();
-        }
-
-        #endregion
-
-
-        #region Log and Preperation Methods
+        #region Log Methods
 
         private async Task LogError(Exception ex)
         {
@@ -411,26 +298,6 @@ namespace Dokan.Web.Areas.Management.Controllers
             });
         }
 
-        private void PrepareDropdown(ref ProductModel model, List<ProductCategory> dropdownItemsList)
-        {
-            model.CategoryDropdown.Clear();
-
-            model.CategoryDropdown.Add(new SelectListItem()
-            {
-                Text = "Select an item...",
-                Value = "",
-            });
-
-            foreach (var entity in dropdownItemsList)
-            {
-                model.CategoryDropdown.Add(new SelectListItem()
-                {
-                    Text = entity.Title,
-                    Value = entity.Id.ToString(),
-                });
-            }
-        }
-        
         #endregion
     }
 }

@@ -60,5 +60,46 @@ namespace Dokan.Web.Models
         public string CategoryTitle { get; set; }
 
         #endregion
+
+
+        #region Conversion Helpers
+
+        public static ProductModel EntityToModel(in Product entity)
+        {
+            var tax = entity.ProductCategory.TaxCategory?.Tax ?? 0;
+
+            var model = new ProductModel()
+            {
+                Id = entity.Id,
+                Title = entity.Title,
+                ShortDescription = entity.ShortDescription,
+                Description = entity.Description,
+                NoDiscountPrice = $"{entity.Price + entity.Price * (double)tax:0.00}",
+                Price = $"{entity.Price + entity.Price * (double)tax:0.00}",
+                Stock = entity.Stock,
+                Images = new List<string>
+                {
+                    entity.Image1,
+                    entity.Image2,
+                    entity.Image3,
+                    entity.Image4,
+                    entity.Image5,
+                },
+                Rating = 5,
+                CategoryId = entity.ProductCategoryId,
+                CategoryTitle = entity.ProductCategory?.Title ?? " - ",
+                CreateDateTime = entity.CreateDateTime,
+            };
+
+            if (entity.DiscountCategory != null)
+                model.Price = $"{(entity.Price + entity.Price * (double)entity.ProductCategory.TaxCategory?.Tax - entity.Price * (double)entity.DiscountCategory?.Discount):0.00}";
+
+            if (entity.ProductComments.Count > 0)
+                model.Rating = (double)entity.ProductComments?.Average(x => x.Rating);
+
+            return model;
+        }
+
+        #endregion
     }
 }

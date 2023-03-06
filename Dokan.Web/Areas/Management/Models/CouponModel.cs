@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Dokan.Domain.Website;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.WebPages.Html;
@@ -48,7 +50,7 @@ namespace Dokan.Web.Areas.Management.Models
 
         [Display(Name = "Discount")]
         [Required(ErrorMessage = "{0} can not be empty")]
-        [Range(0,100, ErrorMessage = "{0} can not be less than {1} and greater {2}")]
+        [Range(0, 100, ErrorMessage = "{0} can not be less than {1} and greater {2}")]
         public int Discount { get; set; }
 
         [Required(ErrorMessage = "{0} can not be empty")]
@@ -66,6 +68,75 @@ namespace Dokan.Web.Areas.Management.Models
         public string CategoryTitles { get; set; }
 
         public List<SelectListItem> CategoryDropdown { get; set; }
+
+        #endregion
+
+
+        #region Conversion Helpers
+
+        public static CouponModel EntityToModel(in Coupon entity, int index = 0)
+        {
+            var model = new CouponModel()
+            {
+                Index = index,
+                Id = entity.Id,
+                Title = entity.Title,
+                Code = entity.Code,
+                IsActive = entity.IsActive,
+                Discount = entity.Discount,
+                UsageLimit = entity.UsageLimit,
+                UsageCount = entity.UsageCount,
+                CategoryIds = entity.ProductCategories?.Select(c => c.Id).ToList(),
+                CategoryTitles = String.Join(", ", entity.ProductCategories?.Select(c => c.Title).ToList()),
+                ExpiryDateTime = entity.ExpiryDateTime,
+                UpdateDateTime = entity.UpdateDateTime,
+            };
+
+            return model;
+        }
+
+        public static Coupon ModelToEntity(in CouponModel model, List<ProductCategory> productCategories)
+        {
+            var entity = new Coupon()
+            {
+                Id = model.Id,
+                Title = model.Title,
+                Code = model.Code,
+                IsActive = model.IsActive,
+                Discount = model.Discount,
+                UsageLimit = model.UsageLimit,
+                UsageCount = model.UsageCount,
+                ExpiryDateTime = model.ExpiryDateTime,
+                UpdateDateTime = model.UpdateDateTime,
+            };
+
+            foreach (var id in model.CategoryIds)
+            {
+                ProductCategory category = productCategories.FirstOrDefault(x => x.Id == id);
+                entity.ProductCategories.Add(category);
+            }
+
+            return entity;
+        }
+
+        #endregion
+
+
+        #region Preparation Helpers
+
+        public static void PrepareDropdown(ref CouponModel model, List<ProductCategory> dropdownItemsList)
+        {
+            model.CategoryDropdown.Clear();
+
+            foreach (var entity in dropdownItemsList)
+            {
+                model.CategoryDropdown.Add(new SelectListItem()
+                {
+                    Text = entity.Title,
+                    Value = entity.Id.ToString(),
+                });
+            }
+        }
 
         #endregion
     }

@@ -1,4 +1,5 @@
 ﻿using Dokan.Domain.Enums;
+using Dokan.Domain.Website;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -46,6 +47,41 @@ namespace Dokan.Web.Areas.Management.Models
         [Display(Name = "Description")]
         [MaxLength(75, ErrorMessage = "{0} can not be longer than {1} characters")]
         public string Description { get; set; }
+
+        #endregion
+
+
+        #region Conversion Helpers
+
+        public static KeyValueContentModel EntityToModel(in KeyValueContent entity, int index = 0)
+        {
+            var model = new KeyValueContentModel()
+            {
+                Id = entity.Id,
+                Index = index,
+                ContentKey = entity.ContentKey,
+                ContentValue = entity.ContentValue,
+                Description = entity.Description,
+
+                UpdateDateTime = entity.UpdateDateTime,
+            };
+
+            return model;
+        }
+
+        public static KeyValueContent ModelToEntity(in KeyValueContentModel model)
+        {
+            var entity = new KeyValueContent()
+            {
+                Id = model.Id,
+                ContentKey = model.ContentKey,
+                ContentValue = model.ContentValue,
+                Description = model.Description,
+            };
+
+            return entity;
+        }
+
 
         #endregion
     }

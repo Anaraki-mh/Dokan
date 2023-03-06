@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dokan.Domain.Website;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -54,8 +55,50 @@ namespace Dokan.Web.Areas.Management.Models
         public bool IsApproved { get; set; }
 
         [Display(Name = "Rating")]
-        [Range(0,5, ErrorMessage = "{0} can not be less than {1} and greater {2}")]
+        [Range(0, 5, ErrorMessage = "{0} can not be less than {1} and greater {2}")]
         public int Rating { get; set; }
+
+        #endregion
+
+
+        #region Conversion Helpers
+
+        public static ProductCommentModel EntityToModel(in ProductComment entity, int index = 0)
+        {
+            var model = new ProductCommentModel()
+            {
+                Id = entity.Id,
+                Index = index,
+                ProductTitle = entity.Product?.Title,
+                ProductId = entity.ProductId,
+                Title = entity.Title,
+                Username = entity.User?.UserName,
+                UserId = entity.UserId,
+                Body = entity.Body,
+                IsApproved = entity.IsApproved,
+                Rating = entity.Rating,
+                CreateDateTime = entity.CreateDateTime,
+            };
+
+            return model;
+        }
+
+        public static ProductComment ModelToEntity(in ProductCommentModel model)
+        {
+            var entity = new ProductComment()
+            {
+                Id = model.Id,
+                ProductId = model.ProductId,
+                Title = model.Title,
+                UserId = model.UserId,
+                Body = model.Body,
+                IsApproved = model.IsApproved,
+                Rating = model.Rating,
+                CreateDateTime = model.CreateDateTime,
+            };
+
+            return entity;
+        }
 
         #endregion
     }

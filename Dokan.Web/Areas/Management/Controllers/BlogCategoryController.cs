@@ -23,10 +23,6 @@ namespace Dokan.Web.Areas.Management.Controllers
         private IBlogCategoryService _blogCategoryService { get; }
         private ILogService _logService { get; }
 
-        private List<BlogCategory> _allEntities { get; set; }
-        private BlogCategoryModel _model;
-        private BlogCategory _entity;
-
         #endregion
 
 
@@ -36,10 +32,6 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             _blogCategoryService = blogCategoryService;
             _logService = logService;
-
-            _allEntities = new List<BlogCategory>();
-            _model = new BlogCategoryModel();
-            _entity = new BlogCategory();
         }
 
         #endregion
@@ -58,23 +50,22 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             List<BlogCategoryModel> convertedEntityList = new List<BlogCategoryModel>();
 
-            _allEntities = await _blogCategoryService.ListAsync();
+            var allEntities = await _blogCategoryService.ListAsync();
 
-            List<BlogCategory> filteredList = _allEntities.Skip((page - 1) * numberOfResults).Take(numberOfResults).ToList();
+            List<BlogCategory> filteredList = allEntities.Skip((page - 1) * numberOfResults).Take(numberOfResults).ToList();
 
             int index = (page - 1) * numberOfResults + 1;
 
             foreach (var entity in filteredList)
             {
-                _model = new BlogCategoryModel();
-                EntityToModel(entity, ref _model, index);
+                var model = BlogCategoryModel.EntityToModel(in entity, index);
 
-                convertedEntityList.Add(_model);
+                convertedEntityList.Add(model);
 
                 index++;
             }
 
-            ViewBag.NumberOfPages = Math.Ceiling((decimal)_allEntities.Count / (decimal)numberOfResults);
+            ViewBag.NumberOfPages = Math.Ceiling((decimal)allEntities.Count / (decimal)numberOfResults);
             ViewBag.ActivePage = page;
 
             return PartialView("_List", convertedEntityList);
@@ -83,20 +74,20 @@ namespace Dokan.Web.Areas.Management.Controllers
         [HttpGet]
         public async Task<ActionResult> Details(int id)
         {
-            _entity = await _blogCategoryService.FindByIdAsync(id);
+            var entity = await _blogCategoryService.FindByIdAsync(id);
 
-            EntityToModel(_entity, ref _model);
+            var model = BlogCategoryModel.EntityToModel(in entity);
 
-            return PartialView("_Details", _model);
+            return PartialView("_Details", model);
         }
 
         [HttpGet]
         public async Task<ActionResult> Create()
         {
-            EmptyModel(ref _model);
-            PrepareDropdown(ref _model, await _blogCategoryService.ListAsync());
+            var model = new BlogCategoryModel();
+            BlogCategoryModel.PrepareDropdown(ref model, await _blogCategoryService.ListAsync());
 
-            return View(_model);
+            return View(model);
         }
 
         [HttpPost]
@@ -104,20 +95,20 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             if (!ModelState.IsValid)
             {
-                PrepareDropdown(ref model, await _blogCategoryService.ListAsync());
+                BlogCategoryModel.PrepareDropdown(ref model, await _blogCategoryService.ListAsync());
                 return View(model);
             }
 
             try
             {
-                ModelToEntity(model, ref _entity);
+                var entity = BlogCategoryModel.ModelToEntity(in model);
 
-                _entity.CreateDateTime = DateTime.UtcNow;
-                _entity.UpdateDateTime = DateTime.UtcNow;
+                entity.CreateDateTime = DateTime.UtcNow;
+                entity.UpdateDateTime = DateTime.UtcNow;
 
-                await _blogCategoryService.CreateAsync(_entity);
+                await _blogCategoryService.CreateAsync(entity);
 
-                await Log(LogType.ContentAdd, "Create", $"{_entity.Id}_ {_entity.Title}");
+                await Log(LogType.ContentAdd, "Create", $"{entity.Id}_ {entity.Title}");
             }
             catch (Exception ex)
             {
@@ -132,9 +123,11 @@ namespace Dokan.Web.Areas.Management.Controllers
         [HttpGet]
         public async Task<ActionResult> Update(int id)
         {
+            var entity = new BlogCategory();
+
             try
             {
-                _entity = await _blogCategoryService.FindByIdAsync(id);
+                entity = await _blogCategoryService.FindByIdAsync(id);
             }
             catch (Exception ex)
             {
@@ -143,11 +136,11 @@ namespace Dokan.Web.Areas.Management.Controllers
                 return View("Error400");
             }
 
-            EntityToModel(_entity, ref _model);
+            var model = BlogCategoryModel.EntityToModel(in entity);
 
-            PrepareDropdown(ref _model, await _blogCategoryService.ListAsync());
+            BlogCategoryModel.PrepareDropdown(ref model, await _blogCategoryService.ListAsync());
 
-            return View(_model);
+            return View(model);
         }
 
         [HttpPost]
@@ -155,19 +148,18 @@ namespace Dokan.Web.Areas.Management.Controllers
         {
             if (!ModelState.IsValid)
             {
-                PrepareDropdown(ref model, await _blogCategoryService.ListAsync());
+                BlogCategoryModel.PrepareDropdown(ref model, await _blogCategoryService.ListAsync());
                 return View(model);
             }
 
             try
             {
-                ModelToEntity(model, ref _entity);
+                var entity = BlogCategoryModel.ModelToEntity(in model);
+                entity.UpdateDateTime = DateTime.UtcNow;
 
-                _entity.UpdateDateTime = DateTime.UtcNow;
+                await _blogCategoryService.UpdateAsync(entity);
 
-                await _blogCategoryService.UpdateAsync(_entity);
-
-                await Log(LogType.ContentUpdate, "Update", $"{_entity.Id}_ {_entity.Title}");
+                await Log(LogType.ContentUpdate, "Update", $"{entity.Id}_ {entity.Title}");
             }
             catch (Exception ex)
             {
@@ -195,11 +187,8 @@ namespace Dokan.Web.Areas.Management.Controllers
 
             foreach (var entity in removedEntityList)
             {
-                _model = new BlogCategoryModel();
-                EntityToModel(entity, ref _model, index);
-
-                convertedEntityList.Add(_model);
-
+                var model = BlogCategoryModel.EntityToModel(in entity, index);
+                convertedEntityList.Add(model);
                 index++;
             }
 
@@ -281,66 +270,7 @@ namespace Dokan.Web.Areas.Management.Controllers
         #endregion
 
 
-        #region Conversion Methods
-
-        private void EntityToModel(BlogCategory entity, ref BlogCategoryModel model)
-        {
-            EmptyModel(ref model);
-
-            model.Id = entity.Id;
-            model.Title = entity.Title;
-            model.Priority = entity.Priority;
-            model.ParentId = entity.ParentId;
-            model.ParentTitle = entity.Parent?.Title ?? " - ";
-            model.UpdateDateTime = entity.UpdateDateTime;
-        }
-
-        private void EntityToModel(BlogCategory entity, ref BlogCategoryModel model, int index)
-        {
-            EmptyModel(ref model);
-
-            model.Id = entity.Id;
-            model.index = index;
-            model.Title = entity.Title;
-            model.Priority = entity.Priority;
-            model.ParentId = entity.ParentId;
-            model.ParentTitle = entity.Parent?.Title ?? " - ";
-            model.UpdateDateTime = entity.UpdateDateTime;
-        }
-
-        private void ModelToEntity(BlogCategoryModel model, ref BlogCategory entity)
-        {
-            EmptyEntity(ref entity);
-
-            entity.Id = model.Id;
-            entity.Title = model.Title;
-            entity.Priority = model.Priority ?? 0;
-            entity.ParentId = model.ParentId;
-        }
-
-        private void EmptyEntity(ref BlogCategory entity)
-        {
-            entity.Id = 0;
-            entity.Title = "";
-            entity.Priority = 0;
-            entity.ParentId = 0;
-        }
-
-        private void EmptyModel(ref BlogCategoryModel model)
-        {
-            model.Id = 0;
-            model.index = 0;
-            model.Title = "";
-            model.Priority = 0;
-            model.ParentId = 0;
-            model.ParentTitle = "";
-            model.ParentDropdown.Clear();
-        }
-
-        #endregion
-
-
-        #region Log and Preperation Methods
+        #region Log Methods
 
         private async Task LogError(Exception ex)
         {
@@ -366,29 +296,6 @@ namespace Dokan.Web.Areas.Management.Controllers
             });
         }
 
-        private void PrepareDropdown(ref BlogCategoryModel model, List<BlogCategory> dropdownItemsList)
-        {
-            model.ParentDropdown.Clear();
-
-            model.ParentDropdown.Add(new SelectListItem()
-            {
-                Text = "Select an item...",
-                Value = "",
-            });
-
-            int  modelId = model.Id;
-            dropdownItemsList.Remove(dropdownItemsList.FirstOrDefault(x => x.Id == modelId));
-
-            foreach (var entity in dropdownItemsList)
-            {
-                model.ParentDropdown.Add(new SelectListItem()
-                {
-                    Text = entity.Title,
-                    Value = entity.Id.ToString(),
-                });
-            }
-        }
-        
         #endregion
     }
 }

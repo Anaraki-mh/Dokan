@@ -1,4 +1,5 @@
 ﻿using Dokan.Domain.Website;
+using Microsoft.Owin.Security.Notifications;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -84,6 +85,81 @@ namespace Dokan.Web.Areas.Management.Models
         public string CategoryTitle { get; set; }
 
         public List<SelectListItem> CategoryDropdown { get; set; }
+
+        #endregion
+
+
+        #region Conversion Helpers
+
+        public static ProductModel EntityToModel(in Product entity, int index = 0)
+        {
+            var model = new ProductModel()
+            {
+                Index = index,
+                Id = entity.Id,
+                Title = entity.Title,
+                ShortDescription = entity.ShortDescription,
+                Description = entity.Description,
+                Price = entity.Price,
+                Stock = entity.Stock,
+                Image1 = entity.Image1,
+                Image2 = entity.Image2,
+                Image3 = entity.Image3,
+                Image4 = entity.Image4,
+                Image5 = entity.Image5,
+                CategoryId = entity.ProductCategoryId,
+                CategoryTitle = entity.ProductCategory?.Title ?? " - ",
+                UpdateDateTime = entity.UpdateDateTime,
+            };
+
+            return model;
+        }
+
+        public static Product ModelToEntity(in ProductModel model)
+        {
+            var entity = new Product()
+            {
+                Id = model.Id,
+                Title = model.Title,
+                ShortDescription = model.ShortDescription,
+                Description = model.Description,
+                Price = model.Price,
+                Stock = model.Stock,
+                Image1 = model.Image1,
+                Image2 = model.Image2,
+                Image3 = model.Image3,
+                Image4 = model.Image4,
+                Image5 = model.Image5,
+                ProductCategoryId = model.CategoryId,
+                UpdateDateTime = model.UpdateDateTime,
+            };
+            return entity;
+        }
+
+        #endregion
+
+
+        #region Preparation Helpers
+
+        public static void PrepareDropdown(ref ProductModel model, List<ProductCategory> dropdownItemsList)
+        {
+            model.CategoryDropdown.Clear();
+
+            model.CategoryDropdown.Add(new SelectListItem()
+            {
+                Text = "Select an item...",
+                Value = "",
+            });
+
+            foreach (var entity in dropdownItemsList)
+            {
+                model.CategoryDropdown.Add(new SelectListItem()
+                {
+                    Text = entity.Title,
+                    Value = entity.Id.ToString(),
+                });
+            }
+        }
 
         #endregion
     }

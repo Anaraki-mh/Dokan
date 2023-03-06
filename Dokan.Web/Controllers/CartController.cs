@@ -41,13 +41,6 @@ namespace Dokan.Web.Controllers
         private UserStore<User> _userStore { get; }
         private UserManager<User> _userManager { get; }
 
-        private CartModel _cartModel;
-        private CartItemModel _cartItemModel;
-        private Order _orderEntity;
-        private OrderItem _orderItemEntity;
-
-        private Random _random;
-
         #endregion
 
 
@@ -71,12 +64,6 @@ namespace Dokan.Web.Controllers
             _userStore = new UserStore<User>(context);
             _userManager = new UserManager<User>(_userStore);
 
-            _cartModel = new CartModel();
-            _cartItemModel = new CartItemModel();
-            _orderEntity = new Order();
-            _orderItemEntity = new OrderItem();
-            _random = new Random();
-
             LayoutHelper.PrepareLayout();
         }
 
@@ -95,11 +82,11 @@ namespace Dokan.Web.Controllers
             cartId = GetCookieValue(cartIdCookie);
 
             // If there is no order with this id...
-            _orderEntity = await _orderService.FindByIdAsync(cartId);
-            if (_orderEntity is null || _orderEntity?.OrderState != OrderState.Pending)
+            var orderEntity = await _orderService.FindByIdAsync(cartId);
+            if (orderEntity is null || orderEntity?.OrderState != OrderState.Pending)
             {
                 // Create an Order entity and a cookie and set the id of the order entity as the value of the cookie
-                _orderEntity = new Order()
+                orderEntity = new Order()
                 {
                     UserId = User.Identity.GetUserId() ?? _userManager.FindByEmail("Guest@Dokan.com").Id,
                     PaymentState = PaymentState.Pending,
@@ -107,20 +94,20 @@ namespace Dokan.Web.Controllers
                     DeliveryMethod = DeliveryMethod.StandardShipping,
                     ShippingCost = Convert.ToInt32(WebConfigurationManager.AppSettings["StandardShippingCost"])
                 };
-                await _orderService.CreateAsync(_orderEntity);
+                await _orderService.CreateAsync(orderEntity);
 
-                cartIdCookie = WriteCookie("cartId", string.Concat(_orderEntity.Id.ToString(), _random.Next(10000).ToString("D4")), 30);
+                var random = new Random();
+                cartIdCookie = WriteCookie("cartId", string.Concat(orderEntity.Id.ToString(), random.Next(10000).ToString("D4")), 30);
 
                 Response.Cookies.Add(cartIdCookie);
             }
 
-            _cartModel = new CartModel();
-            OrderEntityToModel(_orderEntity, ref _cartModel);
+            var cartModel = CartModel.EntityToModel(in orderEntity);
 
             if (partial == true)
-                return PartialView("_ShoppingCart", _cartModel);
+                return PartialView("_ShoppingCart", cartModel);
 
-            return View(_cartModel);
+            return View(cartModel);
         }
 
         [HttpGet]
@@ -142,39 +129,39 @@ namespace Dokan.Web.Controllers
             cartId = GetCookieValue(cartIdCookie);
 
             // Try to find the Order entity with cartId and check if exists
-            _orderEntity = await _orderService.FindByIdAsync(cartId);
+            var orderEntity = await _orderService.FindByIdAsync(cartId);
 
-            if (_orderEntity is null || _orderEntity?.OrderState != OrderState.Pending)
+            if (orderEntity is null || orderEntity?.OrderState != OrderState.Pending)
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
-            _orderItemEntity = _orderEntity.OrderItems.Find(x => x.ProductId == productId);
+            var orderItemEntity = orderEntity.OrderItems.Find(x => x.ProductId == productId);
 
-            if (_orderItemEntity is null)
-                _orderItemEntity = new OrderItem()
+            if (orderItemEntity is null)
+                orderItemEntity = new OrderItem()
                 {
                     ProductId = productId,
-                    OrderId = _orderEntity.Id,
+                    OrderId = orderEntity.Id,
                     Price = productEntity.Price,
                     Tax = productEntity.ProductCategory?.TaxCategory?.Tax ?? 0,
                     Discount = (productEntity.DiscountCategory?.Discount ?? 0),
                 };
 
-            _orderItemEntity.Quantity = number;
-            _orderItemEntity.Total = _orderItemEntity.Quantity *
-                (_orderItemEntity.Price +
-                (_orderItemEntity.Price * _orderItemEntity.Tax / 100) -
-                (_orderItemEntity.Price * _orderItemEntity.Discount / 100));
+            orderItemEntity.Quantity = number;
+            orderItemEntity.Total = orderItemEntity.Quantity *
+                (orderItemEntity.Price +
+                (orderItemEntity.Price * orderItemEntity.Tax / 100) -
+                (orderItemEntity.Price * orderItemEntity.Discount / 100));
 
             if (number == 0)
             {
-                _orderEntity.OrderItems.Remove(_orderItemEntity);
-                await _orderItemService.DeleteAsync(_orderItemEntity.Id);
+                orderEntity.OrderItems.Remove(orderItemEntity);
+                await _orderItemService.DeleteAsync(orderItemEntity.Id);
             }
             else
-                _orderEntity.OrderItems.Add(_orderItemEntity);
+                orderEntity.OrderItems.Add(orderItemEntity);
 
 
-            await _orderService.UpdateAsync(_orderEntity);
+            await _orderService.UpdateAsync(orderEntity);
 
             return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
@@ -191,9 +178,9 @@ namespace Dokan.Web.Controllers
             cartId = GetCookieValue(cartIdCookie);
 
             // Try to find the Order entity by cartId and check if its null or already has a CouponId
-            _orderEntity = await _orderService.FindByIdAsync(cartId);
+            var orderEntity = await _orderService.FindByIdAsync(cartId);
 
-            if (_orderEntity is null || _orderEntity?.CouponId != null)
+            if (orderEntity is null || orderEntity?.CouponId != null)
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
             // Find the Coupon by its code and check if it exists or whether or not the user has already used this coupon/discount code
@@ -218,7 +205,7 @@ namespace Dokan.Web.Controllers
 
             // Update the prices of all orderItems which have a ProductCategory that's in the list of couponEntity's discounted categories
             // and change the value of _orderEntity's CouponId to the id of the used coupon
-            foreach (var item in _orderEntity.OrderItems)
+            foreach (var item in orderEntity.OrderItems)
             {
                 if (!couponEntity.ProductCategories.Contains(item.Product.ProductCategory))
                     continue;
@@ -229,8 +216,8 @@ namespace Dokan.Web.Controllers
                     (item.Price * item.Tax / 100) -
                     (item.Price * item.Discount / 100));
             }
-            _orderEntity.CouponId = couponEntity.Id;
-            await _orderService.UpdateAsync(_orderEntity);
+            orderEntity.CouponId = couponEntity.Id;
+            await _orderService.UpdateAsync(orderEntity);
 
             return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
@@ -244,20 +231,19 @@ namespace Dokan.Web.Controllers
             cartId = GetCookieValue(cartIdCookie);
 
             // Try to find the Order entity by cartId and check if its null 
-            _orderEntity = await _orderService.FindByIdAsync(cartId);
+            var orderEntity = await _orderService.FindByIdAsync(cartId);
 
-            if (_orderEntity is null || _orderEntity?.OrderState != OrderState.Pending)
+            if (orderEntity is null || orderEntity?.OrderState != OrderState.Pending)
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
             // Convert Order to CartModel
-            _cartModel = new CartModel();
-            OrderEntityToModel(_orderEntity, ref _cartModel);
-            _cartModel.Country = "United States";
+            var cartModel = CartModel.EntityToModel(in orderEntity);
+            cartModel.Country = "United States";
 
             // To update the shipping cost in the list when the delivery method dropdown changes 
             ViewBag.ShippingCost = Convert.ToInt32(WebConfigurationManager.AppSettings["StandardShippingCost"]);
 
-            return View(_cartModel);
+            return View(cartModel);
         }
 
         [HttpPost]
@@ -272,9 +258,9 @@ namespace Dokan.Web.Controllers
             cartId = GetCookieValue(cartIdCookie);
 
             // Try to find the Order entity by cartId and check if its null 
-            _orderEntity = await _orderService.FindByIdAsync(cartId);
+            var orderEntity = await _orderService.FindByIdAsync(cartId);
 
-            if (_orderEntity is null || _orderEntity?.OrderState != OrderState.Pending)
+            if (orderEntity is null || orderEntity?.OrderState != OrderState.Pending)
             {
                 ViewBag.ErrorMessage = "Invalid Order. This order does not exist or has already been processed.";
                 return View(model);
@@ -283,7 +269,7 @@ namespace Dokan.Web.Controllers
             string userId = User.Identity.GetUserId();
             bool isGuest = userId == _userManager.FindByEmail("Guest@Dokan.com").Id ? true : false;
 
-            if ((userId != null || !isGuest) && userId != _orderEntity.UserId)
+            if ((userId != null || !isGuest) && userId != orderEntity.UserId)
             {
                 ViewBag.ErrorMessage = "Invalid Checkout Request. Orders can not be checked out by any user other than the one associated with the order.";
                 return View(model);
@@ -309,10 +295,10 @@ namespace Dokan.Web.Controllers
                         ZipCode = model.ZipCode
                     }
                 };
-                user.UsedCoupons.Add(_orderEntity.Coupon);
+                user.UsedCoupons.Add(orderEntity.Coupon);
 
                 _userManager.Create(user, model.Password);
-                _orderEntity.UserId = user.Id;
+                orderEntity.UserId = user.Id;
             }
             else
             {
@@ -321,34 +307,34 @@ namespace Dokan.Web.Controllers
             }
             
             // Save the billing and shipping info 
-            _orderEntity.FirstName = model.FirstName;
-            _orderEntity.LastName = model.LastName;
-            _orderEntity.Country = model.Country;
-            _orderEntity.State = model.State;
-            _orderEntity.City = model.City;
-            _orderEntity.Address = model.Address;
-            _orderEntity.PhoneNumber = model.PhoneNumber;
-            _orderEntity.ZipCode = model.ZipCode;
-            _orderEntity.DeliveryMethod = model.DeliveryMethod;
+            orderEntity.FirstName = model.FirstName;
+            orderEntity.LastName = model.LastName;
+            orderEntity.Country = model.Country;
+            orderEntity.State = model.State;
+            orderEntity.City = model.City;
+            orderEntity.Address = model.Address;
+            orderEntity.PhoneNumber = model.PhoneNumber;
+            orderEntity.ZipCode = model.ZipCode;
+            orderEntity.DeliveryMethod = model.DeliveryMethod;
 
             switch (model.DeliveryMethod)
             {
                 case DeliveryMethod.StandardShipping:
-                    _orderEntity.ShippingCost = Convert.ToInt32(WebConfigurationManager.AppSettings["StandardShippingCost"]);
+                    orderEntity.ShippingCost = Convert.ToInt32(WebConfigurationManager.AppSettings["StandardShippingCost"]);
                     break;
                 case DeliveryMethod.Pickup:
-                    _orderEntity.ShippingCost = 0;
+                    orderEntity.ShippingCost = 0;
                     break;
                 default:
-                    _orderEntity.ShippingCost = Convert.ToInt32(WebConfigurationManager.AppSettings["StandardShippingCost"]);
+                    orderEntity.ShippingCost = Convert.ToInt32(WebConfigurationManager.AppSettings["StandardShippingCost"]);
                     break;
             }
 
-            await _orderService.UpdateAsync(_orderEntity);
+            await _orderService.UpdateAsync(orderEntity);
 
             // Create the payment page using Stripe 
             List<SessionLineItemOptions> lineItems = new List<SessionLineItemOptions>();
-            foreach (var item in _orderEntity.OrderItems)
+            foreach (var item in orderEntity.OrderItems)
             {
                 lineItems.Add(new SessionLineItemOptions
                 {
@@ -375,12 +361,12 @@ namespace Dokan.Web.Controllers
 
             var options = new SessionCreateOptions
             {
-                ClientReferenceId = _orderEntity.Id.ToString(),
+                ClientReferenceId = orderEntity.Id.ToString(),
                 LineItems = lineItems,
                 Mode = "payment",
                 SuccessUrl = $"{domain}/Cart/Success",
                 CancelUrl = $"{domain}/Cart/Failure",
-                CustomerEmail = _orderEntity.User.Email,
+                CustomerEmail = orderEntity.User.Email,
                 ShippingOptions = new List<SessionShippingOptionOptions>
                 {
                     new SessionShippingOptionOptions
@@ -390,7 +376,7 @@ namespace Dokan.Web.Controllers
                             Type = "fixed_amount",
                             FixedAmount = new SessionShippingOptionShippingRateDataFixedAmountOptions
                             {
-                                Amount = Convert.ToInt32(_orderEntity.ShippingCost) * 100,
+                                Amount = Convert.ToInt32(orderEntity.ShippingCost) * 100,
                                 Currency = "usd",
                             },
                             DisplayName = "Shipping",
@@ -457,15 +443,15 @@ namespace Dokan.Web.Controllers
                 }
 
                 // Update the status of the order
-                _orderEntity = await _orderService.FindByIdAsync(Convert.ToInt32(orderId));
-                _orderEntity.OrderState = OrderState.Placed;
-                _orderEntity.PaymentState = PaymentState.Paid;
-                _orderEntity.TrackingCode = session.PaymentIntentId;
-                await _orderService.UpdateAsync(_orderEntity);
+                var orderEntity = await _orderService.FindByIdAsync(Convert.ToInt32(orderId));
+                orderEntity.OrderState = OrderState.Placed;
+                orderEntity.PaymentState = PaymentState.Paid;
+                orderEntity.TrackingCode = session.PaymentIntentId;
+                await _orderService.UpdateAsync(orderEntity);
 
                 // Send the invoice to the user as an email
                 string productsList = "";
-                foreach (var item in _orderEntity.OrderItems)
+                foreach (var item in orderEntity.OrderItems)
                 {
                     productsList += EmailTemplate.CreateInvoiceProductRow
                             ($"{EmailTemplate.WebAddress}/Products/{item.Id}/{SEO.CreateSeoFriendlyUrlTitle(item.Product.Title)}",
@@ -479,16 +465,16 @@ namespace Dokan.Web.Controllers
                     "Your order has been placed and the payment has been successful; you will recieve updates on the status of the order through email.",
                     "Order Details",
                     EmailTemplate.WebAddress,
-                    $"{_orderEntity.Address}, {_orderEntity.City}, {_orderEntity.State}, {_orderEntity.Country}, {_orderEntity.ZipCode}",
+                    $"{orderEntity.Address}, {orderEntity.City}, {orderEntity.State}, {orderEntity.Country}, {orderEntity.ZipCode}",
                     "-",
-                    _orderEntity.Id.ToString("D5"),
+                    orderEntity.Id.ToString("D5"),
                     productsList,
-                    _orderEntity.OrderItems.Sum(x => x.Total).ToString("N0"),
-                    _orderEntity.OrderItems.Sum(x => x.Price * x.Tax).ToString("N0"),
-                    _orderEntity.ShippingCost.ToString("N0"),
-                    (_orderEntity.OrderItems.Sum(x => x.Total) + _orderEntity.ShippingCost).ToString("N0"));
+                    orderEntity.OrderItems.Sum(x => x.Total).ToString("N0"),
+                    orderEntity.OrderItems.Sum(x => x.Price * x.Tax).ToString("N0"),
+                    orderEntity.ShippingCost.ToString("N0"),
+                    (orderEntity.OrderItems.Sum(x => x.Total) + orderEntity.ShippingCost).ToString("N0"));
 
-                _emailService.SendEmail("Payment Successful!", emailBody, _orderEntity.User.Email);
+                _emailService.SendEmail("Payment Successful!", emailBody, orderEntity.User.Email);
 
                 Console.WriteLine($"checkout session with ID {session.Id} completed.");
             }
@@ -500,47 +486,7 @@ namespace Dokan.Web.Controllers
         #endregion
 
 
-        #region Conversion and Helper Methods
-
-        private void OrderEntityToModel(Order entity, ref CartModel model)
-        {
-            model.Id = entity.Id;
-            model.CreateDateTime = entity.CreateDateTime;
-            model.TrackingCode = entity.TrackingCode;
-            model.FirstName = entity.User?.UserInformation?.FirstName ?? "";
-            model.LastName = entity.User?.UserInformation?.LastName ?? "";
-            model.Country = entity.User?.UserInformation?.Country ?? "";
-            model.State = entity.User?.UserInformation?.State ?? "";
-            model.City = entity.User?.UserInformation?.City ?? "";
-            model.Address = entity.User?.UserInformation?.Address ?? "";
-            model.ZipCode = entity.User?.UserInformation?.ZipCode ?? "";
-            model.PhoneNumber = entity.User?.UserInformation?.PhoneNumber ?? "";
-            model.ShippingCost = entity.ShippingCost;
-            model.DeliveryMethod = entity.DeliveryMethod;
-            model.PaymentState = entity.PaymentState;
-            model.OrderState = entity.OrderState;
-            model.UserId = entity.UserId;
-            model.Coupon = entity.Coupon ?? new Domain.Website.Coupon();
-            model.CouponId = entity.CouponId;
-
-            foreach (var item in entity.OrderItems)
-            {
-                model.CartItems.Add(new CartItemModel
-                {
-                    Id = item.Id,
-                    CartId = model.Id,
-                    ProductId = item.ProductId,
-                    ProductImage = item.Product.Image1,
-                    ProductTitle = item.Product.Title,
-                    Discount = item.Discount,
-                    Tax = item.Tax,
-                    Price = $"{item.Total / (double)item.Quantity:0.00}",
-                    Quantity = item.Quantity,
-                    Total = item.Total,
-                });
-            }
-        }
-
+        #region Helper Methods
 
         private int GetCookieValue(HttpCookie cookie)
         {

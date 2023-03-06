@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dokan.Domain.Website;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace Dokan.Web.Areas.Management.Models
 
         #endregion
 
-        
+
         #region Properties
         public int Index { get; set; }
 
@@ -47,6 +48,41 @@ namespace Dokan.Web.Areas.Management.Models
         [Display(Name = "Image")]
         [MaxLength(30, ErrorMessage = "{0} can not be longer than {1} characters")]
         public string Image { get; set; }
+
+        #endregion
+
+
+        #region Conversion Helpers
+
+        public static TestimonialModel EntityToModel(in Testimonial entity, int index = 0)
+        {
+            var model = new TestimonialModel()
+            {
+                Id = entity.Id,
+                Index = index,
+                FullName = entity.FullName,
+                Position = entity.Position,
+                Content = entity.Content,
+                Image = entity.Content,
+                UpdateDateTime = entity.UpdateDateTime,
+            };
+
+            return model;
+        }
+
+        public static Testimonial ModelToEntity(in TestimonialModel model)
+        {
+            var entity = new Testimonial()
+            {
+                Id = model.Id,
+                FullName = model.FullName,
+                Position = model.Position,
+                Content = model.Content,
+                Image = model.Content,
+            };
+
+            return entity;
+        }
 
         #endregion
     }
