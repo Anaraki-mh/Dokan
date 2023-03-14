@@ -14,9 +14,6 @@ namespace Dokan.Services
         #region Fields and Properties
 
         private SmtpClient _smtpClient { get; }
-        private string _hostName { get; }
-        private string _username { get; }
-        private string _password { get; }
         private string _senderEmail { get; }
 
         #endregion
@@ -26,17 +23,23 @@ namespace Dokan.Services
 
         public EmailService()
         {
-            _hostName = "smtp.gmail.com";
-            _username = WebConfigurationManager.AppSettings["EmailUsername"];
-            _password = WebConfigurationManager.AppSettings["EmailPassword"];
-            _senderEmail = "";
+            _senderEmail = WebConfigurationManager.AppSettings["EmailUsername"];
+            var emailHost = WebConfigurationManager.AppSettings["EmailHost"];
+            var username = WebConfigurationManager.AppSettings["EmailUsername"];
+            var password = WebConfigurationManager.AppSettings["EmailPassword"];
+            var hasSpecificPort = bool.Parse(WebConfigurationManager.AppSettings["EmailHostHasSpecificPort"]);
+            var hostPort = int.Parse(WebConfigurationManager.AppSettings["EmailHostPort"]);
 
-            _smtpClient = new SmtpClient(_hostName)
+            _smtpClient = new SmtpClient(emailHost)
             {
-                Port = 587,
-                Credentials = new NetworkCredential(_username, _password),
+                Credentials = new NetworkCredential(username, password),
                 EnableSsl = true,
             };
+
+            if (hasSpecificPort)
+            {
+                _smtpClient.Port = hostPort;
+            }
         }
 
         #endregion
