@@ -165,7 +165,7 @@ namespace Dokan.Web.Areas.Management.Controllers
                 stripeEvent = EventUtility.ConstructEvent(
                     json,
                     Request.Headers["Stripe-Signature"],
-                    WebConfigurationManager.AppSettings["StripeWebhookSecret"]
+                    WebConfigurationManager.AppSettings["StripeRefundWebhookSecret"]
                 );
             }
             catch (Exception e)
