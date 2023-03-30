@@ -249,9 +249,6 @@ namespace Dokan.Web.Controllers
         [HttpPost]
         public async Task<ActionResult> Checkout(CartModel model)
         {
-            if (!ModelState.IsValid)
-                return View(model);
-
             // Get the cartId from the cookie
             HttpCookie cartIdCookie = Request.Cookies["cartId"];
             int cartId = 0;
@@ -263,15 +260,44 @@ namespace Dokan.Web.Controllers
             if (orderEntity is null || orderEntity?.OrderState != OrderState.Pending)
             {
                 ViewBag.ErrorMessage = "Invalid Order. This order does not exist or has already been processed.";
+
+                // To update the shipping cost in the list when the delivery method dropdown changes 
+                ViewBag.ShippingCost = Convert.ToInt32(WebConfigurationManager.AppSettings["StandardShippingCost"]);
+                return View(model);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.ShippingCost = Convert.ToInt32(WebConfigurationManager.AppSettings["StandardShippingCost"]);
+                foreach (var item in orderEntity.OrderItems)
+                {
+                    model.CartItems.Add(new CartItemModel
+                    {
+                        Id = item.Id,
+                        CartId = model.Id,
+                        ProductId = item.ProductId,
+                        ProductImage = item.Product.Image1,
+                        ProductTitle = item.Product.Title,
+                        Discount = item.Discount,
+                        Tax = item.Tax,
+                        Price = $"{item.Total / (double)item.Quantity:0.00}",
+                        Quantity = item.Quantity,
+                        Total = item.Total,
+                    });
+                }
                 return View(model);
             }
 
             string userId = User.Identity.GetUserId();
-            bool isGuest = userId == _userManager.FindByEmail("Guest@Dokan.com").Id ? true : false;
+            string guestUserId = _userManager.FindByEmail("Guest@Dokan.com").Id;
+            bool isGuest = userId == guestUserId || userId is null ? true : false;
 
-            if ((userId != null || !isGuest) && userId != orderEntity.UserId)
+            if (isGuest == false && !(orderEntity.UserId == userId || orderEntity.UserId == guestUserId))
             {
                 ViewBag.ErrorMessage = "Invalid Checkout Request. Orders can not be checked out by any user other than the one associated with the order.";
+
+                // To update the shipping cost in the list when the delivery method dropdown changes 
+                ViewBag.ShippingCost = Convert.ToInt32(WebConfigurationManager.AppSettings["StandardShippingCost"]);
                 return View(model);
             }
 
@@ -298,7 +324,7 @@ namespace Dokan.Web.Controllers
                 user.UsedCoupons.Add(orderEntity.Coupon);
 
                 _userManager.Create(user, model.Password);
-                orderEntity.UserId = user.Id;
+                orderEntity.User = user;
             }
             else
             {
@@ -481,6 +507,18 @@ namespace Dokan.Web.Controllers
 
             //always have to return 200
             return new HttpStatusCodeResult(HttpStatusCode.OK);
+        }
+
+        [HttpGet]
+        public ActionResult Success()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult Failure()
+        {
+            return View();
         }
 
         #endregion

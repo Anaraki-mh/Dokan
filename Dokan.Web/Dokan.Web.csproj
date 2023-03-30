@@ -637,6 +637,8 @@
     <Content Include="Views\Cart\_ShoppingCart.cshtml" />
     <Content Include="Views\Cart\ShoppingCart.cshtml" />
     <Content Include="Views\Cart\Checkout.cshtml" />
+    <Content Include="Views\Cart\Success.cshtml" />
+    <Content Include="Views\Cart\Failure.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
