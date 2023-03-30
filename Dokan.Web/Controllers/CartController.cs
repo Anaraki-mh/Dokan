@@ -239,8 +239,10 @@ namespace Dokan.Web.Controllers
             // Convert Order to CartModel
             var cartModel = CartModel.EntityToModel(in orderEntity);
             cartModel.Country = "United States";
-            cartModel.Email = _userManager.GetEmail(User.Identity.GetUserId());
 
+            var userId = User.Identity.GetUserId();
+            if (userId != null)
+                cartModel.Email = _userManager.GetEmail(userId) ?? "";
             // To update the shipping cost in the list when the delivery method dropdown changes 
             ViewBag.ShippingCost = Convert.ToInt32(WebConfigurationManager.AppSettings["StandardShippingCost"]);
 
