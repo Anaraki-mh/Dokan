@@ -74,7 +74,7 @@ namespace Dokan.Web.Controllers
             ViewBag.Title = "Deals";
             ViewBag.OnlyDeals = "true";
 
-            return View("Index");
+            return View("Index", 0);
         }
 
         [HttpGet]
