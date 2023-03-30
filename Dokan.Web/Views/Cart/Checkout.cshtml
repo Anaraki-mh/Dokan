@@ -28,37 +28,36 @@
 
                 <div class="col-lg-6">
 
-                    @if (User.Identity.Name is null || User.Identity.Name == string.Empty)
-                    {
-                        <section>
-                            <h4>Sign Up</h4>
-                            <label class="label">Enter your Email and a Password below, and a new account will be created for you after checking out.</label>
-                            <br />
-                            <br />
-                            <div class="col-12">
-                                <label>
-                                    @Html.LabelFor(x => x.Email)
-                                    <span>*</span>
-                                </label>
-                                @Html.TextBoxFor(x => x.Email)
-                                @Html.ValidationMessageFor(x => x.Email, "", new { @class = "text-danger" })
-                            </div>
 
-                            <div class="col-12">
-                                <label>
-                                    @Html.LabelFor(x => x.Password)
-                                    <span>*</span>
-                                </label>
-                                @Html.TextBoxFor(x => x.Password, new { type = "password" })
-                                @Html.ValidationMessageFor(x => x.Password, "", new { @class = "text-danger" })
-                            </div>
+                    <section style="display: @Html.Raw(User.Identity.IsAuthenticated ? "none" : "block");">
+                        <h4>Sign Up</h4>
+                        <label class="label">Enter your Email and a Password below, and a new account will be created for you after checking out.</label>
+                        <br />
+                        <br />
+                        <div class="col-12">
+                            <label>
+                                @Html.LabelFor(x => x.Email)
+                                <span>*</span>
+                            </label>
+                            @Html.TextBoxFor(x => x.Email)
+                            @Html.ValidationMessageFor(x => x.Email, "", new { @class = "text-danger" })
+                        </div>
 
-                            <div class="checkout-content col-12">
-                                <label class="label d-flex justify-content-center">Or</label>
-                                <a href="~/Account/Login?ReturnUrl=%2FCart%2FCheckout" class="content-btn">Click Here To Login</a>
-                            </div>
-                        </section>
-                    }
+                        <div class="col-12">
+                            <label>
+                                @Html.LabelFor(x => x.Password)
+                                <span>*</span>
+                            </label>
+                            @Html.TextBoxFor(x => x.Password, new { type = "password" })
+                            @Html.ValidationMessageFor(x => x.Password, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="checkout-content col-12">
+                            <label class="label d-flex justify-content-center">Or</label>
+                            <a href="~/Account/Login?ReturnUrl=%2FCart%2FCheckout" class="content-btn">Click Here To Login</a>
+                        </div>
+                    </section>
+
 
 
                     <h4>Billing Details</h4>

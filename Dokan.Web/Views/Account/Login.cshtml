@@ -7,8 +7,7 @@
 <div class="row d-flex justify-content-center m-5">
     <div class="col-md-5">
         <section id="loginForm">
-            @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-            {
+            <form method="post" action="/Account/Login?ReturnUrl=@ViewBag.ReturnUrl" class="form-horizontal" role="form">
                 @Html.AntiForgeryToken()
                 @*<h4>Use a local account to log in.</h4>*@
                 <h2 class="text-center">@ViewBag.Title</h2>
@@ -44,11 +43,7 @@
                 <p>
                     <a href="/Account/Register">Register as a new user</a>
                 </p>
-                @* Enable this once you have account confirmation enabled for password reset functionality
-                    <p>
-                        @Html.ActionLink("Forgot your password?", "ForgotPassword")
-                    </p>*@
-            }
+            </form>
         </section>
     </div>
     @*<div class="col-md-4">

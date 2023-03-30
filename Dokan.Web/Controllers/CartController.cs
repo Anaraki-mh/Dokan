@@ -199,7 +199,7 @@ namespace Dokan.Web.Controllers
 
             if (user?.Id != _userManager.FindByEmail("Guest@Dokan.com").Id)
                 couponEntity.Users.Add(user);
-            
+
             couponEntity.UsageCount++;
             await _couponService.UpdateAsync(couponEntity);
 
@@ -239,6 +239,7 @@ namespace Dokan.Web.Controllers
             // Convert Order to CartModel
             var cartModel = CartModel.EntityToModel(in orderEntity);
             cartModel.Country = "United States";
+            cartModel.Email = _userManager.GetEmail(User.Identity.GetUserId());
 
             // To update the shipping cost in the list when the delivery method dropdown changes 
             ViewBag.ShippingCost = Convert.ToInt32(WebConfigurationManager.AppSettings["StandardShippingCost"]);
@@ -301,12 +302,18 @@ namespace Dokan.Web.Controllers
                 return View(model);
             }
 
+            if (isGuest && model.Password != null && _userManager.FindByEmail(model.Email) != null)
+            {
+                ViewBag.ErrorMessage = "This Email is already in use, please log on if you aleady have an account with this email or create a new account";
+                return View(model);
+            }
+
             // Create an account if the user doesnt have an account
-            if (isGuest && (model.Password != string.Empty || model.Password != null))
+            if (isGuest && model.Password != null)
             {
                 var user = new User
                 {
-                    UserName = model.FirstName + " " + model.LastName,
+                    UserName = model.Email,
                     Email = model.Email,
                     PhoneNumber = model.PhoneNumber,
                     UserInformation = new UserInformation
@@ -326,12 +333,7 @@ namespace Dokan.Web.Controllers
                 _userManager.Create(user, model.Password);
                 orderEntity.User = user;
             }
-            else
-            {
-                ViewBag.ErrorMessage = "This Email is already in use, please log on if you aleady have an account with this email or create a new account";
-                return View(model);
-            }
-            
+
             // Save the billing and shipping info 
             orderEntity.FirstName = model.FirstName;
             orderEntity.LastName = model.LastName;
@@ -512,6 +514,7 @@ namespace Dokan.Web.Controllers
         [HttpGet]
         public ActionResult Success()
         {
+            Request.Cookies.Remove("cartId");
             return View();
         }
 
